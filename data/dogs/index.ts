@@ -1,4 +1,13 @@
 import { Dog, DogBreed, Sex } from "../dog";
+import jasonImage from "./images/jason.png";
+import nuellaImage from "./images/nuella.png";
+import gordonImage from "./images/gordon.png";
+import siriImage from "./images/siri.png";
+import ritaImage from "./images/rita.png";
+import fieImage from "./images/fie.png";
+import donnaImage from "./images/donna.png";
+import balderImage from "./images/balder.png";
+import vinnieImage from "./images/vinnie.png";
 
 export const Jason: Dog = {
   registrationId: "DK15064/2022",
@@ -6,7 +15,7 @@ export const Jason: Dog = {
   name: "Soldier Of Love",
   breed: DogBreed.JackRussellTerrier,
   dob: new Date("02.07.2022").toLocaleDateString(),
-  image: "./images/jason.png",
+  image: jasonImage,
   kennel: "Kajsenborg",
   kennelOwner: "Tenna Grenaae",
   sex: Sex.Male,
@@ -19,6 +28,7 @@ export const Jason: Dog = {
 export const Nuella: Dog = {
   registrationId: "DK16190/2021",
   name: "Nuella",
+  nickname: "Ella",
   breed: DogBreed.JackRussellTerrier,
   sex: Sex.Female,
   dob: new Date("23.06.2021").toLocaleDateString(),
@@ -28,7 +38,7 @@ export const Nuella: Dog = {
     sire: undefined,
     dam: undefined,
   },
-  image: "./images/nuella.png",
+  image: nuellaImage,
 };
 
 export const Gordon: Dog = {
@@ -40,7 +50,7 @@ export const Gordon: Dog = {
   dob: new Date("04.10.2019").toLocaleDateString(),
   kennel: "Jackart",
   kennelOwner: "Ekaterina Kumakova",
-  image: "./images/gordon.png",
+  image: gordonImage,
   family: {
     sire: undefined,
     dam: undefined,
@@ -56,7 +66,7 @@ export const Siri: Dog = {
   sex: Sex.Female,
   breed: DogBreed.JackRussellTerrier,
   dob: new Date("20.01.2019").toLocaleDateString(),
-  image: "./images/siri.png",
+  image: siriImage,
   family: {
     sire: undefined,
     dam: undefined,
@@ -72,7 +82,7 @@ export const Rita: Dog = {
   sex: Sex.Female,
   breed: DogBreed.JackRussellTerrier,
   dob: new Date("18.02.2017").toLocaleDateString(),
-  image: "./images/rita.png",
+  image: ritaImage,
   family: {
     sire: undefined,
     dam: undefined,
@@ -88,7 +98,7 @@ export const Fie: Dog = {
   sex: Sex.Female,
   breed: DogBreed.JackRussellTerrier,
   dob: new Date("19.08.2007").toLocaleDateString(),
-  image: "./images/fie.png",
+  image: fieImage,
   family: {
     sire: undefined,
     dam: undefined,
@@ -105,7 +115,7 @@ export const Donna: Dog = {
   sex: Sex.Female,
   breed: DogBreed.JackRussellTerrier,
   dob: new Date("19.05.2023").toLocaleDateString(),
-  image: "./images/donna.png",
+  image: donnaImage,
   family: {
     sire: undefined,
     dam: undefined,
@@ -121,7 +131,7 @@ export const Balder: Dog = {
   sex: Sex.Male,
   breed: DogBreed.JackRussellTerrier,
   dob: new Date("19.05.2023").toLocaleDateString(),
-  image: "./images/balder.png",
+  image: balderImage,
   family: {
     sire: undefined,
     dam: undefined,
@@ -137,9 +147,21 @@ export const Vinnie: Dog = {
   sex: Sex.Female,
   breed: DogBreed.JackRussellTerrier,
   dob: new Date("06.09.2011").toLocaleDateString(),
-  image: "./images/vinnie.png",
+  image: vinnieImage,
   family: {
     sire: undefined,
     dam: undefined,
   },
 };
+
+export const dogData = [
+  Jason,
+  Nuella,
+  Gordon,
+  Siri,
+  Rita,
+  Fie,
+  Donna,
+  Balder,
+  Vinnie,
+];

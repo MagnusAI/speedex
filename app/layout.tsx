@@ -28,12 +28,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-[100vh] flex flex-col`}
       >
         <NavigationHeader />
-        <div className="px-2 lg:px-6">{children}</div>
+        <div className="flex flex-col min-h-screen">{children}</div>
+        <Footer />
       </body>
-      <Footer />
     </html>
   );
 }

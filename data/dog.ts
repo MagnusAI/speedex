@@ -1,3 +1,5 @@
+import { StaticImageData } from "next/image";
+
 export enum DogBreed {
   JackRussellTerrier = "Jack Russell Terrier",
 }
@@ -12,7 +14,7 @@ export type Dog = {
   name: string;
   breed: DogBreed;
   dob: string;
-  image?: string;
+  image?: StaticImageData;
   kennel: string;
   kennelOwner?: string;
   nickname?: string;
