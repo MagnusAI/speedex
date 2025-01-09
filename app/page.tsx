@@ -1,6 +1,7 @@
 import { H1, H2, H4, Text } from "@/components/custom/typosgraphy";
 import { getDogs } from "./actions";
 import { DogCard } from "@/components/custom/dog-card";
+import '@aws-amplify/ui-react/styles.css';
 
 export default function Home() {
   const dogs = getDogs();
