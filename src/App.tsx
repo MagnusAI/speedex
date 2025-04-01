@@ -9,7 +9,7 @@ import BlogFeed from './components/BlogFeed'
 import { useState } from 'react'
 
 // Create a theme instance
-const theme = createTheme({
+const defaultTheme = createTheme({
   palette: {
     mode: 'light',
     primary: {
@@ -56,7 +56,7 @@ function App() {
   )
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
       <Box sx={{ display: 'flex' }}>
         <AppBar position="fixed">

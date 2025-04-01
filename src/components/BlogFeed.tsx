@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { 
   Container, 
-  Grid, 
   Card, 
   CardContent, 
   CardMedia, 
@@ -44,9 +43,17 @@ export default function BlogFeed() {
   if (loading) {
     return (
       <Container maxWidth="lg" sx={{ py: 4 }}>
-        <Grid container spacing={3}>
+        <Box sx={{ 
+          display: 'flex', 
+          flexWrap: 'wrap', 
+          gap: 3,
+          justifyContent: 'center'
+        }}>
           {[1, 2, 3].map((item) => (
-            <Grid xs={12} md={4} key={item}>
+            <Box key={item} sx={{ 
+              flex: { xs: '1 1 100%', md: '1 1 calc(33.333% - 16px)' },
+              minWidth: { xs: '100%', md: '300px' }
+            }}>
               <Card>
                 <Skeleton variant="rectangular" height={200} />
                 <CardContent>
@@ -55,18 +62,26 @@ export default function BlogFeed() {
                   <Skeleton variant="text" height={24} />
                 </CardContent>
               </Card>
-            </Grid>
+            </Box>
           ))}
-        </Grid>
+        </Box>
       </Container>
     )
   }
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
-      <Grid container spacing={3}>
+      <Box sx={{ 
+        display: 'flex', 
+        flexWrap: 'wrap', 
+        gap: 3,
+        justifyContent: 'center'
+      }}>
         {posts.map((post) => (
-          <Grid xs={12} md={4} key={post.id}>
+          <Box key={post.id} sx={{ 
+            flex: { xs: '1 1 100%', md: '1 1 calc(33.333% - 16px)' },
+            minWidth: { xs: '100%', md: '300px' }
+          }}>
             <Card 
               sx={{ 
                 height: '100%',
@@ -134,9 +149,9 @@ export default function BlogFeed() {
                 </Box>
               </CardContent>
             </Card>
-          </Grid>
+          </Box>
         ))}
-      </Grid>
+      </Box>
     </Container>
   )
 } 
