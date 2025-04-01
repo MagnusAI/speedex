@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   Dialog,
   DialogTitle,
@@ -8,9 +8,12 @@ import {
   Button,
   Box,
   Chip,
-  Typography
+  IconButton,
+  Typography,
+  Alert
 } from '@mui/material'
-import { BlogPost } from '../lib/supabase'
+import CloseIcon from '@mui/icons-material/Close'
+import { supabase, BlogPost } from '../lib/supabase'
 
 interface BlogPostFormProps {
   post?: BlogPost
@@ -20,36 +23,46 @@ interface BlogPostFormProps {
 }
 
 export default function BlogPostForm({ post, open, onClose, onSubmit }: BlogPostFormProps) {
-  const [title, setTitle] = useState(post?.title || '')
-  const [content, setContent] = useState(post?.content || '')
-  const [imageUrl, setImageUrl] = useState(post?.image_url || '')
+  const [title, setTitle] = useState('')
+  const [content, setContent] = useState('')
+  const [tags, setTags] = useState<string[]>([])
   const [newTag, setNewTag] = useState('')
-  const [tags, setTags] = useState<string[]>(post?.tags || [])
+  const [imageFile, setImageFile] = useState<File | null>(null)
+  const [imagePreview, setImagePreview] = useState<string>('')
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
+  useEffect(() => {
+    if (post) {
+      setTitle(post.title)
+      setContent(post.content)
+      setTags(post.tags)
+      setImagePreview(post.image_url)
+    } else {
+      // Reset form when creating new post
+      setTitle('')
+      setContent('')
+      setTags([])
+      setImagePreview('')
+      setImageFile(null)
+    }
+  }, [post])
 
-    try {
-      await onSubmit({
-        title,
-        content,
-        image_url: imageUrl,
-        tags,
-        author: 'Admin' // We'll get this from the auth context later
-      })
-      onClose()
-    } catch (error) {
-      console.error('Error submitting post:', error)
-    } finally {
-      setLoading(false)
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (file) {
+      setImageFile(file)
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string)
+      }
+      reader.readAsDataURL(file)
     }
   }
 
-  const handleAddTag = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && newTag.trim()) {
-      e.preventDefault()
+  const handleAddTag = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter' && newTag.trim()) {
+      event.preventDefault()
       if (!tags.includes(newTag.trim())) {
         setTags([...tags, newTag.trim()])
       }
@@ -57,17 +70,85 @@ export default function BlogPostForm({ post, open, onClose, onSubmit }: BlogPost
     }
   }
 
-  const handleDeleteTag = (tagToDelete: string) => {
-    setTags(tags.filter(tag => tag !== tagToDelete))
+  const handleRemoveTag = (tagToRemove: string) => {
+    setTags(tags.filter(tag => tag !== tagToRemove))
+  }
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault()
+    setLoading(true)
+    setError(null)
+
+    try {
+      let imageUrl = imagePreview
+
+      if (imageFile) {
+        // Upload image to Supabase Storage
+        const fileExt = imageFile.name.split('.').pop()
+        const fileName = `${Math.random()}.${fileExt}`
+        const filePath = `blog-images/${fileName}`
+
+        const { error: uploadError, data } = await supabase.storage
+          .from('blog-images')
+          .upload(filePath, imageFile)
+
+        if (uploadError) throw uploadError
+
+        // Get public URL
+        const { data: { publicUrl } } = supabase.storage
+          .from('blog-images')
+          .getPublicUrl(filePath)
+
+        imageUrl = publicUrl
+      }
+
+      await onSubmit({
+        title,
+        content,
+        image_url: imageUrl,
+        author: 'Admin', // TODO: Get from auth context
+        tags
+      })
+
+      onClose()
+    } catch (error) {
+      console.error('Error submitting post:', error)
+      setError('Failed to save post')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+    <Dialog 
+      open={open} 
+      onClose={onClose}
+      maxWidth="md"
+      fullWidth
+    >
+      <DialogTitle>
+        {post ? 'Edit Post' : 'New Post'}
+        <IconButton
+          aria-label="close"
+          onClick={onClose}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+      </DialogTitle>
       <form onSubmit={handleSubmit}>
-        <DialogTitle>
-          {post ? 'Edit Post' : 'Create New Post'}
-        </DialogTitle>
         <DialogContent>
+          {error && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {error}
+            </Alert>
+          )}
+          
           <TextField
             autoFocus
             margin="dense"
@@ -76,8 +157,8 @@ export default function BlogPostForm({ post, open, onClose, onSubmit }: BlogPost
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             required
-            disabled={loading}
           />
+
           <TextField
             margin="dense"
             label="Content"
@@ -87,16 +168,44 @@ export default function BlogPostForm({ post, open, onClose, onSubmit }: BlogPost
             value={content}
             onChange={(e) => setContent(e.target.value)}
             required
-            disabled={loading}
           />
-          <TextField
-            margin="dense"
-            label="Image URL"
-            fullWidth
-            value={imageUrl}
-            onChange={(e) => setImageUrl(e.target.value)}
-            disabled={loading}
-          />
+
+          <Box sx={{ mt: 2 }}>
+            <Typography variant="subtitle2" gutterBottom>
+              Image
+            </Typography>
+            <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+              {imagePreview && (
+                <Box
+                  component="img"
+                  src={imagePreview}
+                  alt="Preview"
+                  sx={{
+                    width: 200,
+                    height: 200,
+                    objectFit: 'cover',
+                    borderRadius: 1,
+                    border: '1px solid',
+                    borderColor: 'divider'
+                  }}
+                />
+              )}
+              <Button
+                variant="outlined"
+                component="label"
+                sx={{ mt: 1 }}
+              >
+                {imagePreview ? 'Change Image' : 'Upload Image'}
+                <input
+                  type="file"
+                  hidden
+                  accept="image/*"
+                  onChange={handleImageChange}
+                />
+              </Button>
+            </Box>
+          </Box>
+
           <Box sx={{ mt: 2 }}>
             <Typography variant="subtitle2" gutterBottom>
               Tags
@@ -106,27 +215,28 @@ export default function BlogPostForm({ post, open, onClose, onSubmit }: BlogPost
                 <Chip
                   key={tag}
                   label={tag}
-                  onDelete={() => handleDeleteTag(tag)}
-                  disabled={loading}
+                  onDelete={() => handleRemoveTag(tag)}
                 />
               ))}
             </Box>
             <TextField
               size="small"
-              label="Add tag"
+              placeholder="Add tag and press Enter"
               value={newTag}
               onChange={(e) => setNewTag(e.target.value)}
               onKeyPress={handleAddTag}
-              disabled={loading}
+              fullWidth
             />
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={onClose} disabled={loading}>
-            Cancel
-          </Button>
-          <Button type="submit" variant="contained" disabled={loading}>
-            {loading ? 'Saving...' : 'Save'}
+          <Button onClick={onClose}>Cancel</Button>
+          <Button 
+            type="submit" 
+            variant="contained" 
+            disabled={loading}
+          >
+            {loading ? 'Saving...' : (post ? 'Update' : 'Create')}
           </Button>
         </DialogActions>
       </form>
