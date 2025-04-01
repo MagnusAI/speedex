@@ -5,12 +5,10 @@ import { Box, AppBar, Toolbar, Typography, IconButton, Drawer, List, ListItem, L
 import MenuIcon from '@mui/icons-material/Menu'
 import HomeIcon from '@mui/icons-material/Home'
 import ArticleIcon from '@mui/icons-material/Article'
-import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings'
 import LogoutIcon from '@mui/icons-material/Logout'
 import { useState } from 'react'
 import BlogFeed from './components/BlogFeed'
 import Login from './pages/Login'
-import ProtectedRoute from './components/ProtectedRoute'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
 
 const theme = createTheme({
@@ -52,25 +50,17 @@ function AppContent() {
           <ListItemText primary="Blog" />
         </ListItem>
         {user && (
-          <>
-            <ListItem component="a" href="/admin">
-              <ListItemIcon>
-                <AdminPanelSettingsIcon />
-              </ListItemIcon>
-              <ListItemText primary="Admin" />
-            </ListItem>
-            <ListItem component="div" onClick={signOut}>
-              <ListItemIcon>
-                <LogoutIcon />
-              </ListItemIcon>
-              <ListItemText primary="Logout" />
-            </ListItem>
-          </>
+          <ListItem component="div" onClick={signOut}>
+            <ListItemIcon>
+              <LogoutIcon />
+            </ListItemIcon>
+            <ListItemText primary="Logout" />
+          </ListItem>
         )}
         {!user && (
           <ListItem component="a" href="/login">
             <ListItemIcon>
-              <AdminPanelSettingsIcon />
+              <ArticleIcon />
             </ListItemIcon>
             <ListItemText primary="Login" />
           </ListItem>
@@ -149,14 +139,6 @@ function AppContent() {
           <Route path="/" element={<Navigate to="/blog" replace />} />
           <Route path="/blog" element={<BlogFeed />} />
           <Route path="/login" element={<Login />} />
-          <Route
-            path="/admin"
-            element={
-              <ProtectedRoute>
-                <div>Admin Dashboard (Coming Soon)</div>
-              </ProtectedRoute>
-            }
-          />
         </Routes>
       </Box>
     </Box>
