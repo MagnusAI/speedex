@@ -18,6 +18,8 @@ import { format } from 'date-fns'
 import { BlogPost } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import BlogPostForm from './BlogPostForm'
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
+import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 
 interface BlogPostDetailProps {
   post: BlogPost
@@ -112,55 +114,27 @@ export default function BlogPostDetail({ post, open, onClose, onUpdate, onDelete
           <CloseIcon />
         </IconButton>
 
-        {images.length > 1 && (
-          <>
-            <IconButton
-              onClick={handlePreviousImage}
-              sx={{
-                position: 'absolute',
-                left: 8,
-                top: '50%',
-                transform: 'translateY(-50%)',
-                color: 'white',
-                backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                '&:hover': {
-                  backgroundColor: 'rgba(0, 0, 0, 0.7)'
-                },
-                zIndex: 1
-              }}
-            >
-              <NavigateBeforeIcon />
-            </IconButton>
-            <IconButton
-              onClick={handleNextImage}
-              sx={{
-                position: 'absolute',
-                right: 8,
-                top: '50%',
-                transform: 'translateY(-50%)',
-                color: 'white',
-                backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                '&:hover': {
-                  backgroundColor: 'rgba(0, 0, 0, 0.7)'
-                },
-                zIndex: 1
-              }}
-            >
-              <NavigateNextIcon />
-            </IconButton>
-          </>
-        )}
-
-        <Box
-          component="img"
-          src={images[currentImageIndex]}
-          alt={post.title}
-          sx={{
-            width: '100%',
-            height: { xs: '50vh', md: '70vh' },
-            objectFit: 'cover'
-          }}
-        />
+        <Box sx={{ 
+          position: 'relative', 
+          width: '100%', 
+          height: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: 'black'
+        }}>
+          <img
+            src={post.image_url}
+            alt={post.title}
+            style={{
+              maxWidth: '100%',
+              maxHeight: '100%',
+              objectFit: 'contain',
+              width: 'auto',
+              height: 'auto'
+            }}
+          />
+        </Box>
 
         <Box sx={{ p: 3 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
