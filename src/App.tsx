@@ -1,9 +1,12 @@
-import { useState } from 'react'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
-import { CssBaseline, Container, Typography, Button, Box, AppBar, Toolbar } from '@mui/material'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { CssBaseline, Container, Typography, Box, AppBar, Toolbar, IconButton, Drawer, List, ListItem, ListItemIcon, ListItemText, useTheme, useMediaQuery } from '@mui/material'
+import MenuIcon from '@mui/icons-material/Menu'
+import HomeIcon from '@mui/icons-material/Home'
+import PetsIcon from '@mui/icons-material/Pets'
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents'
+import ContactMailIcon from '@mui/icons-material/ContactMail'
+import BlogFeed from './components/BlogFeed'
+import { useState } from 'react'
 
 // Create a theme instance
 const theme = createTheme({
@@ -19,44 +22,110 @@ const theme = createTheme({
 })
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [mobileOpen, setMobileOpen] = useState(false)
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen)
+  }
+
+  const menuItems = [
+    { text: 'Home', icon: <HomeIcon />, href: '#' },
+    { text: 'Our Dogs', icon: <PetsIcon />, href: '#dogs' },
+    { text: 'Competitions', icon: <EmojiEventsIcon />, href: '#competitions' },
+    { text: 'Contact', icon: <ContactMailIcon />, href: '#contact' },
+  ]
+
+  const drawer = (
+    <Box>
+      <Toolbar>
+        <Typography variant="h6" noWrap component="div">
+          Speedex Kennel
+        </Typography>
+      </Toolbar>
+      <List>
+        {menuItems.map((item) => (
+          <ListItem key={item.text} component="a" href={item.href}>
+            <ListItemIcon>{item.icon}</ListItemIcon>
+            <ListItemText primary={item.text} />
+          </ListItem>
+        ))}
+      </List>
+    </Box>
+  )
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Box sx={{ flexGrow: 1 }}>
-        <AppBar position="static">
+      <Box sx={{ display: 'flex' }}>
+        <AppBar position="fixed">
           <Toolbar>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              Speedex
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              edge="start"
+              onClick={handleDrawerToggle}
+              sx={{ mr: 2, display: { sm: 'none' } }}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
+              Speedex Kennel
             </Typography>
           </Toolbar>
         </AppBar>
-        <Container maxWidth="sm" sx={{ mt: 4 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mb: 4 }}>
-            <a href="https://vite.dev" target="_blank">
-              <img src={viteLogo} className="logo" alt="Vite logo" />
-            </a>
-            <a href="https://react.dev" target="_blank">
-              <img src={reactLogo} className="logo react" alt="React logo" />
-            </a>
-          </Box>
-          <Typography variant="h4" component="h1" gutterBottom align="center">
-            Vite + React + MUI
-          </Typography>
-          <Box sx={{ textAlign: 'center', mt: 4 }}>
-            <Button 
-              variant="contained" 
-              onClick={() => setCount((count) => count + 1)}
-              sx={{ mb: 2 }}
+        <Box
+          component="nav"
+          sx={{ width: { sm: 240 }, flexShrink: { sm: 0 } }}
+        >
+          {isMobile ? (
+            <Drawer
+              variant="temporary"
+              open={mobileOpen}
+              onClose={handleDrawerToggle}
+              ModalProps={{
+                keepMounted: true, // Better open performance on mobile.
+              }}
+              sx={{
+                display: { xs: 'block', sm: 'none' },
+                '& .MuiDrawer-paper': { boxSizing: 'border-box', width: 240 },
+              }}
             >
-              count is {count}
-            </Button>
-            <Typography variant="body1">
-              Edit <code>src/App.tsx</code> and save to test HMR
+              {drawer}
+            </Drawer>
+          ) : (
+            <Drawer
+              variant="permanent"
+              sx={{
+                display: { xs: 'none', sm: 'block' },
+                '& .MuiDrawer-paper': { boxSizing: 'border-box', width: 240 },
+              }}
+              open
+            >
+              {drawer}
+            </Drawer>
+          )}
+        </Box>
+        <Box
+          component="main"
+          sx={{
+            flexGrow: 1,
+            p: 3,
+            width: { sm: `calc(100% - 240px)` },
+            mt: 8
+          }}
+        >
+          <Container maxWidth="lg">
+            <Typography variant="h4" component="h1" gutterBottom sx={{ mb: 4 }}>
+              Welcome to Speedex Kennel
             </Typography>
-          </Box>
-        </Container>
+            <Typography variant="subtitle1" gutterBottom sx={{ mb: 4 }}>
+              Follow our dogs' journey through daily life and competitions
+            </Typography>
+            <BlogFeed />
+          </Container>
+        </Box>
       </Box>
     </ThemeProvider>
   )
