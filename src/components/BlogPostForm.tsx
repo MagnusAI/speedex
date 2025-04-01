@@ -84,20 +84,16 @@ export default function BlogPostForm({ post, open, onClose, onSubmit }: BlogPost
 
       if (imageFile) {
         // Upload image to Supabase Storage
-        const fileExt = imageFile.name.split('.').pop()
-        const fileName = `${Math.random()}.${fileExt}`
-        const filePath = `blog-images/${fileName}`
-
-        const { error: uploadError, data } = await supabase.storage
+        const { error: uploadError } = await supabase.storage
           .from('blog-images')
-          .upload(filePath, imageFile)
+          .upload(`${Date.now()}-${imageFile.name}`, imageFile)
 
         if (uploadError) throw uploadError
 
         // Get public URL
         const { data: { publicUrl } } = supabase.storage
           .from('blog-images')
-          .getPublicUrl(filePath)
+          .getPublicUrl(`${Date.now()}-${imageFile.name}`)
 
         imageUrl = publicUrl
       }

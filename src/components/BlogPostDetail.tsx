@@ -12,14 +12,10 @@ import {
   Alert
 } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close'
-import NavigateNextIcon from '@mui/icons-material/NavigateNext'
-import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore'
 import { format } from 'date-fns'
 import { BlogPost } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import BlogPostForm from './BlogPostForm'
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
-import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 
 interface BlogPostDetailProps {
   post: BlogPost
@@ -30,23 +26,11 @@ interface BlogPostDetailProps {
 }
 
 export default function BlogPostDetail({ post, open, onClose, onUpdate, onDelete }: BlogPostDetailProps) {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [editMode, setEditMode] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
   const { user } = useAuth()
-
-  // For now, we'll use a single image. Later we can modify the database to support multiple images
-  const images = [post.image_url]
-
-  const handlePreviousImage = () => {
-    setCurrentImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1))
-  }
-
-  const handleNextImage = () => {
-    setCurrentImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1))
-  }
 
   const handleDelete = async () => {
     if (!confirm('Are you sure you want to delete this post?')) return
