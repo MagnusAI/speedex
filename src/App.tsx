@@ -50,7 +50,7 @@ function AppContent() {
           <ListItemText primary="Blog" />
         </ListItem>
         {user && (
-          <ListItem component="div" onClick={signOut}>
+          <ListItem component="button" onClick={signOut}>
             <ListItemIcon>
               <LogoutIcon />
             </ListItemIcon>

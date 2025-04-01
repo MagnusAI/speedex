@@ -101,7 +101,7 @@ export default function BlogFeed() {
     }
   }
 
-  if (loading) {
+  if (loading || !posts) {
     return (
       <Container maxWidth="lg" sx={{ py: 4 }}>
         <Box sx={{ 
@@ -159,101 +159,107 @@ export default function BlogFeed() {
         gap: 3,
         justifyContent: 'center'
       }}>
-        {posts.map((post) => (
-          <Box key={post.id} sx={{ 
-            flex: { xs: '1 1 100%', md: '1 1 calc(33.333% - 16px)' },
-            minWidth: { xs: '100%', md: '300px' }
-          }}>
-            <Card 
-              sx={{ 
-                height: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-                transition: 'transform 0.2s',
-                '&:hover': {
-                  transform: 'translateY(-4px)',
-                  boxShadow: 3
-                }
-              }}
-            >
-              <CardMedia
-                component="img"
-                height="200"
-                image={post.image_url}
-                alt={post.title}
-                sx={{ objectFit: 'cover' }}
-              />
-              <CardContent sx={{ flexGrow: 1 }}>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
+        {posts && posts.length > 0 ? (
+          posts.map((post) => (
+            <Box key={post.id} sx={{ 
+              flex: { xs: '1 1 100%', md: '1 1 calc(33.333% - 16px)' },
+              minWidth: { xs: '100%', md: '300px' }
+            }}>
+              <Card 
+                sx={{ 
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  transition: 'transform 0.2s',
+                  '&:hover': {
+                    transform: 'translateY(-4px)',
+                    boxShadow: 3
+                  }
+                }}
+              >
+                <CardMedia
+                  component="img"
+                  height="200"
+                  image={post.image_url}
+                  alt={post.title}
+                  sx={{ objectFit: 'cover' }}
+                />
+                <CardContent sx={{ flexGrow: 1 }}>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
+                    <Typography 
+                      variant="h6" 
+                      component="h2" 
+                      sx={{ 
+                        fontWeight: 'bold',
+                        fontSize: isMobile ? '1.1rem' : '1.25rem'
+                      }}
+                    >
+                      {post.title}
+                    </Typography>
+                    {user && (
+                      <Box>
+                        <IconButton 
+                          size="small" 
+                          onClick={() => {
+                            setEditingPost(post)
+                            setFormOpen(true)
+                          }}
+                        >
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton 
+                          size="small" 
+                          onClick={() => handleDeletePost(post.id)}
+                          color="error"
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </Box>
+                    )}
+                  </Box>
                   <Typography 
-                    variant="h6" 
-                    component="h2" 
-                    sx={{ 
-                      fontWeight: 'bold',
-                      fontSize: isMobile ? '1.1rem' : '1.25rem'
+                    variant="body2" 
+                    color="text.secondary" 
+                    gutterBottom
+                    sx={{ mb: 2 }}
+                  >
+                    {format(new Date(post.created_at), 'MMMM d, yyyy')} • {post.author}
+                  </Typography>
+                  <Typography 
+                    variant="body2" 
+                    color="text.secondary"
+                    sx={{
+                      display: '-webkit-box',
+                      WebkitLineClamp: 3,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden',
+                      mb: 2
                     }}
                   >
-                    {post.title}
+                    {post.content}
                   </Typography>
-                  {user && (
-                    <Box>
-                      <IconButton 
-                        size="small" 
-                        onClick={() => {
-                          setEditingPost(post)
-                          setFormOpen(true)
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                    {(post.tags || []).map((tag) => (
+                      <Chip 
+                        key={tag} 
+                        label={tag} 
+                        size="small"
+                        sx={{ 
+                          backgroundColor: theme.palette.primary.light,
+                          color: theme.palette.primary.contrastText
                         }}
-                      >
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton 
-                        size="small" 
-                        onClick={() => handleDeletePost(post.id)}
-                        color="error"
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </Box>
-                  )}
-                </Box>
-                <Typography 
-                  variant="body2" 
-                  color="text.secondary" 
-                  gutterBottom
-                  sx={{ mb: 2 }}
-                >
-                  {format(new Date(post.created_at), 'MMMM d, yyyy')} • {post.author}
-                </Typography>
-                <Typography 
-                  variant="body2" 
-                  color="text.secondary"
-                  sx={{
-                    display: '-webkit-box',
-                    WebkitLineClamp: 3,
-                    WebkitBoxOrient: 'vertical',
-                    overflow: 'hidden',
-                    mb: 2
-                  }}
-                >
-                  {post.content}
-                </Typography>
-                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                  {post.tags.map((tag) => (
-                    <Chip 
-                      key={tag} 
-                      label={tag} 
-                      size="small"
-                      sx={{ 
-                        backgroundColor: theme.palette.primary.light,
-                        color: theme.palette.primary.contrastText
-                      }}
-                    />
-                  ))}
-                </Box>
-              </CardContent>
-            </Card>
-          </Box>
-        ))}
+                      />
+                    ))}
+                  </Box>
+                </CardContent>
+              </Card>
+            </Box>
+          ))
+        ) : (
+          <Typography variant="body1" color="text.secondary" sx={{ textAlign: 'center', width: '100%' }}>
+            No blog posts found.
+          </Typography>
+        )}
       </Box>
 
       <BlogPostForm
