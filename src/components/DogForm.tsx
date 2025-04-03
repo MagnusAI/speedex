@@ -1,31 +1,25 @@
 import { useState, useEffect } from 'react'
 import {
   Box,
+  Grid,
   TextField,
   Button,
   FormControl,
   InputLabel,
   Select,
   MenuItem,
-  Typography,
   Alert,
-  SelectChangeEvent
+  CircularProgress
 } from '@mui/material'
-import { supabase } from '../lib/supabase'
 import { Dog, DogFormData } from '../types/dog'
+import { supabase } from '../lib/supabase'
 
 interface DogFormProps {
-  dog?: Dog
+  dog?: Dog | null
   onSubmit: (data: DogFormData) => Promise<void>
-  onCancel: () => void
 }
 
-const defaultFamilyTree = {
-  father: null,
-  mother: null
-}
-
-export default function DogForm({ dog, onSubmit, onCancel }: DogFormProps) {
+export default function DogForm({ dog, onSubmit }: DogFormProps) {
   const [formData, setFormData] = useState<DogFormData>({
     name: '',
     breed: '',
@@ -34,10 +28,13 @@ export default function DogForm({ dog, onSubmit, onCancel }: DogFormProps) {
     birth_date: '',
     image_url: '',
     description: '',
-    family_tree: defaultFamilyTree
+    family_tree: {
+      father: null,
+      mother: null
+    }
   })
-  const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     if (dog) {
@@ -47,151 +44,169 @@ export default function DogForm({ dog, onSubmit, onCancel }: DogFormProps) {
         gender: dog.gender,
         color: dog.color,
         birth_date: dog.birth_date,
-        image_url: dog.image_url || '',
-        description: dog.description || '',
-        family_tree: dog.family_tree || defaultFamilyTree
+        image_url: dog.image_url,
+        description: dog.description,
+        family_tree: dog.family_tree
       })
     }
   }, [dog])
 
-  async function handleSubmit(e: React.FormEvent) {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>) => {
+    const { name, value } = e.target
+    if (name) {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }))
+    }
+  }
+
+  const handleFamilyTreeChange = (parent: 'father' | 'mother', value: string | null) => {
+    setFormData(prev => ({
+      ...prev,
+      family_tree: {
+        ...prev.family_tree,
+        [parent]: value
+      }
+    }))
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
     setLoading(true)
 
     try {
       await onSubmit(formData)
-    } catch (error) {
+    } catch (err) {
       setError('Failed to save dog')
-      console.error('Error saving dog:', error)
+      console.error('Error saving dog:', err)
     } finally {
       setLoading(false)
     }
   }
 
-  function handleTextChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
-    const { name, value } = e.target
-    if (name) {
-      setFormData(prev => ({
-        ...prev,
-        [name]: value
-      }))
-    }
-  }
-
-  function handleSelectChange(e: SelectChangeEvent) {
-    const { name, value } = e.target
-    if (name) {
-      setFormData(prev => ({
-        ...prev,
-        [name]: value
-      }))
-    }
-  }
-
   return (
-    <Box component="form" onSubmit={handleSubmit} sx={{ p: 3 }}>
-      <Typography variant="h6" gutterBottom>
-        {dog ? 'Edit Dog' : 'Add New Dog'}
-      </Typography>
-
+    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
       {error && (
         <Alert severity="error" sx={{ mb: 2 }}>
           {error}
         </Alert>
       )}
 
-      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-        <Box sx={{ flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 8px)' } }}>
+      <Grid container spacing={3}>
+        <Grid item xs={12} sm={6}>
           <TextField
-            required
             fullWidth
             label="Name"
             name="name"
             value={formData.name}
-            onChange={handleTextChange}
-          />
-        </Box>
-        <Box sx={{ flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 8px)' } }}>
-          <TextField
+            onChange={handleChange}
             required
+            disabled={loading}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextField
             fullWidth
             label="Breed"
             name="breed"
             value={formData.breed}
-            onChange={handleTextChange}
+            onChange={handleChange}
+            required
+            disabled={loading}
           />
-        </Box>
-        <Box sx={{ flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 8px)' } }}>
-          <FormControl fullWidth required>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <FormControl fullWidth required disabled={loading}>
             <InputLabel>Gender</InputLabel>
             <Select
               name="gender"
               value={formData.gender}
-              onChange={handleSelectChange}
+              onChange={handleChange}
               label="Gender"
             >
               <MenuItem value="male">Male</MenuItem>
               <MenuItem value="female">Female</MenuItem>
             </Select>
           </FormControl>
-        </Box>
-        <Box sx={{ flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 8px)' } }}>
+        </Grid>
+        <Grid item xs={12} sm={6}>
           <TextField
-            required
             fullWidth
             label="Color"
             name="color"
             value={formData.color}
-            onChange={handleTextChange}
-          />
-        </Box>
-        <Box sx={{ flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 8px)' } }}>
-          <TextField
+            onChange={handleChange}
             required
+            disabled={loading}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextField
             fullWidth
-            type="date"
             label="Birth Date"
             name="birth_date"
+            type="date"
             value={formData.birth_date}
-            onChange={handleTextChange}
+            onChange={handleChange}
+            required
+            disabled={loading}
             InputLabelProps={{ shrink: true }}
           />
-        </Box>
-        <Box sx={{ flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 8px)' } }}>
+        </Grid>
+        <Grid item xs={12} sm={6}>
           <TextField
             fullWidth
             label="Image URL"
             name="image_url"
             value={formData.image_url}
-            onChange={handleTextChange}
+            onChange={handleChange}
+            disabled={loading}
           />
-        </Box>
-        <Box sx={{ flex: '1 1 100%' }}>
+        </Grid>
+        <Grid item xs={12}>
           <TextField
             fullWidth
-            multiline
-            rows={4}
             label="Description"
             name="description"
             value={formData.description}
-            onChange={handleTextChange}
+            onChange={handleChange}
+            multiline
+            rows={4}
+            disabled={loading}
           />
-        </Box>
-      </Box>
-
-      <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
-        <Button onClick={onCancel}>
-          Cancel
-        </Button>
-        <Button
-          type="submit"
-          variant="contained"
-          disabled={loading}
-        >
-          {loading ? 'Saving...' : (dog ? 'Update' : 'Create')}
-        </Button>
-      </Box>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            fullWidth
+            label="Father's Name"
+            value={formData.family_tree.father || ''}
+            onChange={(e) => handleFamilyTreeChange('father', e.target.value || null)}
+            disabled={loading}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            fullWidth
+            label="Mother's Name"
+            value={formData.family_tree.mother || ''}
+            onChange={(e) => handleFamilyTreeChange('mother', e.target.value || null)}
+            disabled={loading}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <Button
+            type="submit"
+            variant="contained"
+            size="large"
+            fullWidth
+            disabled={loading}
+          >
+            {loading ? <CircularProgress size={24} /> : 'Save Dog'}
+          </Button>
+        </Grid>
+      </Grid>
     </Box>
   )
 } 

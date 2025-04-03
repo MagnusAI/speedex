@@ -279,6 +279,7 @@ function AppContent() {
                   />
                 </ListItem>
               </List>
+              <DogList />
             </Box>
           } />
           <Route path="/blog" element={<BlogFeed />} />
