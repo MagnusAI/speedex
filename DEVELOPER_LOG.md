@@ -148,25 +148,5 @@ Required environment variables:
 - `VITE_SUPABASE_URL`
 - `VITE_SUPABASE_ANON_KEY`
 
-## Future Features
-1. Image gallery improvements
-2. Advanced filtering for dogs
-3. Search functionality
-4. Contact form
-5. Newsletter subscription
-6. Social media integration
-
-## Known Issues
-1. Hash routing warnings in development
-2. Image upload size restrictions
-3. Mobile responsiveness improvements needed
-
-## Maintenance Tasks
-1. Regular dependency updates
-2. Database backup verification
-3. Performance optimization
-4. Security audits
-5. SEO improvements
-
 ## Documentation Updates
 This log will be updated as new features are implemented or significant changes are made to the project structure or guidelines. 
