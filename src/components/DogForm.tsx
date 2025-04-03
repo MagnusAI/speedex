@@ -15,26 +15,28 @@ import { Dog, DogFormData } from '../types/dog'
 import { supabase } from '../lib/supabase'
 
 interface DogFormProps {
-  dog?: Dog | null
+  dog?: Dog
   onSubmit: (data: DogFormData) => Promise<void>
+  onCancel: () => void
 }
 
-export default function DogForm({ dog, onSubmit }: DogFormProps) {
+export default function DogForm({ dog, onSubmit, onCancel }: DogFormProps) {
   const [formData, setFormData] = useState<DogFormData>({
     name: '',
     breed: '',
-    gender: '',
+    gender: 'male',
     color: '',
+    fur_type: '',
     birth_date: '',
     image_url: '',
     description: '',
-    family_tree: {
-      father: null,
-      mother: null
-    }
+    father_id: null,
+    mother_id: null
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [imageFile, setImageFile] = useState<File | null>(null)
+  const [imagePreview, setImagePreview] = useState<string | null>(null)
 
   useEffect(() => {
     if (dog) {
@@ -43,51 +45,78 @@ export default function DogForm({ dog, onSubmit }: DogFormProps) {
         breed: dog.breed,
         gender: dog.gender,
         color: dog.color,
+        fur_type: dog.fur_type,
         birth_date: dog.birth_date,
-        image_url: dog.image_url,
-        description: dog.description,
-        family_tree: dog.family_tree
+        image_url: dog.image_url || '',
+        description: dog.description || '',
+        father_id: dog.father_id,
+        mother_id: dog.mother_id
       })
+      setImagePreview(dog.image_url)
     }
   }, [dog])
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>) => {
     const { name, value } = e.target
-    if (name) {
-      setFormData(prev => ({
-        ...prev,
-        [name]: value
-      }))
-    }
-  }
-
-  const handleFamilyTreeChange = (parent: 'father' | 'mother', value: string | null) => {
     setFormData(prev => ({
       ...prev,
-      family_tree: {
-        ...prev.family_tree,
-        [parent]: value
-      }
+      [name as keyof DogFormData]: value
     }))
+  }
+
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      setImageFile(file)
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string)
+      }
+      reader.readAsDataURL(file)
+    }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError(null)
     setLoading(true)
+    setError(null)
 
     try {
-      await onSubmit(formData)
+      let imageUrl = formData.image_url
+
+      if (imageFile) {
+        // Upload image to Supabase Storage
+        const fileExt = imageFile.name.split('.').pop()
+        const fileName = `${Math.random()}.${fileExt}`
+        const filePath = `dog-images/${fileName}`
+
+        const { error: uploadError, data } = await supabase.storage
+          .from('dogs')
+          .upload(filePath, imageFile)
+
+        if (uploadError) throw uploadError
+
+        // Get public URL
+        const { data: { publicUrl } } = supabase.storage
+          .from('dogs')
+          .getPublicUrl(filePath)
+
+        imageUrl = publicUrl
+      }
+
+      await onSubmit({
+        ...formData,
+        image_url: imageUrl
+      })
     } catch (err) {
-      setError('Failed to save dog')
-      console.error('Error saving dog:', err)
+      setError(err instanceof Error ? err.message : 'An error occurred')
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
+    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
       {error && (
         <Alert severity="error" sx={{ mb: 2 }}>
           {error}
@@ -97,33 +126,33 @@ export default function DogForm({ dog, onSubmit }: DogFormProps) {
       <Grid container spacing={3}>
         <Grid item xs={12} sm={6}>
           <TextField
+            required
             fullWidth
             label="Name"
             name="name"
             value={formData.name}
-            onChange={handleChange}
-            required
-            disabled={loading}
+            onChange={handleInputChange}
           />
         </Grid>
+
         <Grid item xs={12} sm={6}>
           <TextField
+            required
             fullWidth
             label="Breed"
             name="breed"
             value={formData.breed}
-            onChange={handleChange}
-            required
-            disabled={loading}
+            onChange={handleInputChange}
           />
         </Grid>
+
         <Grid item xs={12} sm={6}>
-          <FormControl fullWidth required disabled={loading}>
+          <FormControl fullWidth required>
             <InputLabel>Gender</InputLabel>
             <Select
               name="gender"
               value={formData.gender}
-              onChange={handleChange}
+              onChange={handleInputChange}
               label="Gender"
             >
               <MenuItem value="male">Male</MenuItem>
@@ -131,80 +160,95 @@ export default function DogForm({ dog, onSubmit }: DogFormProps) {
             </Select>
           </FormControl>
         </Grid>
+
         <Grid item xs={12} sm={6}>
           <TextField
+            required
             fullWidth
             label="Color"
             name="color"
             value={formData.color}
-            onChange={handleChange}
-            required
-            disabled={loading}
+            onChange={handleInputChange}
           />
         </Grid>
+
         <Grid item xs={12} sm={6}>
           <TextField
+            required
             fullWidth
+            label="Fur Type"
+            name="fur_type"
+            value={formData.fur_type}
+            onChange={handleInputChange}
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={6}>
+          <TextField
+            required
+            fullWidth
+            type="date"
             label="Birth Date"
             name="birth_date"
-            type="date"
             value={formData.birth_date}
-            onChange={handleChange}
-            required
-            disabled={loading}
+            onChange={handleInputChange}
             InputLabelProps={{ shrink: true }}
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            fullWidth
-            label="Image URL"
-            name="image_url"
-            value={formData.image_url}
-            onChange={handleChange}
-            disabled={loading}
-          />
+
+        <Grid item xs={12}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <TextField
+              fullWidth
+              type="file"
+              label="Dog Photo"
+              onChange={handleImageChange}
+              InputLabelProps={{ shrink: true }}
+              inputProps={{ accept: 'image/*' }}
+            />
+            {imagePreview && (
+              <Box
+                component="img"
+                src={imagePreview}
+                alt="Dog preview"
+                sx={{
+                  maxWidth: '100%',
+                  maxHeight: 200,
+                  objectFit: 'contain',
+                  border: '1px solid #ddd',
+                  borderRadius: 1,
+                  p: 1
+                }}
+              />
+            )}
+          </Box>
         </Grid>
+
         <Grid item xs={12}>
           <TextField
             fullWidth
+            multiline
+            rows={4}
             label="Description"
             name="description"
             value={formData.description}
-            onChange={handleChange}
-            multiline
-            rows={4}
-            disabled={loading}
+            onChange={handleInputChange}
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            fullWidth
-            label="Father's Name"
-            value={formData.family_tree.father || ''}
-            onChange={(e) => handleFamilyTreeChange('father', e.target.value || null)}
-            disabled={loading}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            fullWidth
-            label="Mother's Name"
-            value={formData.family_tree.mother || ''}
-            onChange={(e) => handleFamilyTreeChange('mother', e.target.value || null)}
-            disabled={loading}
-          />
-        </Grid>
+
         <Grid item xs={12}>
-          <Button
-            type="submit"
-            variant="contained"
-            size="large"
-            fullWidth
-            disabled={loading}
-          >
-            {loading ? <CircularProgress size={24} /> : 'Save Dog'}
-          </Button>
+          <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
+            <Button onClick={onCancel}>
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              variant="contained"
+              disabled={loading}
+            >
+              {loading ? <CircularProgress size={24} /> : dog ? 'Update Dog' : 'Add Dog'}
+            </Button>
+          </Box>
         </Grid>
       </Grid>
     </Box>
