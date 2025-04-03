@@ -1,19 +1,32 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
-import { ThemeProvider, createTheme } from '@mui/material/styles'
-import CssBaseline from '@mui/material/CssBaseline'
-import { Box, AppBar, Toolbar, Typography, IconButton, Drawer, List, ListItem, ListItemIcon, ListItemText, useMediaQuery, useTheme as useMuiTheme } from '@mui/material'
+import { useState } from 'react'
+import { 
+  AppBar, 
+  Toolbar, 
+  Typography, 
+  IconButton, 
+  Drawer, 
+  List, 
+  ListItemButton,
+  ListItemIcon, 
+  ListItemText,
+  Box,
+  useTheme,
+  useMediaQuery,
+  ThemeProvider,
+  createTheme,
+  CssBaseline
+} from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
 import HomeIcon from '@mui/icons-material/Home'
+import PetsIcon from '@mui/icons-material/Pets'
 import ArticleIcon from '@mui/icons-material/Article'
-import LogoutIcon from '@mui/icons-material/Logout'
-import { useState } from 'react'
+import { HashRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import BlogFeed from './components/BlogFeed'
-import Login from './pages/Login'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
 
+// Create theme instance
 const theme = createTheme({
   palette: {
-    mode: 'light',
     primary: {
       main: '#1976d2',
     },
@@ -23,50 +36,51 @@ const theme = createTheme({
   },
 })
 
+const drawerWidth = 240
+
 function AppContent() {
   const [mobileOpen, setMobileOpen] = useState(false)
-  const { user, signOut } = useAuth()
-  const muiTheme = useMuiTheme()
-  const isMobile = useMediaQuery(muiTheme.breakpoints.down('sm'))
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+  const navigate = useNavigate()
+  const location = useLocation()
+  const { user } = useAuth()
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen)
   }
 
+  const menuItems = [
+    { text: 'Home', icon: <HomeIcon />, path: '/' },
+    { text: 'Our Dogs', icon: <PetsIcon />, path: '/dogs' },
+    { text: 'Blog', icon: <ArticleIcon />, path: '/blog' },
+  ]
+
   const drawer = (
-    <div>
-      <Toolbar />
+    <Box>
+      <Toolbar>
+        <Typography variant="h6" noWrap component="div">
+          Speedex
+        </Typography>
+      </Toolbar>
       <List>
-        <ListItem component="a" href="/">
-          <ListItemIcon>
-            <HomeIcon />
-          </ListItemIcon>
-          <ListItemText primary="Home" />
-        </ListItem>
-        <ListItem component="a" href="/blog">
-          <ListItemIcon>
-            <ArticleIcon />
-          </ListItemIcon>
-          <ListItemText primary="Blog" />
-        </ListItem>
-        {user && (
-          <ListItem component="button" onClick={signOut}>
+        {menuItems.map((item) => (
+          <ListItemButton
+            key={item.text} 
+            onClick={() => {
+              navigate(item.path)
+              if (isMobile) setMobileOpen(false)
+            }}
+            selected={location.pathname === item.path}
+          >
             <ListItemIcon>
-              <LogoutIcon />
+              {item.icon}
             </ListItemIcon>
-            <ListItemText primary="Logout" />
-          </ListItem>
-        )}
-        {!user && (
-          <ListItem component="a" href="/login">
-            <ListItemIcon>
-              <ArticleIcon />
-            </ListItemIcon>
-            <ListItemText primary="Login" />
-          </ListItem>
-        )}
+            <ListItemText primary={item.text} />
+          </ListItemButton>
+        ))}
       </List>
-    </div>
+    </Box>
   )
 
   return (
@@ -75,8 +89,8 @@ function AppContent() {
       <AppBar
         position="fixed"
         sx={{
-          width: { sm: `calc(100% - ${240}px)` },
-          ml: { sm: `${240}px` },
+          width: { sm: `calc(100% - ${drawerWidth}px)` },
+          ml: { sm: `${drawerWidth}px` },
         }}
       >
         <Toolbar>
@@ -90,13 +104,13 @@ function AppContent() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            Speedex Kennels
+            {menuItems.find(item => item.path === location.pathname)?.text || 'Speedex'}
           </Typography>
         </Toolbar>
       </AppBar>
       <Box
         component="nav"
-        sx={{ width: { sm: 240 }, flexShrink: { sm: 0 } }}
+        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
       >
         {isMobile ? (
           <Drawer
@@ -108,7 +122,7 @@ function AppContent() {
             }}
             sx={{
               display: { xs: 'block', sm: 'none' },
-              '& .MuiDrawer-paper': { boxSizing: 'border-box', width: 240 },
+              '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
             }}
           >
             {drawer}
@@ -118,7 +132,7 @@ function AppContent() {
             variant="permanent"
             sx={{
               display: { xs: 'none', sm: 'block' },
-              '& .MuiDrawer-paper': { boxSizing: 'border-box', width: 240 },
+              '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
             }}
             open
           >
@@ -128,24 +142,42 @@ function AppContent() {
       </Box>
       <Box
         component="main"
-        sx={{
-          flexGrow: 1,
-          p: 3,
-          width: { sm: `calc(100% - ${240}px)` },
-          mt: '64px'
+        sx={{ 
+          flexGrow: 1, 
+          p: 3, 
+          width: { sm: `calc(100% - ${drawerWidth}px)` },
+          mt: 8
         }}
       >
         <Routes>
-          <Route path="/" element={<Navigate to="/blog" replace />} />
+          <Route path="/" element={
+            <Box>
+              <Typography variant="h4" component="h1" gutterBottom>
+                Welcome to Speedex
+              </Typography>
+              <Typography variant="body1" paragraph>
+                Your trusted partner in German Shepherd breeding and training.
+              </Typography>
+            </Box>
+          } />
+          <Route path="/dogs" element={
+            <Box>
+              <Typography variant="h4" component="h1" gutterBottom>
+                Our Dogs
+              </Typography>
+              <Typography variant="body1" paragraph>
+                Meet our exceptional German Shepherds.
+              </Typography>
+            </Box>
+          } />
           <Route path="/blog" element={<BlogFeed />} />
-          <Route path="/login" element={<Login />} />
         </Routes>
       </Box>
     </Box>
   )
 }
 
-function App() {
+export default function App() {
   return (
     <ThemeProvider theme={theme}>
       <AuthProvider>
@@ -156,5 +188,3 @@ function App() {
     </ThemeProvider>
   )
 }
-
-export default App
