@@ -1,32 +1,67 @@
--- Create a new storage bucket for dog images
-INSERT INTO storage.buckets (id, name, public)
-VALUES ('dogs', 'dogs', true);
+-- Create a new storage bucket for dog images if it doesn't exist
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM storage.buckets WHERE id = 'dogs'
+  ) THEN
+    INSERT INTO storage.buckets (id, name, public)
+    VALUES ('dogs', 'dogs', true);
+  END IF;
+END $$;
 
--- Set up storage policy to allow public read access
-CREATE POLICY "Public Access"
-ON storage.objects FOR SELECT
-USING (bucket_id = 'dogs');
+-- Set up storage policies if they don't exist
+DO $$
+BEGIN
+  -- Public read access policy
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies 
+    WHERE tablename = 'objects' 
+    AND policyname = 'Public Access'
+  ) THEN
+    CREATE POLICY "Public Access"
+    ON storage.objects FOR SELECT
+    USING (bucket_id = 'dogs');
+  END IF;
 
--- Set up storage policy to allow authenticated users to upload images
-CREATE POLICY "Authenticated users can upload images"
-ON storage.objects FOR INSERT
-WITH CHECK (
-  bucket_id = 'dogs' 
-  AND auth.role() = 'authenticated'
-);
+  -- Upload policy
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies 
+    WHERE tablename = 'objects' 
+    AND policyname = 'Authenticated users can upload images'
+  ) THEN
+    CREATE POLICY "Authenticated users can upload images"
+    ON storage.objects FOR INSERT
+    WITH CHECK (
+      bucket_id = 'dogs' 
+      AND auth.role() = 'authenticated'
+    );
+  END IF;
 
--- Set up storage policy to allow authenticated users to update their own images
-CREATE POLICY "Authenticated users can update their own images"
-ON storage.objects FOR UPDATE
-USING (
-  bucket_id = 'dogs' 
-  AND auth.role() = 'authenticated'
-);
+  -- Update policy
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies 
+    WHERE tablename = 'objects' 
+    AND policyname = 'Authenticated users can update their own images'
+  ) THEN
+    CREATE POLICY "Authenticated users can update their own images"
+    ON storage.objects FOR UPDATE
+    USING (
+      bucket_id = 'dogs' 
+      AND auth.role() = 'authenticated'
+    );
+  END IF;
 
--- Set up storage policy to allow authenticated users to delete their own images
-CREATE POLICY "Authenticated users can delete their own images"
-ON storage.objects FOR DELETE
-USING (
-  bucket_id = 'dogs' 
-  AND auth.role() = 'authenticated'
-); 
+  -- Delete policy
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies 
+    WHERE tablename = 'objects' 
+    AND policyname = 'Authenticated users can delete their own images'
+  ) THEN
+    CREATE POLICY "Authenticated users can delete their own images"
+    ON storage.objects FOR DELETE
+    USING (
+      bucket_id = 'dogs' 
+      AND auth.role() = 'authenticated'
+    );
+  END IF;
+END $$; 
