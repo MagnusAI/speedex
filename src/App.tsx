@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { 
   AppBar, 
   Toolbar, 
@@ -15,16 +15,32 @@ import {
   useMediaQuery,
   ThemeProvider,
   createTheme,
-  CssBaseline
+  CssBaseline,
+  Divider,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  TextField,
+  Alert,
+  CircularProgress
 } from '@mui/material'
-import MenuIcon from '@mui/icons-material/Menu'
-import HomeIcon from '@mui/icons-material/Home'
-import PetsIcon from '@mui/icons-material/Pets'
-import ArticleIcon from '@mui/icons-material/Article'
-import EmailIcon from '@mui/icons-material/Email'
+import {
+  Menu as MenuIcon,
+  Home as HomeIcon,
+  Pets as PetsIcon,
+  Article as ArticleIcon,
+  Logout as LogoutIcon,
+  Login as LoginIcon,
+  Email as EmailIcon
+} from '@mui/icons-material'
 import { HashRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import BlogFeed from './components/BlogFeed'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
+import Home from './components/Home'
+import DogList from './components/DogList'
+import Login from './components/Login'
 
 // Create theme instance
 const theme = createTheme({
@@ -46,7 +62,7 @@ function AppContent() {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
   const navigate = useNavigate()
   const location = useLocation()
-  const { user } = useAuth()
+  const { user, handleSignOut } = useAuth()
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen)
@@ -66,21 +82,59 @@ function AppContent() {
         </Typography>
       </Toolbar>
       <List>
-        {menuItems.map((item) => (
+        <ListItemButton
+          component="button"
+          onClick={() => navigate('/')}
+          selected={location.hash === '#/'}
+        >
+          <ListItemIcon>
+            <HomeIcon />
+          </ListItemIcon>
+          <ListItemText primary="Home" />
+        </ListItemButton>
+        <ListItemButton
+          component="button"
+          onClick={() => navigate('/dogs')}
+          selected={location.hash === '#/dogs'}
+        >
+          <ListItemIcon>
+            <PetsIcon />
+          </ListItemIcon>
+          <ListItemText primary="Our Dogs" />
+        </ListItemButton>
+        <ListItemButton
+          component="button"
+          onClick={() => navigate('/blog')}
+          selected={location.hash === '#/blog'}
+        >
+          <ListItemIcon>
+            <ArticleIcon />
+          </ListItemIcon>
+          <ListItemText primary="Blog" />
+        </ListItemButton>
+        <Divider />
+        {user ? (
           <ListItemButton
-            key={item.text} 
-            onClick={() => {
-              navigate(item.path)
-              if (isMobile) setMobileOpen(false)
-            }}
-            selected={location.pathname === item.path}
+            component="button"
+            onClick={handleSignOut}
           >
             <ListItemIcon>
-              {item.icon}
+              <LogoutIcon />
             </ListItemIcon>
-            <ListItemText primary={item.text} />
+            <ListItemText primary="Sign Out" />
           </ListItemButton>
-        ))}
+        ) : (
+          <ListItemButton
+            component="button"
+            onClick={() => navigate('/login')}
+            selected={location.hash === '#/login'}
+          >
+            <ListItemIcon>
+              <LoginIcon />
+            </ListItemIcon>
+            <ListItemText primary="Sign In" />
+          </ListItemButton>
+        )}
       </List>
     </Box>
   )
@@ -228,6 +282,7 @@ function AppContent() {
             </Box>
           } />
           <Route path="/blog" element={<BlogFeed />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
       </Box>
     </Box>
