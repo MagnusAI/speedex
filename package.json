@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "db:login": "supabase login",
     "db:link": "supabase link",
-    "db:push": "supabase db push"
+    "db:push": "supabase db push",
+    "db:pull": "supabase db pull"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
