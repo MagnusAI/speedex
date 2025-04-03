@@ -1,18 +1,35 @@
 import { Dog } from './dog'
 
+export interface BlogPostImage {
+  id: string;
+  blog_post_id: string;
+  image_url: string;
+  caption?: string;
+  display_order: number;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface BlogPost {
-  id: string
-  title: string
-  content: string
-  image_url: string | null
-  tags: string[]
-  created_at: string
-  updated_at: string
+  id: string;
+  title: string;
+  content: string;
+  blog_post_images: BlogPostImage[];
+  tags: string[];
+  author: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface BlogPostFormData {
-  title: string
-  content: string
-  image_url: string | null
-  tags: string[]
+  title: string;
+  content: string;
+  images: {
+    file?: File;
+    url?: string;
+    caption?: string;
+    display_order: number;
+  }[];
+  tags: string[];
+  author?: string;
 } 

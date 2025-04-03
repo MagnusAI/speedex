@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   Dialog,
   DialogTitle,
@@ -13,12 +13,19 @@ import {
   Alert,
   CircularProgress,
   Autocomplete,
-  Stack
+  Stack,
+  Paper,
+  Grid,
+  Card,
+  CardMedia,
+  CardContent,
+  CardActions,
+  TextareaAutosize
 } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close'
 import { supabase } from '../lib/supabase'
 import { BlogPost, BlogPostFormData } from '../types/blog'
-import { Dog } from '../types/dog'
+import { Delete as DeleteIcon, Edit as EditIcon, Add as AddIcon, ArrowUpward as ArrowUpwardIcon, ArrowDownward as ArrowDownwardIcon } from '@mui/icons-material'
 
 interface BlogPostFormProps {
   post?: BlogPost
@@ -31,88 +38,53 @@ export default function BlogPostForm({ post, open, onClose, onSubmit }: BlogPost
   const [formData, setFormData] = useState<BlogPostFormData>({
     title: '',
     content: '',
-    image_url: null,
-    dog_ids: [],
+    images: [],
     tags: []
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [dogs, setDogs] = useState<Dog[]>([])
-  const [selectedDogs, setSelectedDogs] = useState<Dog[]>([])
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [newTag, setNewTag] = useState('')
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
+  const [openImageDialog, setOpenImageDialog] = useState(false)
+  const [editingImageIndex, setEditingImageIndex] = useState<number | null>(null)
+  const [imageCaption, setImageCaption] = useState('')
+  const [imageUrl, setImageUrl] = useState('')
 
   useEffect(() => {
     if (post) {
       setFormData({
         title: post.title,
         content: post.content,
-        image_url: post.image_url,
-        dog_ids: post.dogs?.map((dog: Dog) => dog.id) || [],
+        images: post.blog_post_images.map(img => ({
+          url: img.image_url,
+          caption: img.caption,
+          display_order: img.display_order
+        })),
         tags: post.tags || []
       })
-      setSelectedDogs(post.dogs || [])
       setSelectedTags(post.tags || [])
-      setImagePreview(post.image_url)
+      setImagePreview(post.blog_post_images[0]?.image_url)
     } else {
       // Reset form when creating new post
       setFormData({
         title: '',
         content: '',
-        image_url: null,
-        dog_ids: [],
+        images: [],
         tags: []
       })
-      setSelectedDogs([])
       setSelectedTags([])
       setImagePreview(null)
       setImageFile(null)
     }
   }, [post])
 
-  useEffect(() => {
-    fetchDogs()
-  }, [])
-
-  const fetchDogs = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('dogs')
-        .select('*')
-        .order('name')
-
-      if (error) throw error
-      setDogs(data || [])
-    } catch (err) {
-      console.error('Error fetching dogs:', err)
-      setError('Failed to fetch dogs')
-    }
-  }
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setFormData(prev => ({
       ...prev,
       [name]: value
-    }))
-  }
-
-  const handleDogChange = (_: any, newValue: Dog[]) => {
-    setSelectedDogs(newValue)
-    setFormData(prev => ({
-      ...prev,
-      dog_ids: newValue.map(dog => dog.id)
-    }))
-    
-    // Add dog names as tags
-    const dogTags = newValue.map(dog => dog.name)
-    const existingTags = selectedTags.filter(tag => !dogTags.includes(tag))
-    setSelectedTags([...existingTags, ...dogTags])
-    setFormData(prev => ({
-      ...prev,
-      tags: [...existingTags, ...dogTags]
     }))
   }
 
@@ -147,8 +119,68 @@ export default function BlogPostForm({ post, open, onClose, onSubmit }: BlogPost
     setImagePreview(URL.createObjectURL(file))
     setFormData(prev => ({
       ...prev,
-      image_url: null // Reset image_url as we'll upload the file
+      images: [...prev.images, { url: undefined, caption: '', display_order: prev.images.length }]
     }))
+  }
+
+  const handleImageUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setImageUrl(e.target.value)
+    setImageFile(null)
+  }
+
+  const handleAddImage = () => {
+    if (imageFile || imageUrl) {
+      const newImage = {
+        file: imageFile || undefined,
+        url: imageUrl || undefined,
+        caption: imageCaption,
+        display_order: formData.images.length
+      }
+
+      if (editingImageIndex !== null) {
+        const updatedImages = [...formData.images]
+        updatedImages[editingImageIndex] = newImage
+        setFormData({ ...formData, images: updatedImages })
+      } else {
+        setFormData({ ...formData, images: [...formData.images, newImage] })
+      }
+
+      setOpenImageDialog(false)
+      setImageFile(null)
+      setImageUrl('')
+      setImageCaption('')
+      setEditingImageIndex(null)
+    }
+  }
+
+  const handleEditImage = (index: number) => {
+    const image = formData.images[index]
+    setImageUrl(image.url || '')
+    setImageCaption(image.caption || '')
+    setEditingImageIndex(index)
+    setOpenImageDialog(true)
+  }
+
+  const handleDeleteImage = (index: number) => {
+    const updatedImages = formData.images.filter((_, i) => i !== index)
+    setFormData({ ...formData, images: updatedImages })
+  }
+
+  const handleMoveImage = (index: number, direction: 'up' | 'down') => {
+    const newIndex = direction === 'up' ? index - 1 : index + 1
+    if (newIndex < 0 || newIndex >= formData.images.length) return
+
+    const updatedImages = [...formData.images]
+    const [movedImage] = updatedImages.splice(index, 1)
+    updatedImages.splice(newIndex, 0, movedImage)
+
+    // Update display order
+    const reorderedImages = updatedImages.map((img, i) => ({
+      ...img,
+      display_order: i
+    }))
+
+    setFormData({ ...formData, images: reorderedImages })
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -157,30 +189,36 @@ export default function BlogPostForm({ post, open, onClose, onSubmit }: BlogPost
     setError(null)
 
     try {
-      let imageUrl = formData.image_url
+      // Upload all images that have files
+      const uploadedImages = await Promise.all(
+        formData.images.map(async (img) => {
+          if (img.file) {
+            const fileExt = img.file.name.split('.').pop()
+            const fileName = `${Math.random()}.${fileExt}`
+            const filePath = `blog-images/${fileName}`
 
-      // Upload image if a new file was selected
-      if (imageFile) {
-        const fileExt = imageFile.name.split('.').pop()
-        const fileName = `${Math.random()}.${fileExt}`
-        const filePath = `blog-images/${fileName}`
+            const { error: uploadError } = await supabase.storage
+              .from('blog-images')
+              .upload(filePath, img.file)
 
-        const { error: uploadError, data } = await supabase.storage
-          .from('blog-images')
-          .upload(filePath, imageFile)
+            if (uploadError) throw uploadError
 
-        if (uploadError) throw uploadError
+            const { data: { publicUrl } } = supabase.storage
+              .from('blog-images')
+              .getPublicUrl(filePath)
 
-        const { data: { publicUrl } } = supabase.storage
-          .from('blog-images')
-          .getPublicUrl(filePath)
-
-        imageUrl = publicUrl
-      }
+            return {
+              ...img,
+              url: publicUrl
+            }
+          }
+          return img
+        })
+      )
 
       await onSubmit({
         ...formData,
-        image_url: imageUrl
+        images: uploadedImages
       })
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred')
@@ -230,59 +268,6 @@ export default function BlogPostForm({ post, open, onClose, onSubmit }: BlogPost
             required
           />
 
-          <Stack spacing={2} sx={{ my: 2 }}>
-            <Autocomplete
-              multiple
-              options={dogs}
-              getOptionLabel={(option) => option.name}
-              value={selectedDogs}
-              onChange={handleDogChange}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Related Dogs"
-                  placeholder="Select dogs"
-                />
-              )}
-              renderTags={(value, getTagProps) =>
-                value.map((option, index) => (
-                  <Chip
-                    label={option.name}
-                    {...getTagProps({ index })}
-                    key={option.id}
-                  />
-                ))
-              }
-            />
-
-            <Autocomplete
-              multiple
-              freeSolo
-              options={[]}
-              value={selectedTags}
-              onChange={handleTagChange}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Tags"
-                  placeholder="Add tags"
-                  onKeyDown={handleAddTag}
-                  value={newTag}
-                  onChange={(e) => setNewTag(e.target.value)}
-                />
-              )}
-              renderTags={(value, getTagProps) =>
-                value.map((option, index) => (
-                  <Chip
-                    label={option}
-                    {...getTagProps({ index })}
-                    key={option}
-                  />
-                ))
-              }
-            />
-          </Stack>
-
           <TextField
             margin="dense"
             label="Content"
@@ -296,32 +281,83 @@ export default function BlogPostForm({ post, open, onClose, onSubmit }: BlogPost
           />
 
           <Box sx={{ mb: 2 }}>
-            <input
-              accept="image/*"
-              style={{ display: 'none' }}
-              id="image-upload"
-              type="file"
-              onChange={handleImageChange}
-            />
-            <label htmlFor="image-upload">
-              <Button
-                variant="outlined"
-                component="span"
-                sx={{ mb: 1 }}
-              >
-                Upload Image
-              </Button>
-            </label>
-            {imagePreview && (
-              <Box sx={{ mt: 1 }}>
-                <img
-                  src={imagePreview}
-                  alt="Preview"
-                  style={{ maxWidth: '100%', maxHeight: '200px' }}
-                />
-              </Box>
-            )}
+            <Typography variant="h6" gutterBottom>
+              Images
+            </Typography>
+            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mb: 2 }}>
+              {formData.images.map((image, index) => (
+                <Card key={index} sx={{ width: 200 }}>
+                  <CardMedia
+                    component="img"
+                    height="140"
+                    image={image.url || (image.file ? URL.createObjectURL(image.file) : '')}
+                    alt={image.caption || 'Blog post image'}
+                  />
+                  <CardContent>
+                    <Typography variant="body2" color="text.secondary">
+                      {image.caption || 'No caption'}
+                    </Typography>
+                  </CardContent>
+                  <CardActions>
+                    <IconButton 
+                      size="small" 
+                      onClick={() => handleMoveImage(index, 'up')}
+                      disabled={index === 0}
+                    >
+                      <ArrowUpwardIcon />
+                    </IconButton>
+                    <IconButton 
+                      size="small" 
+                      onClick={() => handleMoveImage(index, 'down')}
+                      disabled={index === formData.images.length - 1}
+                    >
+                      <ArrowDownwardIcon />
+                    </IconButton>
+                    <IconButton size="small" onClick={() => handleEditImage(index)}>
+                      <EditIcon />
+                    </IconButton>
+                    <IconButton size="small" onClick={() => handleDeleteImage(index)}>
+                      <DeleteIcon />
+                    </IconButton>
+                  </CardActions>
+                </Card>
+              ))}
+            </Box>
+            <Button
+              startIcon={<AddIcon />}
+              onClick={() => setOpenImageDialog(true)}
+              variant="outlined"
+            >
+              Add Image
+            </Button>
           </Box>
+
+          <Autocomplete
+            multiple
+            freeSolo
+            options={[]}
+            value={selectedTags}
+            onChange={handleTagChange}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Tags"
+                placeholder="Add tags"
+                onKeyDown={handleAddTag}
+                value={newTag}
+                onChange={(e) => setNewTag(e.target.value)}
+              />
+            )}
+            renderTags={(value, getTagProps) =>
+              value.map((option, index) => (
+                <Chip
+                  label={option}
+                  {...getTagProps({ index })}
+                  key={option}
+                />
+              ))
+            }
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={onClose}>Cancel</Button>
@@ -334,6 +370,53 @@ export default function BlogPostForm({ post, open, onClose, onSubmit }: BlogPost
           </Button>
         </DialogActions>
       </form>
+
+      <Dialog open={openImageDialog} onClose={() => setOpenImageDialog(false)}>
+        <DialogTitle>
+          {editingImageIndex !== null ? 'Edit Image' : 'Add Image'}
+        </DialogTitle>
+        <DialogContent>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
+            <TextField
+              label="Image URL"
+              value={imageUrl}
+              onChange={handleImageUrlChange}
+              fullWidth
+              disabled={!!imageFile}
+            />
+            <Button
+              variant="outlined"
+              component="label"
+              disabled={!!imageUrl}
+            >
+              Upload File
+              <input
+                type="file"
+                hidden
+                accept="image/*"
+                onChange={handleImageChange}
+              />
+            </Button>
+            {imageFile && (
+              <Typography variant="body2">
+                Selected file: {imageFile.name}
+              </Typography>
+            )}
+            <TextField
+              label="Caption"
+              value={imageCaption}
+              onChange={(e) => setImageCaption(e.target.value)}
+              fullWidth
+            />
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenImageDialog(false)}>Cancel</Button>
+          <Button onClick={handleAddImage} variant="contained">
+            {editingImageIndex !== null ? 'Update' : 'Add'}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Dialog>
   )
 } 
