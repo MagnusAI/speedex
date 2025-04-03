@@ -1,4 +1,4 @@
- # Development Guidelines
+# Development Guidelines
 
 ## Code Organization
 
@@ -190,3 +190,22 @@
 - Include reproduction steps
 - Label issues appropriately
 - Track issue resolution
+
+## Additional Guidelines
+- Create development logs ONLY after all changes are implemented and verified working
+- Development logs should be the final step in any feature implementation
+- Verify the following before creating logs:
+  - All new components are created and imported correctly
+  - All routes are properly configured
+  - The application builds without errors
+  - All new features are tested and working
+  - No linter errors are present
+  - All dependencies are properly installed
+- Include comprehensive details in logs:
+  - Description of changes
+  - Code snippets where relevant
+  - Testing results
+  - Known issues
+  - Next steps
+- Update existing logs when making changes to documented features
+- Keep logs in chronological order with proper timestamps
