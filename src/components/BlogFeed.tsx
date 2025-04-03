@@ -18,10 +18,12 @@ import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import AddIcon from '@mui/icons-material/Add'
 import { format } from 'date-fns'
-import { supabase, BlogPost } from '../lib/supabase'
+import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import BlogPostForm from './BlogPostForm'
 import BlogPostDetail from './BlogPostDetail'
+import { createBlogPost, updateBlogPost, deleteBlogPost, getBlogPosts } from '../services/blog'
+import { BlogPost, BlogPostFormData } from '../types/blog'
 
 export default function BlogFeed() {
   const [posts, setPosts] = useState<BlogPost[]>([])
@@ -40,13 +42,8 @@ export default function BlogFeed() {
 
   async function fetchPosts() {
     try {
-      const { data, error } = await supabase
-        .from('blog_posts')
-        .select('*')
-        .order('created_at', { ascending: false })
-
-      if (error) throw error
-      setPosts(data || [])
+      const data = await getBlogPosts()
+      setPosts(data)
     } catch (error) {
       console.error('Error fetching posts:', error)
       setError('Failed to load posts')
@@ -55,13 +52,9 @@ export default function BlogFeed() {
     }
   }
 
-  const handleCreatePost = async (post: Omit<BlogPost, 'id' | 'created_at'>) => {
+  const handleCreatePost = async (post: BlogPostFormData) => {
     try {
-      const { error } = await supabase
-        .from('blog_posts')
-        .insert([post])
-
-      if (error) throw error
+      await createBlogPost(post)
       await fetchPosts()
     } catch (error) {
       console.error('Error creating post:', error)
@@ -69,16 +62,11 @@ export default function BlogFeed() {
     }
   }
 
-  const handleUpdatePost = async (post: Omit<BlogPost, 'id' | 'created_at'>) => {
+  const handleUpdatePost = async (post: BlogPostFormData) => {
     if (!editingPost) return
 
     try {
-      const { error } = await supabase
-        .from('blog_posts')
-        .update(post)
-        .eq('id', editingPost.id)
-
-      if (error) throw error
+      await updateBlogPost(editingPost.id, post)
       await fetchPosts()
     } catch (error) {
       console.error('Error updating post:', error)
@@ -90,12 +78,7 @@ export default function BlogFeed() {
     if (!confirm('Are you sure you want to delete this post?')) return
 
     try {
-      const { error } = await supabase
-        .from('blog_posts')
-        .delete()
-        .eq('id', id)
-
-      if (error) throw error
+      await deleteBlogPost(id)
       await fetchPosts()
     } catch (error) {
       console.error('Error deleting post:', error)
@@ -166,7 +149,7 @@ export default function BlogFeed() {
             flex: { xs: '1 1 100%', md: '1 1 calc(33.333% - 16px)' },
             minWidth: { xs: '100%', md: '300px' }
           }}>
-            <Card 
+            <Card
               sx={{ 
                 height: '100%',
                 display: 'flex',
@@ -180,13 +163,15 @@ export default function BlogFeed() {
               }}
               onClick={() => setSelectedPost(post)}
             >
-              <CardMedia
-                component="img"
-                height="200"
-                image={post.image_url}
-                alt={post.title}
-                sx={{ objectFit: 'cover' }}
-              />
+              {post.image_url && (
+                <CardMedia
+                  component="img"
+                  height="200"
+                  image={post.image_url}
+                  alt={post.title}
+                  sx={{ objectFit: 'cover' }}
+                />
+              )}
               <CardContent sx={{ flexGrow: 1 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
                   <Typography 
@@ -268,7 +253,7 @@ export default function BlogFeed() {
           setFormOpen(false)
           setEditingPost(undefined)
         }}
-        onSubmit={async (post: Omit<BlogPost, 'id' | 'created_at'>) => {
+        onSubmit={async (post: BlogPostFormData) => {
           if (editingPost) {
             await handleUpdatePost(post)
           } else {

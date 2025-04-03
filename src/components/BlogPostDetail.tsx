@@ -13,15 +13,16 @@ import {
 } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close'
 import { format } from 'date-fns'
-import { BlogPost } from '../lib/supabase'
+import { BlogPost } from '../types/blog'
 import { useAuth } from '../contexts/AuthContext'
 import BlogPostForm from './BlogPostForm'
+import { BlogPostFormData } from '../types/blog'
 
 interface BlogPostDetailProps {
   post: BlogPost
   open: boolean
   onClose: () => void
-  onUpdate: (post: Omit<BlogPost, 'id' | 'created_at'>) => Promise<void>
+  onUpdate: (post: BlogPostFormData) => Promise<void>
   onDelete: (id: string) => Promise<void>
 }
 
@@ -98,27 +99,29 @@ export default function BlogPostDetail({ post, open, onClose, onUpdate, onDelete
           <CloseIcon />
         </IconButton>
 
-        <Box sx={{ 
-          position: 'relative', 
-          width: '100%', 
-          height: '100%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          backgroundColor: 'black'
-        }}>
-          <img
-            src={post.image_url}
-            alt={post.title}
-            style={{
-              maxWidth: '100%',
-              maxHeight: '100%',
-              objectFit: 'contain',
-              width: 'auto',
-              height: 'auto'
-            }}
-          />
-        </Box>
+        {post.image_url && (
+          <Box sx={{ 
+            position: 'relative', 
+            width: '100%', 
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: 'black'
+          }}>
+            <img
+              src={post.image_url}
+              alt={post.title}
+              style={{
+                maxWidth: '100%',
+                maxHeight: '100%',
+                objectFit: 'contain',
+                width: 'auto',
+                height: 'auto'
+              }}
+            />
+          </Box>
+        )}
 
         <Box sx={{ p: 3 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
@@ -150,7 +153,7 @@ export default function BlogPostDetail({ post, open, onClose, onUpdate, onDelete
           </Typography>
 
           <Box sx={{ my: 2 }}>
-            {post.tags.map((tag) => (
+            {(post.tags || []).map((tag) => (
               <Chip
                 key={tag}
                 label={tag}

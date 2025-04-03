@@ -10,106 +10,180 @@ import {
   Chip,
   IconButton,
   Typography,
-  Alert
+  Alert,
+  CircularProgress,
+  Autocomplete,
+  Stack
 } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close'
-import { supabase, BlogPost } from '../lib/supabase'
+import { supabase } from '../lib/supabase'
+import { BlogPost, BlogPostFormData } from '../types/blog'
+import { Dog } from '../types/dog'
 
 interface BlogPostFormProps {
   post?: BlogPost
   open: boolean
   onClose: () => void
-  onSubmit: (post: Omit<BlogPost, 'id' | 'created_at'>) => Promise<void>
+  onSubmit: (data: BlogPostFormData) => Promise<void>
 }
 
 export default function BlogPostForm({ post, open, onClose, onSubmit }: BlogPostFormProps) {
-  const [title, setTitle] = useState('')
-  const [content, setContent] = useState('')
-  const [tags, setTags] = useState<string[]>([])
-  const [newTag, setNewTag] = useState('')
-  const [imageFile, setImageFile] = useState<File | null>(null)
-  const [imagePreview, setImagePreview] = useState<string>('')
+  const [formData, setFormData] = useState<BlogPostFormData>({
+    title: '',
+    content: '',
+    image_url: null,
+    dog_ids: [],
+    tags: []
+  })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [dogs, setDogs] = useState<Dog[]>([])
+  const [selectedDogs, setSelectedDogs] = useState<Dog[]>([])
+  const [selectedTags, setSelectedTags] = useState<string[]>([])
+  const [newTag, setNewTag] = useState('')
+  const [imageFile, setImageFile] = useState<File | null>(null)
+  const [imagePreview, setImagePreview] = useState<string | null>(null)
 
   useEffect(() => {
     if (post) {
-      setTitle(post.title)
-      setContent(post.content)
-      setTags(post.tags)
+      setFormData({
+        title: post.title,
+        content: post.content,
+        image_url: post.image_url,
+        dog_ids: post.dogs?.map((dog: Dog) => dog.id) || [],
+        tags: post.tags || []
+      })
+      setSelectedDogs(post.dogs || [])
+      setSelectedTags(post.tags || [])
       setImagePreview(post.image_url)
     } else {
       // Reset form when creating new post
-      setTitle('')
-      setContent('')
-      setTags([])
-      setImagePreview('')
+      setFormData({
+        title: '',
+        content: '',
+        image_url: null,
+        dog_ids: [],
+        tags: []
+      })
+      setSelectedDogs([])
+      setSelectedTags([])
+      setImagePreview(null)
       setImageFile(null)
     }
   }, [post])
 
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (file) {
-      setImageFile(file)
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string)
-      }
-      reader.readAsDataURL(file)
+  useEffect(() => {
+    fetchDogs()
+  }, [])
+
+  const fetchDogs = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('dogs')
+        .select('*')
+        .order('name')
+
+      if (error) throw error
+      setDogs(data || [])
+    } catch (err) {
+      console.error('Error fetching dogs:', err)
+      setError('Failed to fetch dogs')
     }
   }
 
-  const handleAddTag = (event: React.KeyboardEvent) => {
-    if (event.key === 'Enter' && newTag.trim()) {
-      event.preventDefault()
-      if (!tags.includes(newTag.trim())) {
-        setTags([...tags, newTag.trim()])
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }))
+  }
+
+  const handleDogChange = (_: any, newValue: Dog[]) => {
+    setSelectedDogs(newValue)
+    setFormData(prev => ({
+      ...prev,
+      dog_ids: newValue.map(dog => dog.id)
+    }))
+    
+    // Add dog names as tags
+    const dogTags = newValue.map(dog => dog.name)
+    const existingTags = selectedTags.filter(tag => !dogTags.includes(tag))
+    setSelectedTags([...existingTags, ...dogTags])
+    setFormData(prev => ({
+      ...prev,
+      tags: [...existingTags, ...dogTags]
+    }))
+  }
+
+  const handleTagChange = (_: any, newValue: string[]) => {
+    setSelectedTags(newValue)
+    setFormData(prev => ({
+      ...prev,
+      tags: newValue
+    }))
+  }
+
+  const handleAddTag = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && newTag.trim()) {
+      e.preventDefault()
+      const tag = newTag.trim()
+      if (!selectedTags.includes(tag)) {
+        setSelectedTags(prev => [...prev, tag])
+        setFormData(prev => ({
+          ...prev,
+          tags: [...prev.tags, tag]
+        }))
       }
       setNewTag('')
     }
   }
 
-  const handleRemoveTag = (tagToRemove: string) => {
-    setTags(tags.filter(tag => tag !== tagToRemove))
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setImageFile(file)
+    setImagePreview(URL.createObjectURL(file))
+    setFormData(prev => ({
+      ...prev,
+      image_url: null // Reset image_url as we'll upload the file
+    }))
   }
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault()
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
     setLoading(true)
     setError(null)
 
     try {
-      let imageUrl = imagePreview
+      let imageUrl = formData.image_url
 
+      // Upload image if a new file was selected
       if (imageFile) {
-        // Upload image to Supabase Storage
-        const { error: uploadError } = await supabase.storage
+        const fileExt = imageFile.name.split('.').pop()
+        const fileName = `${Math.random()}.${fileExt}`
+        const filePath = `blog-images/${fileName}`
+
+        const { error: uploadError, data } = await supabase.storage
           .from('blog-images')
-          .upload(`${Date.now()}-${imageFile.name}`, imageFile)
+          .upload(filePath, imageFile)
 
         if (uploadError) throw uploadError
 
-        // Get public URL
         const { data: { publicUrl } } = supabase.storage
           .from('blog-images')
-          .getPublicUrl(`${Date.now()}-${imageFile.name}`)
+          .getPublicUrl(filePath)
 
         imageUrl = publicUrl
       }
 
       await onSubmit({
-        title,
-        content,
-        image_url: imageUrl,
-        author: 'Admin', // TODO: Get from auth context
-        tags
+        ...formData,
+        image_url: imageUrl
       })
-
-      onClose()
-    } catch (error) {
-      console.error('Error submitting post:', error)
-      setError('Failed to save post')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred')
     } finally {
       setLoading(false)
     }
@@ -150,79 +224,103 @@ export default function BlogPostForm({ post, open, onClose, onSubmit }: BlogPost
             margin="dense"
             label="Title"
             fullWidth
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            name="title"
+            value={formData.title}
+            onChange={handleInputChange}
             required
           />
+
+          <Stack spacing={2} sx={{ my: 2 }}>
+            <Autocomplete
+              multiple
+              options={dogs}
+              getOptionLabel={(option) => option.name}
+              value={selectedDogs}
+              onChange={handleDogChange}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Related Dogs"
+                  placeholder="Select dogs"
+                />
+              )}
+              renderTags={(value, getTagProps) =>
+                value.map((option, index) => (
+                  <Chip
+                    label={option.name}
+                    {...getTagProps({ index })}
+                    key={option.id}
+                  />
+                ))
+              }
+            />
+
+            <Autocomplete
+              multiple
+              freeSolo
+              options={[]}
+              value={selectedTags}
+              onChange={handleTagChange}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Tags"
+                  placeholder="Add tags"
+                  onKeyDown={handleAddTag}
+                  value={newTag}
+                  onChange={(e) => setNewTag(e.target.value)}
+                />
+              )}
+              renderTags={(value, getTagProps) =>
+                value.map((option, index) => (
+                  <Chip
+                    label={option}
+                    {...getTagProps({ index })}
+                    key={option}
+                  />
+                ))
+              }
+            />
+          </Stack>
 
           <TextField
             margin="dense"
             label="Content"
             fullWidth
             multiline
-            rows={6}
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
+            rows={10}
+            name="content"
+            value={formData.content}
+            onChange={handleInputChange}
             required
           />
 
-          <Box sx={{ mt: 2 }}>
-            <Typography variant="subtitle2" gutterBottom>
-              Image
-            </Typography>
-            <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-              {imagePreview && (
-                <Box
-                  component="img"
-                  src={imagePreview}
-                  alt="Preview"
-                  sx={{
-                    width: 200,
-                    height: 200,
-                    objectFit: 'cover',
-                    borderRadius: 1,
-                    border: '1px solid',
-                    borderColor: 'divider'
-                  }}
-                />
-              )}
+          <Box sx={{ mb: 2 }}>
+            <input
+              accept="image/*"
+              style={{ display: 'none' }}
+              id="image-upload"
+              type="file"
+              onChange={handleImageChange}
+            />
+            <label htmlFor="image-upload">
               <Button
                 variant="outlined"
-                component="label"
-                sx={{ mt: 1 }}
+                component="span"
+                sx={{ mb: 1 }}
               >
-                {imagePreview ? 'Change Image' : 'Upload Image'}
-                <input
-                  type="file"
-                  hidden
-                  accept="image/*"
-                  onChange={handleImageChange}
-                />
+                Upload Image
               </Button>
-            </Box>
-          </Box>
-
-          <Box sx={{ mt: 2 }}>
-            <Typography variant="subtitle2" gutterBottom>
-              Tags
-            </Typography>
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 1 }}>
-              {tags.map((tag) => (
-                <Chip
-                  key={tag}
-                  label={tag}
-                  onDelete={() => handleRemoveTag(tag)}
+            </label>
+            {imagePreview && (
+              <Box sx={{ mt: 1 }}>
+                <img
+                  src={imagePreview}
+                  alt="Preview"
+                  style={{ maxWidth: '100%', maxHeight: '200px' }}
                 />
-              ))}
-            </Box>
-            <TextField
-              size="small"
-              placeholder="Add tag and press Enter"
-              value={newTag}
-              onChange={(e) => setNewTag(e.target.value)}
-              onKeyPress={handleAddTag}
-              fullWidth
-            />
+              </Box>
+            )}
           </Box>
         </DialogContent>
         <DialogActions>
@@ -232,7 +330,7 @@ export default function BlogPostForm({ post, open, onClose, onSubmit }: BlogPost
             variant="contained" 
             disabled={loading}
           >
-            {loading ? 'Saving...' : (post ? 'Update' : 'Create')}
+            {loading ? <CircularProgress size={24} /> : (post ? 'Update' : 'Create')}
           </Button>
         </DialogActions>
       </form>
