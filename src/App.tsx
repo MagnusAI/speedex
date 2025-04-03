@@ -9,6 +9,7 @@ import {
   ListItemButton,
   ListItemIcon, 
   ListItemText,
+  ListItem,
   Box,
   useTheme,
   useMediaQuery,
@@ -20,6 +21,7 @@ import MenuIcon from '@mui/icons-material/Menu'
 import HomeIcon from '@mui/icons-material/Home'
 import PetsIcon from '@mui/icons-material/Pets'
 import ArticleIcon from '@mui/icons-material/Article'
+import EmailIcon from '@mui/icons-material/Email'
 import { HashRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import BlogFeed from './components/BlogFeed'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
@@ -153,21 +155,76 @@ function AppContent() {
           <Route path="/" element={
             <Box>
               <Typography variant="h4" component="h1" gutterBottom>
-                Welcome to Speedex
+                Velkommen til Kennel Speedex
               </Typography>
               <Typography variant="body1" paragraph>
-                Your trusted partner in German Shepherd breeding and training.
+                Kennel Speedex er et lille seriøst opdræt af Jack Russell Terrier i Gilleleje.
               </Typography>
+              <Typography variant="body1" paragraph>
+                Her på siden kan du følge med i vores liv med hundene.
+                Rigtig god fornøjelse.
+              </Typography>
+              <Typography variant="body1" paragraph>
+                Kennel Speedex er bygget op omkring jack russell terrier, men er nu gået over til fremover at have mere fokus på northfolk terrier.
+              </Typography>
+              
+              <Box sx={{ mt: 4 }}>
+                <Typography variant="h5" gutterBottom>
+                  Kontakt
+                </Typography>
+                <Typography variant="body1" paragraph>
+                  Tine Arnild
+                </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <EmailIcon />
+                  <Typography 
+                    component="a" 
+                    href="mailto:tinearnild@hotmail.com"
+                    sx={{ 
+                      textDecoration: 'none',
+                      color: 'primary.main',
+                      '&:hover': {
+                        textDecoration: 'underline'
+                      }
+                    }}
+                  >
+                    tinearnild@hotmail.com
+                  </Typography>
+                </Box>
+              </Box>
             </Box>
           } />
           <Route path="/dogs" element={
             <Box>
               <Typography variant="h4" component="h1" gutterBottom>
-                Our Dogs
+                Vores Hunde
               </Typography>
               <Typography variant="body1" paragraph>
-                Meet our exceptional German Shepherds.
+                Her kan du møde vores hunde. Vi fokuserer på at avle sunde og velbalancerede hunde med godt temperament.
               </Typography>
+              <Typography variant="body1" paragraph>
+                Vores avlsprogram er baseret på:
+              </Typography>
+              <List>
+                <ListItem>
+                  <ListItemText 
+                    primary="Sunde og raske hunde" 
+                    secondary="Alle vores hunde gennemgår grundig sundhedstestning"
+                  />
+                </ListItem>
+                <ListItem>
+                  <ListItemText 
+                    primary="Godt temperament" 
+                    secondary="Vi vælger avlsdyr med fokus på godt og stabilt temperament"
+                  />
+                </ListItem>
+                <ListItem>
+                  <ListItemText 
+                    primary="Standard" 
+                    secondary="Vores hunde følger racekæmpernes standard"
+                  />
+                </ListItem>
+              </List>
             </Box>
           } />
           <Route path="/blog" element={<BlogFeed />} />
