@@ -1,24 +1,21 @@
 import { useEffect, useState } from 'react'
-import { 
-  Container, 
-  Card, 
-  CardContent, 
-  CardMedia, 
-  Typography, 
-  Box, 
+import {
+  Container,
+  Card,
+  CardContent,
+  CardMedia,
+  Typography,
+  Box,
   Chip,
   Skeleton,
   useTheme,
   useMediaQuery,
   IconButton,
   Button,
-  Alert
+  Alert,
 } from '@mui/material'
-import EditIcon from '@mui/icons-material/Edit'
-import DeleteIcon from '@mui/icons-material/Delete'
-import AddIcon from '@mui/icons-material/Add'
+import { Add as AddIcon, Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material'
 import { format } from 'date-fns'
-import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 import BlogPostForm from './BlogPostForm'
 import BlogPostDetail from './BlogPostDetail'
@@ -89,14 +86,14 @@ export default function BlogFeed() {
   if (loading || !posts) {
     return (
       <Container maxWidth="lg" sx={{ py: 4 }}>
-        <Box sx={{ 
-          display: 'flex', 
-          flexWrap: 'wrap', 
+        <Box sx={{
+          display: 'flex',
+          flexWrap: 'wrap',
           gap: 3,
           justifyContent: 'center'
         }}>
           {[1, 2, 3].map((item) => (
-            <Box key={item} sx={{ 
+            <Box key={item} sx={{
               flex: { xs: '1 1 100%', md: '1 1 calc(33.333% - 16px)' },
               minWidth: { xs: '100%', md: '300px' }
             }}>
@@ -138,19 +135,19 @@ export default function BlogFeed() {
         </Box>
       )}
 
-      <Box sx={{ 
-        display: 'flex', 
-        flexWrap: 'wrap', 
+      <Box sx={{
+        display: 'flex',
+        flexWrap: 'wrap',
         gap: 3,
         justifyContent: 'center'
       }}>
         {posts.map((post) => (
-          <Box key={post.id} sx={{ 
+          <Box key={post.id} sx={{
             flex: { xs: '1 1 100%', md: '1 1 calc(33.333% - 16px)' },
             minWidth: { xs: '100%', md: '300px' }
           }}>
             <Card
-              sx={{ 
+              sx={{
                 height: '100%',
                 display: 'flex',
                 flexDirection: 'column',
@@ -163,21 +160,21 @@ export default function BlogFeed() {
               }}
               onClick={() => setSelectedPost(post)}
             >
-              {post.image_url && (
+              {post.blog_post_images[0] && (
                 <CardMedia
                   component="img"
                   height="200"
-                  image={post.image_url}
-                  alt={post.title}
+                  image={post.blog_post_images[0].image_url}
+                  alt={post.blog_post_images[0].caption || 'Blog post image'}
                   sx={{ objectFit: 'cover' }}
                 />
               )}
               <CardContent sx={{ flexGrow: 1 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
-                  <Typography 
-                    variant="h6" 
-                    component="h2" 
-                    sx={{ 
+                  <Typography
+                    variant="h6"
+                    component="h2"
+                    sx={{
                       fontWeight: 'bold',
                       fontSize: isMobile ? '1.1rem' : '1.25rem'
                     }}
@@ -186,8 +183,8 @@ export default function BlogFeed() {
                   </Typography>
                   {user && (
                     <Box onClick={(e) => e.stopPropagation()}>
-                      <IconButton 
-                        size="small" 
+                      <IconButton
+                        size="small"
                         onClick={() => {
                           setEditingPost(post)
                           setFormOpen(true)
@@ -195,8 +192,8 @@ export default function BlogFeed() {
                       >
                         <EditIcon />
                       </IconButton>
-                      <IconButton 
-                        size="small" 
+                      <IconButton
+                        size="small"
                         onClick={() => handleDeletePost(post.id)}
                         color="error"
                       >
@@ -205,16 +202,16 @@ export default function BlogFeed() {
                     </Box>
                   )}
                 </Box>
-                <Typography 
-                  variant="body2" 
-                  color="text.secondary" 
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
                   gutterBottom
                   sx={{ mb: 2 }}
                 >
                   {format(new Date(post.created_at), 'MMMM d, yyyy')} • {post.author}
                 </Typography>
-                <Typography 
-                  variant="body2" 
+                <Typography
+                  variant="body2"
                   color="text.secondary"
                   sx={{
                     display: '-webkit-box',
@@ -228,12 +225,12 @@ export default function BlogFeed() {
                 </Typography>
                 <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
                   {(post.tags || []).map((tag) => (
-                    <Chip 
-                      key={tag} 
-                      label={tag} 
+                    <Chip
+                      key={tag}
+                      label={tag}
                       size="small"
                       onClick={(e) => e.stopPropagation()}
-                      sx={{ 
+                      sx={{
                         backgroundColor: theme.palette.primary.light,
                         color: theme.palette.primary.contrastText
                       }}

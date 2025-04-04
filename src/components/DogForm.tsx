@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import {
   Box,
-  Grid,
   TextField,
   Button,
   FormControl,
@@ -13,6 +12,7 @@ import {
 } from '@mui/material'
 import { Dog, DogFormData } from '../types/dog'
 import { supabase } from '../lib/supabase'
+import { SelectChangeEvent } from '@mui/material/Select'
 
 interface DogFormProps {
   dog?: Dog
@@ -56,7 +56,7 @@ export default function DogForm({ dog, onSubmit, onCancel }: DogFormProps) {
     }
   }, [dog])
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setFormData(prev => ({
       ...prev,
@@ -76,6 +76,13 @@ export default function DogForm({ dog, onSubmit, onCancel }: DogFormProps) {
     }
   }
 
+  const handleSelectChange = (e: SelectChangeEvent<"male" | "female">) => {
+    setFormData(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }))
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
@@ -90,7 +97,7 @@ export default function DogForm({ dog, onSubmit, onCancel }: DogFormProps) {
         const fileName = `${Math.random()}.${fileExt}`
         const filePath = `dog-images/${fileName}`
 
-        const { error: uploadError, data } = await supabase.storage
+        const { error: uploadError } = await supabase.storage
           .from('dogs')
           .upload(filePath, imageFile)
 
@@ -123,8 +130,8 @@ export default function DogForm({ dog, onSubmit, onCancel }: DogFormProps) {
         </Alert>
       )}
 
-      <Grid container spacing={3}>
-        <Grid item xs={12} sm={6}>
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+        <Box sx={{ flex: { xs: '0 0 100%', sm: '0 0 calc(50% - 8px)' } }}>
           <TextField
             required
             fullWidth
@@ -133,9 +140,9 @@ export default function DogForm({ dog, onSubmit, onCancel }: DogFormProps) {
             value={formData.name}
             onChange={handleInputChange}
           />
-        </Grid>
+        </Box>
 
-        <Grid item xs={12} sm={6}>
+        <Box sx={{ flex: { xs: '0 0 100%', sm: '0 0 calc(50% - 8px)' } }}>
           <TextField
             required
             fullWidth
@@ -144,24 +151,24 @@ export default function DogForm({ dog, onSubmit, onCancel }: DogFormProps) {
             value={formData.breed}
             onChange={handleInputChange}
           />
-        </Grid>
+        </Box>
 
-        <Grid item xs={12} sm={6}>
+        <Box sx={{ flex: { xs: '0 0 100%', sm: '0 0 calc(50% - 8px)' } }}>
           <FormControl fullWidth required>
             <InputLabel>Gender</InputLabel>
             <Select
               name="gender"
               value={formData.gender}
-              onChange={handleInputChange}
+              onChange={handleSelectChange}
               label="Gender"
             >
               <MenuItem value="male">Male</MenuItem>
               <MenuItem value="female">Female</MenuItem>
             </Select>
           </FormControl>
-        </Grid>
+        </Box>
 
-        <Grid item xs={12} sm={6}>
+        <Box sx={{ flex: { xs: '0 0 100%', sm: '0 0 calc(50% - 8px)' } }}>
           <TextField
             required
             fullWidth
@@ -170,9 +177,9 @@ export default function DogForm({ dog, onSubmit, onCancel }: DogFormProps) {
             value={formData.color}
             onChange={handleInputChange}
           />
-        </Grid>
+        </Box>
 
-        <Grid item xs={12} sm={6}>
+        <Box sx={{ flex: { xs: '0 0 100%', sm: '0 0 calc(50% - 8px)' } }}>
           <TextField
             required
             fullWidth
@@ -181,9 +188,9 @@ export default function DogForm({ dog, onSubmit, onCancel }: DogFormProps) {
             value={formData.fur_type}
             onChange={handleInputChange}
           />
-        </Grid>
+        </Box>
 
-        <Grid item xs={12} sm={6}>
+        <Box sx={{ flex: { xs: '0 0 100%', sm: '0 0 calc(50% - 8px)' } }}>
           <TextField
             required
             fullWidth
@@ -194,9 +201,9 @@ export default function DogForm({ dog, onSubmit, onCancel }: DogFormProps) {
             onChange={handleInputChange}
             InputLabelProps={{ shrink: true }}
           />
-        </Grid>
+        </Box>
 
-        <Grid item xs={12}>
+        <Box sx={{ flex: '0 0 100%' }}>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <TextField
               fullWidth
@@ -222,9 +229,9 @@ export default function DogForm({ dog, onSubmit, onCancel }: DogFormProps) {
               />
             )}
           </Box>
-        </Grid>
+        </Box>
 
-        <Grid item xs={12}>
+        <Box sx={{ flex: '0 0 100%' }}>
           <TextField
             fullWidth
             multiline
@@ -234,23 +241,21 @@ export default function DogForm({ dog, onSubmit, onCancel }: DogFormProps) {
             value={formData.description}
             onChange={handleInputChange}
           />
-        </Grid>
+        </Box>
 
-        <Grid item xs={12}>
-          <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
-            <Button onClick={onCancel}>
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              variant="contained"
-              disabled={loading}
-            >
-              {loading ? <CircularProgress size={24} /> : dog ? 'Update Dog' : 'Add Dog'}
-            </Button>
-          </Box>
-        </Grid>
-      </Grid>
+        <Box sx={{ flex: '0 0 100%', display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
+          <Button onClick={onCancel}>
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={loading}
+          >
+            {loading ? <CircularProgress size={24} /> : dog ? 'Update Dog' : 'Add Dog'}
+          </Button>
+        </Box>
+      </Box>
     </Box>
   )
 } 

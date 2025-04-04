@@ -51,21 +51,20 @@ const uploadImages = async (images: BlogPostFormData['images']): Promise<BlogPos
 };
 
 export const createBlogPost = async (data: BlogPostFormData): Promise<BlogPost> => {
-  // First create the blog post
-  const { data: post, error: postError } = await supabase
+  const { data: post, error } = await supabase
     .from('blog_posts')
     .insert([
       {
         title: data.title,
         content: data.content,
-        tags: data.tags || [],
-        author: data.author || 'Anonymous'
+        tags: data.tags,
+        author: 'Anonymous' // Set default author
       }
     ])
     .select()
-    .single();
+    .single()
 
-  if (postError) throw postError;
+  if (error) throw error
 
   // Then upload and create the images
   if (data.images && data.images.length > 0) {
@@ -99,18 +98,19 @@ export const createBlogPost = async (data: BlogPostFormData): Promise<BlogPost> 
 };
 
 export const updateBlogPost = async (id: string, data: BlogPostFormData): Promise<BlogPost> => {
-  // First update the blog post
-  const { error: postError } = await supabase
+  const { error } = await supabase
     .from('blog_posts')
     .update({
       title: data.title,
       content: data.content,
-      tags: data.tags || [],
-      author: data.author || 'Anonymous'
+      tags: data.tags,
+      author: 'Anonymous' // Set default author
     })
-    .eq('id', id);
+    .eq('id', id)
+    .select()
+    .single()
 
-  if (postError) throw postError;
+  if (error) throw error
 
   // Delete existing images
   const { error: deleteError } = await supabase

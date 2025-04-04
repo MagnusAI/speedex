@@ -1,30 +1,21 @@
-import { useState, useEffect } from 'react'
-import { 
-  AppBar, 
-  Toolbar, 
-  Typography, 
-  IconButton, 
-  Drawer, 
-  List, 
-  ListItemButton,
-  ListItemIcon, 
-  ListItemText,
-  ListItem,
+import { useState } from 'react'
+import {
   Box,
-  useTheme,
-  useMediaQuery,
+  CssBaseline,
   ThemeProvider,
   createTheme,
-  CssBaseline,
-  Divider,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-  TextField,
-  Alert,
-  CircularProgress
+  useTheme,
+  useMediaQuery,
+  AppBar,
+  Toolbar,
+  IconButton,
+  Typography,
+  Drawer,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Divider
 } from '@mui/material'
 import {
   Menu as MenuIcon,
@@ -32,15 +23,14 @@ import {
   Pets as PetsIcon,
   Article as ArticleIcon,
   Logout as LogoutIcon,
-  Login as LoginIcon,
-  Email as EmailIcon
+  Login as LoginIcon
 } from '@mui/icons-material'
-import { HashRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom'
-import BlogFeed from './components/BlogFeed'
+import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
-import Home from './components/Home'
+import BlogFeed from './components/BlogFeed'
 import DogList from './components/DogList'
 import Login from './components/Login'
+import Home from './components/Home'
 
 // Create theme instance
 const theme = createTheme({
@@ -206,82 +196,8 @@ function AppContent() {
         }}
       >
         <Routes>
-          <Route path="/" element={
-            <Box>
-              <Typography variant="h4" component="h1" gutterBottom>
-                Velkommen til Kennel Speedex
-              </Typography>
-              <Typography variant="body1" paragraph>
-                Kennel Speedex er et lille seriøst opdræt af Jack Russell Terrier i Gilleleje.
-              </Typography>
-              <Typography variant="body1" paragraph>
-                Her på siden kan du følge med i vores liv med hundene.
-                Rigtig god fornøjelse.
-              </Typography>
-              <Typography variant="body1" paragraph>
-                Kennel Speedex er bygget op omkring jack russell terrier, men er nu gået over til fremover at have mere fokus på northfolk terrier.
-              </Typography>
-              
-              <Box sx={{ mt: 4 }}>
-                <Typography variant="h5" gutterBottom>
-                  Kontakt
-                </Typography>
-                <Typography variant="body1" paragraph>
-                  Tine Arnild
-                </Typography>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <EmailIcon />
-                  <Typography 
-                    component="a" 
-                    href="mailto:tinearnild@hotmail.com"
-                    sx={{ 
-                      textDecoration: 'none',
-                      color: 'primary.main',
-                      '&:hover': {
-                        textDecoration: 'underline'
-                      }
-                    }}
-                  >
-                    tinearnild@hotmail.com
-                  </Typography>
-                </Box>
-              </Box>
-            </Box>
-          } />
-          <Route path="/dogs" element={
-            <Box>
-              <Typography variant="h4" component="h1" gutterBottom>
-                Vores Hunde
-              </Typography>
-              <Typography variant="body1" paragraph>
-                Her kan du møde vores hunde. Vi fokuserer på at avle sunde og velbalancerede hunde med godt temperament.
-              </Typography>
-              <Typography variant="body1" paragraph>
-                Vores avlsprogram er baseret på:
-              </Typography>
-              <List>
-                <ListItem>
-                  <ListItemText 
-                    primary="Sunde og raske hunde" 
-                    secondary="Alle vores hunde gennemgår grundig sundhedstestning"
-                  />
-                </ListItem>
-                <ListItem>
-                  <ListItemText 
-                    primary="Godt temperament" 
-                    secondary="Vi vælger avlsdyr med fokus på godt og stabilt temperament"
-                  />
-                </ListItem>
-                <ListItem>
-                  <ListItemText 
-                    primary="Standard" 
-                    secondary="Vores hunde følger racekæmpernes standard"
-                  />
-                </ListItem>
-              </List>
-              <DogList />
-            </Box>
-          } />
+          <Route path="/" element={<Home />} />
+          <Route path="/dogs" element={<DogList />} />
           <Route path="/blog" element={<BlogFeed />} />
           <Route path="/login" element={<Login />} />
         </Routes>

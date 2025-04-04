@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import {
   Box,
-  Grid,
   Card,
   CardContent,
   CardMedia,
@@ -14,7 +13,6 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogActions
 } from '@mui/material'
 import { Add as AddIcon, Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material'
 import { useAuth } from '../contexts/AuthContext'
@@ -26,8 +24,7 @@ export default function DogList() {
   const [dogs, setDogs] = useState<Dog[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [openDialog, setOpenDialog] = useState(false)
-  const [editingDog, setEditingDog] = useState<Dog | null>(null)
+  const [editingDog, setEditingDog] = useState<Dog | undefined>(undefined)
   const { user } = useAuth()
 
   useEffect(() => {
@@ -52,13 +49,11 @@ export default function DogList() {
   }
 
   const handleAddDog = () => {
-    setEditingDog(null)
-    setOpenDialog(true)
+    setEditingDog(undefined)
   }
 
   const handleEditDog = (dog: Dog) => {
     setEditingDog(dog)
-    setOpenDialog(true)
   }
 
   const handleDeleteDog = async (id: string) => {
@@ -79,8 +74,7 @@ export default function DogList() {
   }
 
   const handleCloseDialog = () => {
-    setOpenDialog(false)
-    setEditingDog(null)
+    setEditingDog(undefined)
   }
 
   const handleSaveDog = async (dogData: Omit<Dog, 'id' | 'created_at' | 'updated_at'>) => {
@@ -143,9 +137,14 @@ export default function DogList() {
           </Alert>
         )}
 
-        <Grid container spacing={3}>
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
           {dogs.map((dog) => (
-            <Grid item xs={12} sm={6} md={4} key={dog.id}>
+            <Box
+              key={dog.id}
+              sx={{
+                flex: { xs: '0 0 100%', sm: '0 0 calc(50% - 8px)', md: '0 0 calc(33.333% - 8px)' }
+              }}
+            >
               <Card>
                 <CardMedia
                   component="img"
@@ -175,28 +174,26 @@ export default function DogList() {
                   </Box>
                 )}
               </Card>
-            </Grid>
+            </Box>
           ))}
-        </Grid>
+        </Box>
 
         <Dialog
-          open={openDialog}
-          onClose={handleCloseDialog}
+          open={!!editingDog}
+          onClose={() => setEditingDog(undefined)}
           maxWidth="md"
           fullWidth
         >
           <DialogTitle>
-            {editingDog ? 'Edit Dog' : 'Add New Dog'}
+            {editingDog ? 'Edit Dog' : 'Add Dog'}
           </DialogTitle>
           <DialogContent>
             <DogForm
               dog={editingDog}
               onSubmit={handleSaveDog}
+              onCancel={() => setEditingDog(undefined)}
             />
           </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseDialog}>Cancel</Button>
-          </DialogActions>
         </Dialog>
       </Box>
     </Container>

@@ -1,5 +1,3 @@
-import { Dog } from './dog'
-
 export interface BlogPostImage {
   id: string;
   blog_post_id: string;
@@ -14,11 +12,11 @@ export interface BlogPost {
   id: string;
   title: string;
   content: string;
-  blog_post_images: BlogPostImage[];
-  tags: string[];
   author: string;
+  tags: string[];
   created_at: string;
   updated_at: string;
+  blog_post_images: BlogPostImage[];
 }
 
 export interface BlogPostFormData {
@@ -31,5 +29,4 @@ export interface BlogPostFormData {
     display_order: number;
   }[];
   tags: string[];
-  author?: string;
 } 

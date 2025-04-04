@@ -13,14 +13,10 @@ import {
   Alert,
   CircularProgress,
   Autocomplete,
-  Stack,
-  Paper,
-  Grid,
   Card,
   CardMedia,
   CardContent,
   CardActions,
-  TextareaAutosize
 } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close'
 import { supabase } from '../lib/supabase'
@@ -46,7 +42,8 @@ export default function BlogPostForm({ post, open, onClose, onSubmit }: BlogPost
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [newTag, setNewTag] = useState('')
   const [imageFile, setImageFile] = useState<File | null>(null)
-  const [imagePreview, setImagePreview] = useState<string | null>(null)
+  const [imageFiles, setImageFiles] = useState<File[]>([])
+  const [imagePreviews, setImagePreviews] = useState<string[]>([])
   const [openImageDialog, setOpenImageDialog] = useState(false)
   const [editingImageIndex, setEditingImageIndex] = useState<number | null>(null)
   const [imageCaption, setImageCaption] = useState('')
@@ -65,7 +62,6 @@ export default function BlogPostForm({ post, open, onClose, onSubmit }: BlogPost
         tags: post.tags || []
       })
       setSelectedTags(post.tags || [])
-      setImagePreview(post.blog_post_images[0]?.image_url)
     } else {
       // Reset form when creating new post
       setFormData({
@@ -75,7 +71,6 @@ export default function BlogPostForm({ post, open, onClose, onSubmit }: BlogPost
         tags: []
       })
       setSelectedTags([])
-      setImagePreview(null)
       setImageFile(null)
     }
   }, [post])
@@ -112,15 +107,14 @@ export default function BlogPostForm({ post, open, onClose, onSubmit }: BlogPost
   }
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
+    const files = Array.from(e.target.files || [])
+    if (!files.length) return
 
-    setImageFile(file)
-    setImagePreview(URL.createObjectURL(file))
-    setFormData(prev => ({
-      ...prev,
-      images: [...prev.images, { url: undefined, caption: '', display_order: prev.images.length }]
-    }))
+    // Create preview URLs for all selected files
+    const previews = files.map(file => URL.createObjectURL(file))
+    setImagePreviews(previews)
+    setImageFiles(files)
+    setImageFile(files[0]) // Set first file as default
   }
 
   const handleImageUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -129,10 +123,26 @@ export default function BlogPostForm({ post, open, onClose, onSubmit }: BlogPost
   }
 
   const handleAddImage = () => {
-    if (imageFile || imageUrl) {
+    if (imageFiles.length > 0) {
+      const newImages = imageFiles.map((file, index) => ({
+        file,
+        url: undefined,
+        caption: imageCaption,
+        display_order: formData.images.length + index
+      }))
+
+      setFormData({ ...formData, images: [...formData.images, ...newImages] })
+      setOpenImageDialog(false)
+      setImageFiles([])
+      setImagePreviews([])
+      setImageFile(null)
+      setImageUrl('')
+      setImageCaption('')
+      setEditingImageIndex(null)
+    } else if (imageUrl) {
       const newImage = {
-        file: imageFile || undefined,
-        url: imageUrl || undefined,
+        file: undefined,
+        url: imageUrl,
         caption: imageCaption,
         display_order: formData.images.length
       }
@@ -146,7 +156,6 @@ export default function BlogPostForm({ post, open, onClose, onSubmit }: BlogPost
       }
 
       setOpenImageDialog(false)
-      setImageFile(null)
       setImageUrl('')
       setImageCaption('')
       setEditingImageIndex(null)
@@ -228,8 +237,8 @@ export default function BlogPostForm({ post, open, onClose, onSubmit }: BlogPost
   }
 
   return (
-    <Dialog 
-      open={open} 
+    <Dialog
+      open={open}
       onClose={onClose}
       maxWidth="md"
       fullWidth
@@ -256,7 +265,7 @@ export default function BlogPostForm({ post, open, onClose, onSubmit }: BlogPost
               {error}
             </Alert>
           )}
-          
+
           <TextField
             autoFocus
             margin="dense"
@@ -278,6 +287,7 @@ export default function BlogPostForm({ post, open, onClose, onSubmit }: BlogPost
             value={formData.content}
             onChange={handleInputChange}
             required
+            variant="outlined"
           />
 
           <Box sx={{ mb: 2 }}>
@@ -299,15 +309,15 @@ export default function BlogPostForm({ post, open, onClose, onSubmit }: BlogPost
                     </Typography>
                   </CardContent>
                   <CardActions>
-                    <IconButton 
-                      size="small" 
+                    <IconButton
+                      size="small"
                       onClick={() => handleMoveImage(index, 'up')}
                       disabled={index === 0}
                     >
                       <ArrowUpwardIcon />
                     </IconButton>
-                    <IconButton 
-                      size="small" 
+                    <IconButton
+                      size="small"
                       onClick={() => handleMoveImage(index, 'down')}
                       disabled={index === formData.images.length - 1}
                     >
@@ -361,9 +371,9 @@ export default function BlogPostForm({ post, open, onClose, onSubmit }: BlogPost
         </DialogContent>
         <DialogActions>
           <Button onClick={onClose}>Cancel</Button>
-          <Button 
-            type="submit" 
-            variant="contained" 
+          <Button
+            type="submit"
+            variant="contained"
             disabled={loading}
           >
             {loading ? <CircularProgress size={24} /> : (post ? 'Update' : 'Create')}
@@ -371,9 +381,9 @@ export default function BlogPostForm({ post, open, onClose, onSubmit }: BlogPost
         </DialogActions>
       </form>
 
-      <Dialog open={openImageDialog} onClose={() => setOpenImageDialog(false)}>
+      <Dialog open={openImageDialog} onClose={() => setOpenImageDialog(false)} maxWidth="md" fullWidth>
         <DialogTitle>
-          {editingImageIndex !== null ? 'Edit Image' : 'Add Image'}
+          {editingImageIndex !== null ? 'Edit Image' : 'Add Images'}
         </DialogTitle>
         <DialogContent>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
@@ -382,25 +392,61 @@ export default function BlogPostForm({ post, open, onClose, onSubmit }: BlogPost
               value={imageUrl}
               onChange={handleImageUrlChange}
               fullWidth
-              disabled={!!imageFile}
+              disabled={imageFiles.length > 0}
             />
             <Button
               variant="outlined"
               component="label"
               disabled={!!imageUrl}
             >
-              Upload File
+              Upload Files
               <input
                 type="file"
                 hidden
                 accept="image/*"
+                multiple
                 onChange={handleImageChange}
               />
             </Button>
-            {imageFile && (
-              <Typography variant="body2">
-                Selected file: {imageFile.name}
-              </Typography>
+            {imageFiles.length > 0 && (
+              <Box sx={{ mt: 2 }}>
+                <Typography variant="subtitle1" gutterBottom>
+                  Selected Files ({imageFiles.length}):
+                </Typography>
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+                  {imagePreviews.map((preview, index) => (
+                    <Box
+                      key={index}
+                      sx={{
+                        flex: { xs: '0 0 calc(50% - 8px)', sm: '0 0 calc(33.333% - 8px)', md: '0 0 calc(25% - 8px)' },
+                        position: 'relative',
+                        paddingTop: '100%',
+                        cursor: 'pointer',
+                        border: imageFile === imageFiles[index] ? '2px solid primary.main' : 'none',
+                        borderRadius: 1,
+                        overflow: 'hidden'
+                      }}
+                      onClick={() => {
+                        setImageFile(imageFiles[index])
+                      }}
+                    >
+                      <Box
+                        component="img"
+                        src={preview}
+                        alt={`Preview ${index + 1}`}
+                        sx={{
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover'
+                        }}
+                      />
+                    </Box>
+                  ))}
+                </Box>
+              </Box>
             )}
             <TextField
               label="Caption"
@@ -412,7 +458,11 @@ export default function BlogPostForm({ post, open, onClose, onSubmit }: BlogPost
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenImageDialog(false)}>Cancel</Button>
-          <Button onClick={handleAddImage} variant="contained">
+          <Button
+            onClick={handleAddImage}
+            variant="contained"
+            disabled={!imageUrl && imageFiles.length === 0}
+          >
             {editingImageIndex !== null ? 'Update' : 'Add'}
           </Button>
         </DialogActions>
