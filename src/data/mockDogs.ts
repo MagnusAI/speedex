@@ -64,7 +64,7 @@ export const mockDogs: Dog[] = [
   {
     id: 3,
     name: 'Bella',
-    breed: 'Jack Russell Terrier',
+    breed: 'Norfolk Terrier',
     description: 'A beautiful and graceful female with excellent pedigree.',
     images: [
       'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8amFjayUyMHJ1c3NlbGwlMjB0ZXJyaWVyfGVufDB8fDB8fHww'
