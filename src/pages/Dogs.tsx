@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Layout, Typography, Row, Col, Card, Input, Select, Space } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
+import { Layout, Typography, Row, Col, Card, Input, Select, Space, Button } from 'antd';
+import { SearchOutlined, PlusOutlined } from '@ant-design/icons';
 import { theme } from '../styles/theme';
 import { mockDogs } from '../data/mockDogs';
 import { Dog, Breed } from '../types/dog';
@@ -11,6 +12,7 @@ const { Search } = Input;
 const { Option } = Select;
 
 const Dogs: React.FC = () => {
+  const navigate = useNavigate();
   const [searchText, setSearchText] = useState('');
   const [selectedBreed, setSelectedBreed] = useState<Breed | 'all'>('all');
 
@@ -35,6 +37,15 @@ const Dogs: React.FC = () => {
             <Title level={3} style={{ color: theme.colors.lightText, margin: 0 }}>
               Our Dogs
             </Title>
+          </Col>
+          <Col>
+            <Button 
+              type="primary" 
+              icon={<PlusOutlined />}
+              onClick={() => navigate('/dogs/add')}
+            >
+              Add New Dog
+            </Button>
           </Col>
         </Row>
       </Header>
