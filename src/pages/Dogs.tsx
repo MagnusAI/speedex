@@ -68,15 +68,16 @@ const Dogs: React.FC = () => {
           </Col>
           <Col xs={24} md={12}>
             <Select
+              data-testid="breed-selector"
               placeholder="Filter by breed"
               style={{ width: '100%' }}
               size="large"
               value={selectedBreed}
               onChange={value => setSelectedBreed(value as Breed | 'all')}
             >
-              <Option value="all">All Breeds</Option>
-              <Option value="Jack Russell Terrier">Jack Russell Terrier</Option>
-              <Option value="Norfolk Terrier">Norfolk Terrier</Option>
+              <Option value="all" data-testid="all-breeds-option">All Breeds</Option>
+              <Option value="Jack Russell Terrier" data-testid="jack-russell-terrier-option">Jack Russell Terrier</Option>
+              <Option value="Norfolk Terrier" data-testid="norfolk-terrier-option">Norfolk Terrier</Option>
             </Select>
           </Col>
         </Row>
