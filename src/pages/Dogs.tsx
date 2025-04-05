@@ -4,7 +4,7 @@ import { Layout, Typography, Row, Col, Card, Input, Select, Space, Button } from
 import { SearchOutlined, PlusOutlined } from '@ant-design/icons';
 import { theme } from '../styles/theme';
 import { mockDogs } from '../data/mockDogs';
-import { Dog, Breed } from '../types/dog';
+import { Breed } from '../types/dog';
 
 const { Header, Content } = Layout;
 const { Title, Paragraph } = Typography;

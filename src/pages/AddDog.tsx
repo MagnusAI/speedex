@@ -16,10 +16,8 @@ import {
   Row,
   Col,
 } from 'antd';
-import { UploadOutlined, PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
+import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import { theme } from '../styles/theme';
-import { Breed, Gender, Dog } from '../types/dog';
-import { mockDogs } from '../data/mockDogs';
 
 const { Header, Content } = Layout;
 const { Title } = Typography;
