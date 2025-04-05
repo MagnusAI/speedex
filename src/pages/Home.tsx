@@ -22,7 +22,9 @@ const Home: React.FC = () => {
             </Title>
           </Col>
           <Col>
-            {/* Navigation will go here */}
+            <Button type="link" href="/#/dogs" style={{ color: theme.colors.lightText }}>
+              Our Dogs
+            </Button>
           </Col>
         </Row>
       </Header>
