@@ -1,17 +1,21 @@
 export type Breed = 'Jack Russell Terrier' | 'Norfolk Terrier';
 
-export type Gender = 'Male' | 'Female';
-
 export interface Dog {
-  id: string;
+  id: number;
   name: string;
   breed: Breed;
-  gender: Gender;
-  birthDate: string;
   description: string;
   images: string[];
-  achievements: Achievement[];
-  pedigree: Pedigree;
+  age?: number;
+  gender?: 'male' | 'female';
+  parents?: Dog[];
+  siblings?: Dog[];
+  offspring?: Dog[];
+  achievements?: {
+    title: string;
+    date: string;
+    description: string;
+  }[];
 }
 
 export interface Achievement {

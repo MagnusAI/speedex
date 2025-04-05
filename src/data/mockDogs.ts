@@ -2,53 +2,81 @@ import { Dog } from '../types/dog';
 
 export const mockDogs: Dog[] = [
   {
-    id: '1',
+    id: 1,
     name: 'Rusty',
     breed: 'Jack Russell Terrier',
-    gender: 'Male',
-    birthDate: '2020-05-15',
-    description: 'Energetic and playful, Rusty is a champion in agility competitions.',
-    images: ['/images/dogs/rusty-1.jpg', '/images/dogs/rusty-2.jpg'],
-    achievements: [
+    description: 'A lively and intelligent Jack Russell Terrier with a lot of energy.',
+    images: [
+      'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8amFjayUyMHJ1c3NlbGwlMjB0ZXJyaWVyfGVufDB8fDB8fHww',
+      'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8amFjayUyMHJ1c3NlbGwlMjB0ZXJyaWVyfGVufDB8fDB8fHww',
+      'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8amFjayUyMHJ1c3NlbGwlMjB0ZXJyaWVyfGVufDB8fDB8fHww'
+    ],
+    age: 3,
+    parents: [
       {
-        id: '1',
-        title: 'Agility Champion',
-        date: '2023-06-10',
-        description: 'First place in regional agility competition',
-        competition: 'Regional Agility Championship',
-        placement: '1st Place'
+        id: 2,
+        name: 'Max',
+        breed: 'Jack Russell Terrier',
+        description: 'Father of Rusty',
+        images: ['https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8amFjayUyMHJ1c3NlbGwlMjB0ZXJyaWVyfGVufDB8fDB8fHww'],
+        age: 5
+      },
+      {
+        id: 3,
+        name: 'Bella',
+        breed: 'Jack Russell Terrier',
+        description: 'Mother of Rusty',
+        images: ['https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8amFjayUyMHJ1c3NlbGwlMjB0ZXJyaWVyfGVufDB8fDB8fHww'],
+        age: 4
       }
     ],
-    pedigree: {
-      father: 'Max',
-      mother: 'Luna',
-      registrationNumber: 'JRT123456',
-      kennelClub: 'FCI'
-    }
+    achievements: [
+      {
+        title: 'Best in Show',
+        date: '2023-06-15',
+        description: 'Won first place in the regional dog show'
+      },
+      {
+        title: 'Obedience Training Certificate',
+        date: '2023-03-20',
+        description: 'Completed advanced obedience training'
+      }
+    ]
   },
   {
-    id: '2',
-    name: 'Bella',
-    breed: 'Norfolk Terrier',
-    gender: 'Female',
-    birthDate: '2021-03-22',
-    description: 'Gentle and affectionate, Bella excels in conformation shows.',
-    images: ['/images/dogs/bella-1.jpg', '/images/dogs/bella-2.jpg'],
+    id: 2,
+    name: 'Max',
+    breed: 'Jack Russell Terrier',
+    description: 'A seasoned show dog with multiple championships.',
+    images: [
+      'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8amFjayUyMHJ1c3NlbGwlMjB0ZXJyaWVyfGVufDB8fDB8fHww'
+    ],
+    age: 5,
+    gender: 'male',
     achievements: [
       {
-        id: '1',
-        title: 'Best in Show',
-        date: '2023-09-15',
-        description: 'Awarded Best in Show at National Terrier Championship',
-        competition: 'National Terrier Championship',
-        placement: 'Best in Show'
+        title: 'National Champion',
+        date: '2022-11-10',
+        description: 'Won the national championship'
       }
+    ]
+  },
+  {
+    id: 3,
+    name: 'Bella',
+    breed: 'Jack Russell Terrier',
+    description: 'A beautiful and graceful female with excellent pedigree.',
+    images: [
+      'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8amFjayUyMHJ1c3NlbGwlMjB0ZXJyaWVyfGVufDB8fDB8fHww'
     ],
-    pedigree: {
-      father: 'Charlie',
-      mother: 'Daisy',
-      registrationNumber: 'NT789012',
-      kennelClub: 'FCI'
-    }
+    age: 4,
+    gender: 'female',
+    achievements: [
+      {
+        title: 'Best Female',
+        date: '2022-09-05',
+        description: 'Awarded best female in her category'
+      }
+    ]
   }
 ]; 

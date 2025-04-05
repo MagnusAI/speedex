@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Layout, Typography, Row, Col, Card, Input, Select, Space, Button } from 'antd';
+import { Layout, Typography, Row, Col, Card, Input, Select, Button, Space } from 'antd';
 import { SearchOutlined, PlusOutlined } from '@ant-design/icons';
 import { theme } from '../styles/theme';
 import { mockDogs } from '../data/mockDogs';
 import { Breed } from '../types/dog';
 
 const { Header, Content } = Layout;
-const { Title, Paragraph } = Typography;
+const { Title, Text } = Typography;
 const { Search } = Input;
 const { Option } = Select;
 
@@ -68,16 +68,15 @@ const Dogs: React.FC = () => {
           </Col>
           <Col xs={24} md={12}>
             <Select
-              data-testid="breed-selector"
               placeholder="Filter by breed"
               style={{ width: '100%' }}
               size="large"
               value={selectedBreed}
               onChange={value => setSelectedBreed(value as Breed | 'all')}
             >
-              <Option value="all" data-testid="all-breeds-option">All Breeds</Option>
-              <Option value="Jack Russell Terrier" data-testid="jack-russell-terrier-option">Jack Russell Terrier</Option>
-              <Option value="Norfolk Terrier" data-testid="norfolk-terrier-option">Norfolk Terrier</Option>
+              <Option value="all">All Breeds</Option>
+              <Option value="Jack Russell Terrier">Jack Russell Terrier</Option>
+              <Option value="Norfolk Terrier">Norfolk Terrier</Option>
             </Select>
           </Col>
         </Row>
@@ -88,6 +87,7 @@ const Dogs: React.FC = () => {
             <Col xs={24} sm={12} md={8} lg={6} key={dog.id}>
               <Card
                 hoverable
+                onClick={() => navigate(`/dogs/${dog.id}`)}
                 cover={
                   <div style={{ 
                     height: '200px', 
@@ -99,18 +99,12 @@ const Dogs: React.FC = () => {
                 }
               >
                 <Card.Meta
-                  title={
-                    <Space direction="vertical" size="small">
-                      <Title level={4} style={{ margin: 0 }}>{dog.name}</Title>
-                      <Paragraph type="secondary" style={{ margin: 0 }}>
-                        {dog.breed} • {dog.gender}
-                      </Paragraph>
-                    </Space>
-                  }
+                  title={dog.name}
                   description={
-                    <Paragraph ellipsis={{ rows: 3 }}>
-                      {dog.description}
-                    </Paragraph>
+                    <Space direction="vertical">
+                      <Text>{dog.breed}</Text>
+                      <Text type="secondary">{dog.description}</Text>
+                    </Space>
                   }
                 />
               </Card>
