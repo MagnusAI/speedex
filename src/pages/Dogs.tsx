@@ -83,15 +83,6 @@ const Dogs: React.FC = () => {
               Our Dogs
             </Title>
           </Col>
-          <Col>
-            <Button 
-              type="primary" 
-              icon={<PlusOutlined />}
-              onClick={() => navigate('/dogs/add')}
-            >
-              Add New Dog
-            </Button>
-          </Col>
         </Row>
       </Header>
 
