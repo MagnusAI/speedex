@@ -68,18 +68,47 @@ const AddDog: React.FC = () => {
     try {
       console.log('[AddDog] Starting form submission with values:', values);
 
+      // Check for existing dog with same name
+      const { data: existingDogs, error: checkError } = await supabase
+        .from('dogs')
+        .select('id, name')
+        .ilike('name', values.name);
+
+      if (checkError) {
+        throw checkError;
+      }
+
+      if (existingDogs && existingDogs.length > 0) {
+        message.error(`A dog named "${values.name}" already exists. Please choose a different name.`);
+        setLoading(false);
+        return;
+      }
+
       // Upload image if present
       let imageUrl = '';
       if (fileList.length > 0) {
         const file = fileList[0].originFileObj as RcFile;
         const fileExt = file.name.split('.').pop();
-        const fileName = `${Date.now()}.${fileExt}`;
+        // Create a consistent filename based on the dog's name
+        const fileName = `${values.name.toLowerCase().replace(/\s+/g, '-')}.${fileExt}`;
         const filePath = `dog-images/${fileName}`;
 
         console.log('[AddDog] Uploading image:', filePath);
+        
+        // First try to delete existing image if it exists
+        const { error: deleteError } = await supabase.storage
+          .from('dog-images')
+          .remove([filePath]);
+
+        if (deleteError && deleteError.message !== 'Object not found') {
+          console.error('[AddDog] Error deleting existing image:', deleteError);
+          throw deleteError;
+        }
+
+        // Upload new image
         const { error: uploadError } = await supabase.storage
           .from('dog-images')
-          .upload(filePath, file);
+          .upload(filePath, file, { upsert: true });
 
         if (uploadError) {
           console.error('[AddDog] Error uploading image:', uploadError);
