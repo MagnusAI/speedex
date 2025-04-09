@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Layout, Typography, Row, Col, Card, Input, Select, Button, Space, Spin } from 'antd';
-import { SearchOutlined, PlusOutlined } from '@ant-design/icons';
+import { Layout, Typography, Row, Col, Card, Input, Select, Space, Spin } from 'antd';
+import { SearchOutlined } from '@ant-design/icons';
 import { theme } from '../styles/theme';
 import { dogService } from '../services/dogService';
 import { Dog } from '../types/dog';
