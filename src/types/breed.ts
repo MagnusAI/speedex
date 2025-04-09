@@ -1,0 +1,1 @@
+export type Breed = 'Jack Russell Terrier' | 'Norfolk Terrier'; 

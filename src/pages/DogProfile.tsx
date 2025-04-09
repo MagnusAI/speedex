@@ -1,118 +1,103 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Layout, Typography, Row, Col, Card, Image, Button, Divider, Timeline } from 'antd';
+import { Card, Typography, Button, Timeline, Spin, message } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
-import { theme } from '../styles/theme';
-import { mockDogs } from '../data/mockDogs';
+import { dogService } from '../services/dogService';
+import { Dog } from '../types/dog';
+import FamilyTree from '../components/FamilyTree';
 
-const { Header, Content } = Layout;
-const { Title, Paragraph, Text } = Typography;
+const { Title, Text, Paragraph } = Typography;
 
 const DogProfile: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  
-  // Find the dog by ID
-  const dog = mockDogs.find(d => d.id === parseInt(id || '0'));
-  
-  if (!dog) {
+  const [dog, setDog] = useState<Dog | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDog = async () => {
+      try {
+        if (!id) return;
+        const data = await dogService.getDogById(parseInt(id));
+        if (data) {
+          setDog(data);
+        } else {
+          message.error('Dog not found');
+          navigate('/dogs');
+        }
+      } catch (error) {
+        console.error('Error fetching dog:', error);
+        message.error('Failed to load dog profile');
+        navigate('/dogs');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDog();
+  }, [id, navigate]);
+
+  if (loading) {
     return (
-      <Layout style={{ minHeight: '100vh', background: theme.colors.background }}>
-        <Content style={{ padding: theme.spacing.xxl, textAlign: 'center' }}>
-          <Title>Dog Not Found</Title>
-          <Button onClick={() => navigate('/dogs')}>Back to Dogs</Button>
-        </Content>
-      </Layout>
+      <div style={{ textAlign: 'center', padding: '50px' }}>
+        <Spin size="large" />
+      </div>
     );
   }
 
+  if (!dog) {
+    return null;
+  }
+
   return (
-    <Layout style={{ minHeight: '100vh', background: theme.colors.background }}>
-      <Header style={{ 
-        background: theme.colors.primary,
-        padding: `0 ${theme.spacing.xl}px`,
-        position: 'fixed',
-        width: '100%',
-        zIndex: 1,
-      }}>
-        <Row justify="space-between" align="middle" style={{ height: '100%' }}>
-          <Col>
-            <Button 
-              type="text" 
-              icon={<ArrowLeftOutlined />} 
-              onClick={() => navigate('/dogs')}
-              style={{ color: theme.colors.lightText }}
-            >
-              Back to Dogs
-            </Button>
-          </Col>
-          <Col>
-            <Title level={3} style={{ color: theme.colors.lightText, margin: 0 }}>
-              {dog.name}'s Profile
-            </Title>
-          </Col>
-        </Row>
-      </Header>
+    <div style={{ padding: '24px' }}>
+      <Button
+        type="text"
+        icon={<ArrowLeftOutlined />}
+        onClick={() => navigate('/dogs')}
+        style={{ marginBottom: '24px' }}
+      >
+        Back to Dogs
+      </Button>
 
-      <Content style={{ 
-        padding: `${theme.spacing.xxl}px ${theme.spacing.xl}px`,
-        marginTop: 64,
-      }}>
-        <Row gutter={[theme.spacing.xl, theme.spacing.xl]}>
-          {/* Main Info Section */}
-          <Col xs={24} lg={12}>
-            <Card>
-              <Image.PreviewGroup>
-                <Row gutter={[theme.spacing.md, theme.spacing.md]}>
-                  {dog.images.map((image, index) => (
-                    <Col key={index} xs={24} sm={12} md={8}>
-                      <Image 
-                        src={image} 
-                        alt={`${dog.name} photo ${index + 1}`}
-                        style={{ borderRadius: 8 }}
-                      />
-                    </Col>
-                  ))}
-                </Row>
-              </Image.PreviewGroup>
-              
-              <Divider />
-              
-              <Title level={2}>{dog.name}</Title>
-              <Paragraph>
-                <Text strong>Breed:</Text> {dog.breed}
-              </Paragraph>
-              <Paragraph>
-                <Text strong>Age:</Text> {dog.age} years
-              </Paragraph>
-              <Paragraph>
-                <Text strong>Description:</Text> {dog.description}
-              </Paragraph>
-            </Card>
-          </Col>
+      <Card>
+        <div style={{ display: 'flex', gap: '24px', marginBottom: '24px' }}>
+          <img
+            src={dog.image}
+            alt={dog.name}
+            style={{ width: '300px', height: '300px', objectFit: 'cover', borderRadius: '8px' }}
+          />
+          <div>
+            <Title level={2}>{dog.name}</Title>
+            <Text strong>{dog.breed}</Text>
+            {dog.age && <Text> • {dog.age} years old</Text>}
+            <Paragraph style={{ marginTop: '16px' }}>{dog.description}</Paragraph>
+          </div>
+        </div>
 
-          {/* Achievements Section */}
-          <Col xs={24} lg={12}>
-            <Card title="Achievements">
-              <Timeline
-                items={dog.achievements?.map((achievement, index) => ({
-                  key: index,
-                  children: (
-                    <>
-                      <Text strong>{achievement.title}</Text>
-                      <br />
-                      <Text type="secondary">{achievement.date}</Text>
-                      <br />
-                      <Text>{achievement.description}</Text>
-                    </>
-                  )
-                }))}
-              />
-            </Card>
-          </Col>
-        </Row>
-      </Content>
-    </Layout>
+        {dog.parents && (
+          <Card title="Ancestry Lineage" style={{ marginBottom: '24px' }}>
+            <FamilyTree dog={dog} />
+          </Card>
+        )}
+
+        {dog.achievements && dog.achievements.length > 0 && (
+          <Card title="Achievements">
+            <Timeline>
+              {dog.achievements.map((achievement, index) => (
+                <Timeline.Item key={index}>
+                  <Text strong>{achievement.title}</Text>
+                  <br />
+                  <Text type="secondary">{achievement.date}</Text>
+                  <br />
+                  <Text>{achievement.description}</Text>
+                </Timeline.Item>
+              ))}
+            </Timeline>
+          </Card>
+        )}
+      </Card>
+    </div>
   );
 };
 

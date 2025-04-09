@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Layout, Typography, Row, Col, Card, Input, Select, Button, Space } from 'antd';
+import { Layout, Typography, Row, Col, Card, Input, Select, Button, Space, Spin } from 'antd';
 import { SearchOutlined, PlusOutlined } from '@ant-design/icons';
 import { theme } from '../styles/theme';
-import { mockDogs } from '../data/mockDogs';
-import { Breed } from '../types/dog';
+import { dogService } from '../services/dogService';
+import { Dog } from '../types/dog';
 
 const { Header, Content } = Layout;
 const { Title, Text } = Typography;
@@ -13,15 +13,60 @@ const { Option } = Select;
 
 const Dogs: React.FC = () => {
   const navigate = useNavigate();
-  const [searchText, setSearchText] = useState('');
-  const [selectedBreed, setSelectedBreed] = useState<Breed | 'all'>('all');
+  const [dogs, setDogs] = useState<Dog[]>([]);
+  const [filteredDogs, setFilteredDogs] = useState<Dog[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedBreed, setSelectedBreed] = useState<string>('all');
 
-  const filteredDogs = mockDogs.filter(dog => {
-    const matchesSearch = dog.name.toLowerCase().includes(searchText.toLowerCase()) ||
-                         dog.description.toLowerCase().includes(searchText.toLowerCase());
-    const matchesBreed = selectedBreed === 'all' || dog.breed === selectedBreed;
-    return matchesSearch && matchesBreed;
-  });
+  useEffect(() => {
+    const fetchDogs = async () => {
+      try {
+        const data = await dogService.getDogs();
+        setDogs(data);
+        setFilteredDogs(data);
+      } catch (error) {
+        console.error('Error fetching dogs:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDogs();
+  }, []);
+
+  useEffect(() => {
+    let filtered = dogs;
+
+    if (searchTerm) {
+      filtered = filtered.filter(dog =>
+        dog.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        dog.description.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    if (selectedBreed !== 'all') {
+      filtered = filtered.filter(dog => dog.breed === selectedBreed);
+    }
+
+    setFilteredDogs(filtered);
+  }, [searchTerm, selectedBreed, dogs]);
+
+  const handleSearch = (value: string) => {
+    setSearchTerm(value);
+  };
+
+  const handleBreedChange = (value: string) => {
+    setSelectedBreed(value);
+  };
+
+  if (loading) {
+    return (
+      <div style={{ textAlign: 'center', padding: '50px' }}>
+        <Spin size="large" />
+      </div>
+    );
+  }
 
   return (
     <Layout style={{ minHeight: '100vh', background: theme.colors.background }}>
@@ -62,7 +107,7 @@ const Dogs: React.FC = () => {
               allowClear
               enterButton={<SearchOutlined />}
               size="large"
-              onChange={e => setSearchText(e.target.value)}
+              onSearch={handleSearch}
               style={{ width: '100%' }}
             />
           </Col>
@@ -73,7 +118,7 @@ const Dogs: React.FC = () => {
               size="large"
               value={selectedBreed}
               data-testid="breed-selector"
-              onChange={value => setSelectedBreed(value as Breed | 'all')}
+              onChange={handleBreedChange}
             >
               <Option value="all" data-testid="all-breeds-option">All Breeds</Option>
               <Option value="Jack Russell Terrier" data-testid="jack-russell-terrier-option">Jack Russell Terrier</Option>
@@ -90,20 +135,18 @@ const Dogs: React.FC = () => {
                 hoverable
                 onClick={() => navigate(`/dogs/${dog.id}`)}
                 cover={
-                  <div style={{ 
-                    height: '200px', 
-                    background: theme.colors.secondary,
-                    backgroundImage: `url(${dog.images[0]})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                  }} />
+                  <img
+                    alt={dog.name}
+                    src={dog.image}
+                    style={{ height: '200px', objectFit: 'cover' }}
+                  />
                 }
               >
                 <Card.Meta
                   title={dog.name}
                   description={
                     <Space direction="vertical">
-                      <Text>{dog.breed}</Text>
+                      <Text strong>{dog.breed}</Text>
                       <Text type="secondary">{dog.description}</Text>
                     </Space>
                   }

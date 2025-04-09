@@ -1,16 +1,27 @@
-export type Breed = 'Jack Russell Terrier' | 'Norfolk Terrier';
+import { Breed } from './breed';
+
+export interface FamilyMember {
+  id: number;
+  name: string;
+  parents?: {
+    father?: FamilyMember;
+    mother?: FamilyMember;
+  };
+}
 
 export interface Dog {
   id: number;
   name: string;
   breed: Breed;
   description: string;
-  images: string[];
+  image: string;
   age?: number;
-  gender?: 'male' | 'female';
-  parents?: Dog[];
-  siblings?: Dog[];
-  offspring?: Dog[];
+  parents?: {
+    father?: FamilyMember;
+    mother?: FamilyMember;
+  };
+  siblings?: FamilyMember[];
+  offspring?: FamilyMember[];
   achievements?: {
     title: string;
     date: string;
