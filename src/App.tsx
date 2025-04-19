@@ -1,7 +1,8 @@
 import { HashRouter as Router, Routes, Route } from 'react-router-dom'
-import Home from './pages/Home'
 import { ConfigProvider } from 'antd'
 import { theme } from './styles/theme'
+import Home from './pages/Home'
+import DogsAdd from './pages/dogs-add'
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/dogs/add" element={<DogsAdd />} />
         </Routes>
       </Router>
     </ConfigProvider>
