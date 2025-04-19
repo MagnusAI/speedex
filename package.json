@@ -12,7 +12,11 @@
     "db:link": "supabase link",
     "db:push": "supabase db push",
     "db:pull": "supabase db pull",
-    "db:reset": "supabase db reset --linked"
+    "db:reset": "supabase db reset --linked",
+    "test": "playwright test",
+    "test:ui": "playwright test --ui",
+    "test:debug": "playwright test --debug",
+    "test:headed": "playwright test --headed"
   },
   "dependencies": {
     "@ant-design/charts": "^2.2.7",

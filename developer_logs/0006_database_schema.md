@@ -84,8 +84,6 @@ Stores dog achievements:
   - dog_parents table
   - dog_achievements table
 
-## Status
-Active
 
 ## Notes
 - All tables include audit fields (created_at, updated_at)

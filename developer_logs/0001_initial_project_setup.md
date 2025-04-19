@@ -33,12 +33,6 @@ speedex/
    - Provides consistent design system and responsive components
    - Strong TypeScript support
 
-## Next Steps
-- [ ] Set up Supabase configuration
-- [ ] Configure Ant Design theme
-- [ ] Implement basic routing structure
-- [ ] Set up GitHub Pages deployment workflow
-
 ## Notes
 - This log follows a migration-style format for tracking project evolution
 - Future logs will be numbered sequentially (e.g., 0002_*)

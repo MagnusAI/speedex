@@ -58,9 +58,3 @@ Implemented a new feature to add dogs to the system, including their basic infor
   - Basic information + achievements
   - Basic information + pedigree
   - Complete information (all fields)
-
-## Future Improvements
-1. Add dynamic parent selection dropdowns populated with existing dogs
-2. Implement image preview before upload
-3. Add form validation for file types and sizes
-4. Consider adding a confirmation step before submission 
