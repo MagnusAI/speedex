@@ -1,37 +1,14 @@
 import React from 'react';
 import { Layout, Typography, Row, Col, Card, Button } from 'antd';
 import { theme } from '../styles/theme';
-import { useNavigate } from 'react-router-dom';
+import PageLayout from '../components/page-layout';
 
-const { Header, Content, Footer } = Layout;
+const { Content, Footer } = Layout;
 const { Title, Paragraph } = Typography;
 
 const Home: React.FC = () => {
-    const navigate = useNavigate();
-
     return (
-        <Layout style={{ minHeight: '100vh', background: theme.colors.background }}>
-            <Header style={{
-                background: theme.colors.primary,
-                padding: `0 ${theme.spacing.xl}px`,
-                position: 'fixed',
-                width: '100%',
-                zIndex: 1,
-            }}>
-                <Row justify="space-between" align="middle" style={{ height: '100%' }}>
-                    <Col>
-                        <Title level={3} style={{ color: theme.colors.lightText, margin: 0 }}>
-                            Terrier Kennel
-                        </Title>
-                    </Col>
-                    <Col>
-                        <Button type="link" onClick={() => navigate('/dogs')} style={{ color: theme.colors.lightText }}>
-                            Our Dogs
-                        </Button>
-                    </Col>
-                </Row>
-            </Header>
-
+        <PageLayout>
             <Content style={{
                 padding: `${theme.spacing.xxl}px ${theme.spacing.xl}px`,
                 marginTop: 64,
@@ -119,7 +96,7 @@ const Home: React.FC = () => {
             }}>
                 Terrier Kennel ©{new Date().getFullYear()} - All Rights Reserved
             </Footer>
-        </Layout>
+        </PageLayout>
     );
 };
 

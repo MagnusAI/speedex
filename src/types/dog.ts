@@ -1,46 +1,9 @@
 import { Breed } from './breed';
 
-export interface FamilyMember {
-  id: number;
-  name: string;
-  parents?: {
-    father?: FamilyMember;
-    mother?: FamilyMember;
-  };
-}
-
 export interface Dog {
-  id: number;
-  name: string;
-  breed: Breed;
-  description: string;
-  image: string;
-  age?: number;
-  parents?: {
-    father?: FamilyMember;
-    mother?: FamilyMember;
-  };
-  siblings?: FamilyMember[];
-  offspring?: FamilyMember[];
-  achievements?: {
-    title: string;
-    date: string;
-    description: string;
-  }[];
-}
-
-export interface Achievement {
   id: string;
-  title: string;
-  date: string;
-  description: string;
-  competition?: string;
-  placement?: string;
+  name: string;
+  nickname?: string;
+  breed: Breed;
+  image: string;
 }
-
-export interface Pedigree {
-  father: string;
-  mother: string;
-  registrationNumber?: string;
-  kennelClub?: string;
-} 
