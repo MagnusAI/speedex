@@ -30,25 +30,30 @@ export function PageHeader() {
     }}>
         <Row justify="space-between" align="middle" style={{ height: '100%' }}>
             <Col>
-                <Typography.Title level={3} style={{ color: theme.colors.lightText, margin: 0 }}>
-                    Kennel Speedex
-                </Typography.Title>
+                <Button
+                    type="link"
+                    onClick={() => navigate('/')}
+                >
+                    <Typography.Title level={3} style={{ color: theme.colors.lightText, margin: 0 }}>
+                        Kennel Speedex
+                    </Typography.Title>
+                </Button>
             </Col>
             <Col>
                 <Row gutter={theme.spacing.md}>
                     <Col>
-                        <Button 
-                            type="link" 
-                            onClick={() => navigate('/dogs')} 
+                        <Button
+                            type="link"
+                            onClick={() => navigate('/dogs')}
                             style={{ color: theme.colors.lightText }}
                         >
                             Our Dogs
                         </Button>
                     </Col>
                     <Col>
-                        <Button 
-                            type="link" 
-                            onClick={() => navigate('/login')} 
+                        <Button
+                            type="link"
+                            onClick={() => navigate('/login')}
                             style={{ color: theme.colors.lightText }}
                             icon={<LockOutlined style={{ fontSize: '1.2rem' }} />}
                         />
@@ -60,7 +65,7 @@ export function PageHeader() {
 }
 
 export function PageFooter() {
-    return <Footer style={{ 
+    return <Footer style={{
         background: theme.colors.primary,
         color: theme.colors.lightText,
         textAlign: 'center',
