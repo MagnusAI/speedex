@@ -3,7 +3,7 @@ import { ConfigProvider } from 'antd'
 import { theme } from './styles/theme'
 import Home from './pages/home'
 import DogsAdd from './pages/dogs-add'
-import Login from './pages/Login'
+import Login from './pages/login'
 import ProtectedRoute from './components/protected-route'
 
 function App() {
