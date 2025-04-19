@@ -1,11 +1,13 @@
-import PageLayout from "../components/page-layout";
+import React from 'react';
+import PageLayout from '../components/page-layout';
 
-const DogsAdd = () => {
+const DogsAdd: React.FC = () => {
+
     return (
         <PageLayout>
-            <h1>Add a Dog</h1>
+           Hello World!
         </PageLayout>
-    )
-}
+    );
+};
 
 export default DogsAdd;
