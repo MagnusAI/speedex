@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
-import { Form, Input, Upload, Button, message, Card } from 'antd';
+import { Form, Input, Upload, Button, message, Card, Select, Row, Col } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { supabase } from '../utils/supabase';
 import PageLayout from '../components/page-layout';
 import { Dog } from '../types/dog';
 import { useNavigate } from 'react-router-dom';
+import { theme } from '../styles/theme';
+
+const { Option } = Select;
 
 const DogsAdd: React.FC = () => {
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
     const [fileList, setFileList] = useState<any[]>([]);
+    const [breedType, setBreedType] = useState<string>('Jack Russell Terrier');
     const navigate = useNavigate();
 
     const onFinish = async (values: any) => {
@@ -29,7 +33,7 @@ const DogsAdd: React.FC = () => {
             const { error: uploadError } = await supabase.storage
                 .from('dog_images')
                 .upload(filePath, file, {
-                    upsert: true, // Allow overwriting if file exists
+                    upsert: true,
                     cacheControl: '3600',
                 });
 
@@ -48,7 +52,7 @@ const DogsAdd: React.FC = () => {
                 id: values.id,
                 name: values.name,
                 nickname: values.nickname,
-                breed: values.breed,
+                breed: breedType === 'Other' ? values.otherBreed : breedType,
                 image: publicUrl,
                 breeder: values.breeder,
             };
@@ -84,7 +88,7 @@ const DogsAdd: React.FC = () => {
             message.error('Image must be smaller than 2MB!');
             return Upload.LIST_IGNORE;
         }
-        return false; // Prevent automatic upload
+        return false;
     };
 
     const handleChange = ({ fileList }: { fileList: any[] }) => {
@@ -93,81 +97,117 @@ const DogsAdd: React.FC = () => {
 
     return (
         <PageLayout>
-            <Card title="Add New Dog" style={{ maxWidth: 800, margin: '0 auto' }}>
-                <Form
-                    form={form}
-                    layout="vertical"
-                    onFinish={onFinish}
-                    autoComplete="off"
-                >
-                    <Form.Item
-                        name="id"
-                        label="Registration ID"
-                        rules={[{ required: true, message: 'Please input the registration ID!' }]}
+            <Row justify="center">
+                <Col xs={24} sm={20} md={16} lg={12} xl={10}>
+                    <Card 
+                        title="Add New Dog" 
+                        style={{ 
+                            margin: `${theme.spacing.xl}px auto`,
+                            maxWidth: 800,
+                        }}
                     >
-                        <Input placeholder="Enter official registration ID" />
-                    </Form.Item>
-
-                    <Form.Item
-                        name="name"
-                        label="Name"
-                        rules={[{ required: true, message: 'Please input the dog\'s name!' }]}
-                    >
-                        <Input placeholder="Enter dog's name" />
-                    </Form.Item>
-
-                    <Form.Item
-                        name="nickname"
-                        label="Nickname"
-                    >
-                        <Input placeholder="Enter dog's nickname (optional)" />
-                    </Form.Item>
-
-                    <Form.Item
-                        name="breed"
-                        label="Breed"
-                        rules={[{ required: true, message: 'Please input the breed!' }]}
-                    >
-                        <Input placeholder="Enter breed" />
-                    </Form.Item>
-
-                    <Form.Item
-                        name="breeder"
-                        label="Breeder"
-                        rules={[{ required: true, message: 'Please input the breeder\'s name!' }]}
-                    >
-                        <Input placeholder="Enter breeder's name" />
-                    </Form.Item>
-
-                    <Form.Item
-                        name="image"
-                        label="Profile Image"
-                        rules={[{ required: true, message: 'Please upload an image!' }]}
-                    >
-                        <Upload
-                            listType="picture"
-                            maxCount={1}
-                            fileList={fileList}
-                            beforeUpload={beforeUpload}
-                            onChange={handleChange}
-                            customRequest={({ onSuccess }) => {
-                                // This is a no-op since we handle upload in form submission
-                                setTimeout(() => {
-                                    onSuccess?.("ok");
-                                }, 0);
-                            }}
+                        <Form
+                            form={form}
+                            layout="vertical"
+                            onFinish={onFinish}
+                            autoComplete="off"
+                            size="large"
                         >
-                            <Button icon={<UploadOutlined />}>Upload Image</Button>
-                        </Upload>
-                    </Form.Item>
+                            <Form.Item
+                                name="id"
+                                label="Registration ID"
+                                rules={[{ required: true, message: 'Please input the registration ID!' }]}
+                            >
+                                <Input placeholder="Enter official registration ID" />
+                            </Form.Item>
 
-                    <Form.Item>
-                        <Button type="primary" htmlType="submit" loading={loading}>
-                            Add Dog
-                        </Button>
-                    </Form.Item>
-                </Form>
-            </Card>
+                            <Form.Item
+                                name="name"
+                                label="Name"
+                                rules={[{ required: true, message: 'Please input the dog\'s name!' }]}
+                            >
+                                <Input placeholder="Enter dog's name" />
+                            </Form.Item>
+
+                            <Form.Item
+                                name="nickname"
+                                label="Nickname"
+                            >
+                                <Input placeholder="Enter dog's nickname (optional)" />
+                            </Form.Item>
+
+                            <Form.Item
+                                name="breed"
+                                label="Breed"
+                                rules={[{ required: true, message: 'Please select the breed!' }]}
+                            >
+                                <Select
+                                    value={breedType}
+                                    onChange={setBreedType}
+                                    placeholder="Select breed"
+                                >
+                                    <Option value="Jack Russell Terrier">Jack Russell Terrier</Option>
+                                    <Option value="Norfolk Terrier">Norfolk Terrier</Option>
+                                    <Option value="Other">Other</Option>
+                                </Select>
+                            </Form.Item>
+
+                            {breedType === 'Other' && (
+                                <Form.Item
+                                    name="otherBreed"
+                                    label="Specify Breed"
+                                    rules={[{ required: true, message: 'Please specify the breed!' }]}
+                                >
+                                    <Input placeholder="Enter breed name" />
+                                </Form.Item>
+                            )}
+
+                            <Form.Item
+                                name="breeder"
+                                label="Breeder"
+                                rules={[{ required: true, message: 'Please input the breeder\'s name!' }]}
+                            >
+                                <Input placeholder="Enter breeder's name" />
+                            </Form.Item>
+
+                            <Form.Item
+                                name="image"
+                                label="Profile Image"
+                                rules={[{ required: true, message: 'Please upload an image!' }]}
+                            >
+                                <Upload
+                                    listType="picture"
+                                    maxCount={1}
+                                    fileList={fileList}
+                                    beforeUpload={beforeUpload}
+                                    onChange={handleChange}
+                                    customRequest={({ onSuccess }) => {
+                                        setTimeout(() => {
+                                            onSuccess?.("ok");
+                                        }, 0);
+                                    }}
+                                >
+                                    <Button icon={<UploadOutlined />} block>
+                                        Upload Image
+                                    </Button>
+                                </Upload>
+                            </Form.Item>
+
+                            <Form.Item>
+                                <Button 
+                                    type="primary" 
+                                    htmlType="submit" 
+                                    loading={loading}
+                                    block
+                                    size="large"
+                                >
+                                    Add Dog
+                                </Button>
+                            </Form.Item>
+                        </Form>
+                    </Card>
+                </Col>
+            </Row>
         </PageLayout>
     );
 };
