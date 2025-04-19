@@ -1,6 +1,7 @@
 import { Layout, Typography, Row, Col, Button } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { theme } from '../styles/theme';
+import { LockOutlined } from '@ant-design/icons';
 
 const { Content, Header, Footer } = Layout;
 
@@ -26,30 +27,45 @@ export function PageHeader() {
         position: 'fixed',
         width: '100%',
         zIndex: 1,
-    }
-    }>
+    }}>
         <Row justify="space-between" align="middle" style={{ height: '100%' }}>
             <Col>
                 <Typography.Title level={3} style={{ color: theme.colors.lightText, margin: 0 }}>
                     Kennel Speedex
                 </Typography.Title>
             </Col>
-            < Col >
-                <Button type="link" onClick={() => navigate('/dogs')} style={{ color: theme.colors.lightText }}>
-                    Our Dogs
-                </Button>
+            <Col>
+                <Row gutter={theme.spacing.md}>
+                    <Col>
+                        <Button 
+                            type="link" 
+                            onClick={() => navigate('/dogs')} 
+                            style={{ color: theme.colors.lightText }}
+                        >
+                            Our Dogs
+                        </Button>
+                    </Col>
+                    <Col>
+                        <Button 
+                            type="link" 
+                            onClick={() => navigate('/login')} 
+                            style={{ color: theme.colors.lightText }}
+                            icon={<LockOutlined style={{ fontSize: '1.2rem' }} />}
+                        />
+                    </Col>
+                </Row>
             </Col>
         </Row>
     </Header>
 }
 
 export function PageFooter() {
-    return <Footer style={{
-        textAlign: 'center',
+    return <Footer style={{ 
         background: theme.colors.primary,
         color: theme.colors.lightText,
-        padding: `${theme.spacing.xl}px`,
+        textAlign: 'center',
+        padding: `${theme.spacing.md}px ${theme.spacing.xl}px`,
     }}>
-        Terrier Kennel ©{new Date().getFullYear()} - All Rights Reserved
+        © {new Date().getFullYear()} Kennel Speedex. All rights reserved.
     </Footer>
 }
