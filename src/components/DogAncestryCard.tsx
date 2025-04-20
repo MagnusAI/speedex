@@ -31,7 +31,7 @@ const DogAncestryCard: React.FC<DogAncestryCardProps> = ({
       minWidth: 0,
       justifyContent: 'center',
       paddingTop: layout === 'vertical' ? theme.spacing.sm : 0,
-      paddingLeft: layout === 'vertical' ? 0 : theme.spacing.sm,
+      paddingLeft: layout === 'vertical' ? theme.spacing.sm : theme.spacing.sm,
     }}>
       {ancestor.relation && (
         <Text type="secondary" style={{ fontSize: '10px' }}>
