@@ -6,6 +6,7 @@ import DogsAdd from './pages/dogs-add'
 import Login from './pages/login'
 import ProtectedRoute from './components/protected-route'
 import Dogs from './pages/dogs'
+import DogDetails from './pages/dog-details'
 
 function App() {
   return (
@@ -23,15 +24,9 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/dogs" element={<Dogs />} />
+          <Route path="/dogs/:id" element={<DogDetails />} />
+          <Route path="/dogs/add" element={<ProtectedRoute><DogsAdd /></ProtectedRoute>} />
           <Route path="/login" element={<Login />} />
-          <Route 
-            path="/dogs/add" 
-            element={
-              <ProtectedRoute>
-                <DogsAdd />
-              </ProtectedRoute>
-            } 
-          />
         </Routes>
       </Router>
     </ConfigProvider>

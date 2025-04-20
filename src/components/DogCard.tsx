@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, Typography } from 'antd';
 import { Dog } from '../types/dog';
 import { theme } from '../styles/theme';
@@ -7,14 +8,21 @@ const { Title } = Typography;
 
 interface DogCardProps {
     dog: Dog;
-    onClick?: () => void;
 }
 
-const DogCard: React.FC<DogCardProps> = ({ dog, onClick }) => {
+const DogCard: React.FC<DogCardProps> = ({ dog }) => {
+    const navigate = useNavigate();
+
+    const handleClick = () => {
+        // Encode the full registration ID for the URL
+        const encodedId = encodeURIComponent(dog.id);
+        navigate(`/dogs/${encodedId}`);
+    };
+
     return (
         <Card
             hoverable
-            onClick={onClick}
+            onClick={handleClick}
             cover={
                 <div style={{
                     height: '200px',
