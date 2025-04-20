@@ -9,6 +9,16 @@ import { theme } from '../styles/theme';
 const Dogs: React.FC = () => {
     const [dogs, setDogs] = useState<Dog[]>([]);
     const [loading, setLoading] = useState(true);
+    const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 768);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsSmallScreen(window.innerWidth < 768);
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     useEffect(() => {
         const fetchDogs = async () => {
@@ -50,14 +60,13 @@ const Dogs: React.FC = () => {
         <PageLayout>
             <div style={{ 
                 maxWidth: '1600px', 
-                margin: '0 auto',
                 padding: `0 ${theme.spacing.md}px`
             }}>
                 <div style={{
                     display: 'flex',
                     flexWrap: 'wrap',
                     gap: theme.spacing.xl,
-                    justifyContent: 'flex-start',
+                    justifyContent: isSmallScreen ? 'center' : 'flex-start',
                     alignItems: 'stretch'
                 }}>
                     {dogs.map((dog) => (
