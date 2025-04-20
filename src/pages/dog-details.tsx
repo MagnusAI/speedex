@@ -30,7 +30,7 @@ const DogDetails: React.FC = () => {
             try {
                 // Decode the registration ID from the URL
                 const registrationId = decodeURIComponent(id || '');
-                
+
                 const { data, error } = await supabase
                     .from('dogs')
                     .select('*')
@@ -55,11 +55,11 @@ const DogDetails: React.FC = () => {
     if (loading) {
         return (
             <PageLayout>
-                <div style={{ 
-                    display: 'flex', 
-                    justifyContent: 'center', 
-                    alignItems: 'center', 
-                    minHeight: '50vh' 
+                <div style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    minHeight: '50vh'
                 }}>
                     <Spin size="large" />
                 </div>
@@ -70,17 +70,17 @@ const DogDetails: React.FC = () => {
     if (!dog) {
         return (
             <PageLayout>
-                <div style={{ 
-                    display: 'flex', 
+                <div style={{
+                    display: 'flex',
                     flexDirection: 'column',
-                    justifyContent: 'center', 
-                    alignItems: 'center', 
+                    justifyContent: 'center',
+                    alignItems: 'center',
                     minHeight: '50vh',
                     gap: theme.spacing.md
                 }}>
                     <Title level={3}>Dog not found</Title>
-                    <Button 
-                        type="primary" 
+                    <Button
+                        type="primary"
                         icon={<ArrowLeftOutlined />}
                         onClick={() => navigate('/dogs')}
                     >
@@ -93,22 +93,25 @@ const DogDetails: React.FC = () => {
 
     return (
         <PageLayout>
-            <div style={{ padding: theme.spacing.xl, maxWidth: '1200px', margin: '0 auto' }}>
-                <Button 
-                    type="link" 
-                    icon={<ArrowLeftOutlined />}
-                    onClick={() => navigate('/dogs')}
-                    style={{ marginBottom: theme.spacing.lg }}
+            {isAuthenticated && (
+                <Button
+                    type="primary"
+                    icon={<EditOutlined />}
+                    style={{ position: 'absolute', top: 80, right: 40 }}
+                    onClick={() => navigate(`/dogs/${dog.id}/edit`)}
                 >
-                    Back to Dogs
+                    Edit
                 </Button>
-
+            )}
+            <div style={{ padding: theme.spacing.xl }}>
                 <Row gutter={[theme.spacing.xl, theme.spacing.xl]}>
-                    <Col xs={24} md={12}>
+                    <Col xs={24} md={12} lg={6}>
                         <div style={{
                             borderRadius: theme.borderRadius.md,
                             overflow: 'hidden',
-                            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)'
+                            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
+                            maxWidth: '480px',
+                            maxHeight: '360px'
                         }}>
                             <Image
                                 src={dog.image}
@@ -117,62 +120,38 @@ const DogDetails: React.FC = () => {
                             />
                         </div>
                     </Col>
-                    <Col xs={24} md={12}>
-                        <div style={{ 
-                            display: 'flex', 
+                    <Col xs={24} md={12} lg={6}>
+                        <div style={{
+                            display: 'flex',
                             flexDirection: 'column',
                             gap: theme.spacing.md
                         }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <Title level={2}>{dog.name}</Title>
-                                {isAuthenticated && (
-                                    <Button 
-                                        type="primary" 
-                                        icon={<EditOutlined />}
-                                        onClick={() => navigate(`/dogs/${dog.id}/edit`)}
-                                    >
-                                        Edit
-                                    </Button>
-                                )}
+
                             </div>
-                            
+
                             {dog.nickname && (
                                 <div>
                                     <Text strong>Nickname:</Text>
                                     <Text style={{ marginLeft: theme.spacing.sm }}>{dog.nickname}</Text>
                                 </div>
                             )}
-                            
+
                             <div>
                                 <Text strong>Registration ID:</Text>
                                 <Text style={{ marginLeft: theme.spacing.sm }}>{dog.id}</Text>
                             </div>
-                            
+
                             <div>
                                 <Text strong>Breed:</Text>
                                 <Text style={{ marginLeft: theme.spacing.sm }}>{dog.breed}</Text>
                             </div>
-                            
+
                             {dog.breeder && (
                                 <div>
                                     <Text strong>Breeder:</Text>
                                     <Text style={{ marginLeft: theme.spacing.sm }}>{dog.breeder}</Text>
-                                </div>
-                            )}
-                            
-                            <div>
-                                <Text strong>Added:</Text>
-                                <Text style={{ marginLeft: theme.spacing.sm }}>
-                                    {dog.created_at ? new Date(dog.created_at).toLocaleDateString() : 'N/A'}
-                                </Text>
-                            </div>
-                            
-                            {dog.updated_at && (
-                                <div>
-                                    <Text strong>Last Updated:</Text>
-                                    <Text style={{ marginLeft: theme.spacing.sm }}>
-                                        {new Date(dog.updated_at).toLocaleDateString()}
-                                    </Text>
                                 </div>
                             )}
                         </div>
