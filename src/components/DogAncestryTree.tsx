@@ -14,17 +14,17 @@ const DogAncestryTree: React.FC<DogAncestryTreeProps> = ({ tree }) => {
     return (
         <div style={{
             padding: theme.spacing.lg,
-            overflowX: 'auto',
-            maxWidth: '1100px',
+            overflow: 'hidden',
         }}>
             <Title level={3} style={{ marginBottom: theme.spacing.lg }}>Ancestry</Title>
 
             <div style={{
                 aspectRatio: '1/1',
-                width: '100%',
                 margin: '0 auto',
+                overflow: 'auto',
+                width: '100%',
             }}>
-                <Row style={{ width: '100%' }}>
+                <Row style={{ width: '1100px' }}>
                     {/* Parents Column - 2 cards */}
                     <Col style={{
                         width: '40%',

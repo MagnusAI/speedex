@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Spin, message, Typography, Row, Col, Button, Image } from 'antd';
+import { Spin, message, Typography, Button, Image } from 'antd';
 import { ArrowLeftOutlined, EditOutlined } from '@ant-design/icons';
 import { supabase } from '../utils/supabase';
 import PageLayout from '../components/page-layout';
@@ -105,62 +105,52 @@ const DogDetails: React.FC = () => {
                     Edit
                 </Button>
             )}
-            <div style={{ padding: theme.spacing.xl }}>
-                <Row gutter={[theme.spacing.xl, theme.spacing.xl]}>
-                    <Col xs={24} md={12} lg={6}>
-                        <div style={{
-                            borderRadius: theme.borderRadius.md,
-                            overflow: 'hidden',
-                            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
-                            maxWidth: '480px',
-                            maxHeight: '360px'
-                        }}>
-                            <Image
-                                src={dog.image}
-                                alt={dog.name}
-                                style={{ width: '100%' }}
-                            />
+            <div style={{ padding: theme.spacing.xl, display: 'flex', flexWrap: 'wrap', gap: theme.spacing.xl }}>
+                <div style={{
+                    borderRadius: theme.borderRadius.md,
+                    overflow: 'hidden',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
+                    maxWidth: '480px',
+                    maxHeight: '360px'
+                }}>
+                    <Image
+                        src={dog.image}
+                        alt={dog.name}
+                        style={{ width: '100%' }}
+                    />
+                </div>
+                <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: theme.spacing.md
+                }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <Title level={2}>{dog.name}</Title>
+
+                    </div>
+                    {dog.nickname && (
+                        <div>
+                            <Text strong>Nickname:</Text>
+                            <Text style={{ marginLeft: theme.spacing.sm }}>{dog.nickname}</Text>
                         </div>
-                    </Col>
-                    <Col xs={24} md={12} lg={6}>
-                        <div style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: theme.spacing.md
-                        }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <Title level={2}>{dog.name}</Title>
-
-                            </div>
-
-                            {dog.nickname && (
-                                <div>
-                                    <Text strong>Nickname:</Text>
-                                    <Text style={{ marginLeft: theme.spacing.sm }}>{dog.nickname}</Text>
-                                </div>
-                            )}
-
-                            <div>
-                                <Text strong>Registration ID:</Text>
-                                <Text style={{ marginLeft: theme.spacing.sm }}>{dog.id}</Text>
-                            </div>
-
-                            <div>
-                                <Text strong>Breed:</Text>
-                                <Text style={{ marginLeft: theme.spacing.sm }}>{dog.breed}</Text>
-                            </div>
-
-                            {dog.breeder && (
-                                <div>
-                                    <Text strong>Breeder:</Text>
-                                    <Text style={{ marginLeft: theme.spacing.sm }}>{dog.breeder}</Text>
-                                </div>
-                            )}
+                    )}
+                    <div>
+                        <Text strong>Registration ID:</Text>
+                        <Text style={{ marginLeft: theme.spacing.sm }}>{dog.id}</Text>
+                    </div>
+                    <div>
+                        <Text strong>Breed:</Text>
+                        <Text style={{ marginLeft: theme.spacing.sm }}>{dog.breed}</Text>
+                    </div>
+                    {dog.breeder && (
+                        <div>
+                            <Text strong>Breeder:</Text>
+                            <Text style={{ marginLeft: theme.spacing.sm }}>{dog.breeder}</Text>
                         </div>
-                    </Col>
-                </Row>
+                    )}
+                </div>
             </div>
-            <DogAncestryTree tree={mockAncestryTree}  />
+            <DogAncestryTree tree={mockAncestryTree} />
         </PageLayout>
     );
 };
