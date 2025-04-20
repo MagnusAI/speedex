@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Spin, message } from 'antd';
+import { Spin, message } from 'antd';
 import { supabase } from '../utils/supabase';
 import PageLayout from '../components/page-layout';
 import DogCard from '../components/DogCard';
@@ -48,19 +48,28 @@ const Dogs: React.FC = () => {
 
     return (
         <PageLayout>
-            <Row gutter={[theme.spacing.lg, theme.spacing.lg]}>
-                {dogs.map((dog) => (
-                    <Col 
-                        key={dog.id} 
-                        xs={24} 
-                        sm={12} 
-                        md={8} 
-                        lg={6}
-                    >
-                        <DogCard dog={dog} />
-                    </Col>
-                ))}
-            </Row>
+            <div style={{ 
+                maxWidth: '1600px', 
+                margin: '0 auto',
+                padding: `0 ${theme.spacing.md}px`
+            }}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: theme.spacing.xl, justifyContent: 'flex-start' }}>
+                    {dogs.map((dog) => (
+                        <div 
+                            key={dog.id}
+                            style={{ 
+                                width: '300px',
+                                flexShrink: 0,
+                                height: '100%'
+                            }}
+                        >
+                            <div style={{ height: '100%' }}>
+                                <DogCard dog={dog} />
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
         </PageLayout>
     );
 };
