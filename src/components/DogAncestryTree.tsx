@@ -55,7 +55,7 @@ const DogAncestryTree: React.FC<DogAncestryTreeProps> = ({ tree }) => {
 
                     {/* Grandparents Column - 4 cards */}
                     <Col style={{
-                        width: '30%',
+                        width: '35%',
                         padding: `0 ${theme.spacing.xs}px`,
                     }}>
                         {tree.grandparents && (
@@ -99,7 +99,7 @@ const DogAncestryTree: React.FC<DogAncestryTreeProps> = ({ tree }) => {
 
                     {/* Great Grandparents Column - 8 cards */}
                     <Col style={{
-                        width: '30%',
+                        width: '25%',
                         padding: `0 ${theme.spacing.xs}px`,
                     }}>
                         {tree.greatGrandparents && (

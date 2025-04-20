@@ -10,13 +10,13 @@ const __dirname = dirname(__filename)
 export default defineConfig({
   plugins: [react()],
   base: '/speedex/',
-  build: {
-    outDir: 'dist',
-    sourcemap: true
-  },
   resolve: {
     alias: {
       '@': resolve(__dirname, './src')
     }
+  },
+  build: {
+    outDir: 'dist',
+    sourcemap: true
   }
 })
