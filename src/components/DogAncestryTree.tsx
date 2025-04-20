@@ -15,6 +15,7 @@ const DogAncestryTree: React.FC<DogAncestryTreeProps> = ({ tree }) => {
         <div style={{
             padding: theme.spacing.lg,
             overflowX: 'auto',
+            maxWidth: '1100px',
         }}>
             <Title level={3} style={{ marginBottom: theme.spacing.lg }}>Ancestry</Title>
 
@@ -23,10 +24,9 @@ const DogAncestryTree: React.FC<DogAncestryTreeProps> = ({ tree }) => {
                 width: '100%',
                 margin: '0 auto',
             }}>
-                <Row style={{ height: '100%', width: '100%' }}>
+                <Row style={{ width: '100%' }}>
                     {/* Parents Column - 2 cards */}
                     <Col style={{
-                        height: '100%',
                         width: '40%',
                         padding: `0 ${theme.spacing.xs}px`,
                     }}>
@@ -55,7 +55,6 @@ const DogAncestryTree: React.FC<DogAncestryTreeProps> = ({ tree }) => {
 
                     {/* Grandparents Column - 4 cards */}
                     <Col style={{
-                        height: '100%',
                         width: '30%',
                         padding: `0 ${theme.spacing.xs}px`,
                     }}>
@@ -69,28 +68,28 @@ const DogAncestryTree: React.FC<DogAncestryTreeProps> = ({ tree }) => {
                                 {tree.grandparents.mothersMother && (
                                     <div style={{ flex: 1, width: '100%' }}>
                                         <DogAncestryCard
-                                            ancestor={{ ...tree.grandparents.mothersMother, relation: 'Maternal Grandmother' }} layout='vertical'
+                                            ancestor={{ ...tree.grandparents.mothersMother, relation: 'Maternal Grandmother' }} layout='horizontal'
                                         />
                                     </div>
                                 )}
                                 {tree.grandparents.mothersFather && (
                                     <div style={{ flex: 1, width: '100%' }}>
                                         <DogAncestryCard
-                                            ancestor={{ ...tree.grandparents.mothersFather, relation: 'Maternal Grandfather' }} layout='vertical'
+                                            ancestor={{ ...tree.grandparents.mothersFather, relation: 'Maternal Grandfather' }} layout='horizontal'
                                         />
                                     </div>
                                 )}
                                 {tree.grandparents.fathersMother && (
                                     <div style={{ flex: 1, width: '100%' }}>
                                         <DogAncestryCard
-                                            ancestor={{ ...tree.grandparents.fathersMother, relation: 'Paternal Grandmother' }} layout='vertical'
+                                            ancestor={{ ...tree.grandparents.fathersMother, relation: 'Paternal Grandmother' }} layout='horizontal'
                                         />
                                     </div>
                                 )}
                                 {tree.grandparents.fathersFather && (
                                     <div style={{ flex: 1, width: '100%' }}>
                                         <DogAncestryCard
-                                            ancestor={{ ...tree.grandparents.fathersFather, relation: 'Paternal Grandfather' }} layout='vertical'
+                                            ancestor={{ ...tree.grandparents.fathersFather, relation: 'Paternal Grandfather' }} layout='horizontal'
                                         />
                                     </div>
                                 )}
@@ -100,7 +99,6 @@ const DogAncestryTree: React.FC<DogAncestryTreeProps> = ({ tree }) => {
 
                     {/* Great Grandparents Column - 8 cards */}
                     <Col style={{
-                        height: '100%',
                         width: '30%',
                         padding: `0 ${theme.spacing.xs}px`,
                     }}>
@@ -114,56 +112,56 @@ const DogAncestryTree: React.FC<DogAncestryTreeProps> = ({ tree }) => {
                                 {tree.greatGrandparents.mothersMothersParents?.mother && (
                                     <div style={{ flex: 1, width: '100%' }}>
                                         <DogAncestryCard
-                                            ancestor={{ ...tree.greatGrandparents.mothersMothersParents.mother, relation: 'Maternal Great Grandmother' }} layout='horizontal'
+                                            ancestor={{ ...tree.greatGrandparents.mothersMothersParents.mother, relation: 'Maternal Great Grandmother' }} simple
                                         />
                                     </div>
                                 )}
                                 {tree.greatGrandparents.mothersMothersParents?.father && (
                                     <div style={{ flex: 1, width: '100%' }}>
                                         <DogAncestryCard
-                                            ancestor={{ ...tree.greatGrandparents.mothersMothersParents.father, relation: 'Maternal Great Grandfather' }} layout='horizontal'
+                                            ancestor={{ ...tree.greatGrandparents.mothersMothersParents.father, relation: 'Maternal Great Grandfather' }} simple
                                         />
                                     </div>
                                 )}
                                 {tree.greatGrandparents.mothersFathersParents?.mother && (
                                     <div style={{ flex: 1, width: '100%' }}>
                                         <DogAncestryCard
-                                            ancestor={{ ...tree.greatGrandparents.mothersFathersParents.mother, relation: 'Maternal Great Grandmother' }} layout='horizontal'
+                                            ancestor={{ ...tree.greatGrandparents.mothersFathersParents.mother, relation: 'Maternal Great Grandmother' }} simple
                                         />
                                     </div>
                                 )}
                                 {tree.greatGrandparents.mothersFathersParents?.father && (
                                     <div style={{ flex: 1, width: '100%' }}>
                                         <DogAncestryCard
-                                            ancestor={{ ...tree.greatGrandparents.mothersFathersParents.father, relation: 'Maternal Great Grandfather' }} layout='horizontal'
+                                            ancestor={{ ...tree.greatGrandparents.mothersFathersParents.father, relation: 'Maternal Great Grandfather' }} simple
                                         />
                                     </div>
                                 )}
                                 {tree.greatGrandparents.fathersMothersParents?.mother && (
                                     <div style={{ flex: 1, width: '100%' }}>
                                         <DogAncestryCard
-                                            ancestor={{ ...tree.greatGrandparents.fathersMothersParents.mother, relation: 'Paternal Great Grandmother' }} layout='horizontal'
+                                            ancestor={{ ...tree.greatGrandparents.fathersMothersParents.mother, relation: 'Paternal Great Grandmother' }} simple
                                         />
                                     </div>
                                 )}
                                 {tree.greatGrandparents.fathersMothersParents?.father && (
                                     <div style={{ flex: 1, width: '100%' }}>
                                         <DogAncestryCard
-                                            ancestor={{ ...tree.greatGrandparents.fathersMothersParents.father, relation: 'Paternal Great Grandfather' }} layout='horizontal'
+                                            ancestor={{ ...tree.greatGrandparents.fathersMothersParents.father, relation: 'Paternal Great Grandfather' }} simple
                                         />
                                     </div>
                                 )}
                                 {tree.greatGrandparents.fathersFathersParents?.mother && (
                                     <div style={{ flex: 1, width: '100%' }}>
                                         <DogAncestryCard
-                                            ancestor={{ ...tree.greatGrandparents.fathersFathersParents.mother, relation: 'Paternal Great Grandmother' }} layout='horizontal'
+                                            ancestor={{ ...tree.greatGrandparents.fathersFathersParents.mother, relation: 'Paternal Great Grandmother' }} simple
                                         />
                                     </div>
                                 )}
                                 {tree.greatGrandparents.fathersFathersParents?.father && (
                                     <div style={{ flex: 1, width: '100%' }}>
                                         <DogAncestryCard
-                                            ancestor={{ ...tree.greatGrandparents.fathersFathersParents.father, relation: 'Paternal Great Grandfather' }} layout='horizontal'
+                                            ancestor={{ ...tree.greatGrandparents.fathersFathersParents.father, relation: 'Paternal Great Grandfather' }} simple
                                         />
                                     </div>
                                 )}
