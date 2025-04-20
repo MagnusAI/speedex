@@ -53,19 +53,24 @@ const Dogs: React.FC = () => {
                 margin: '0 auto',
                 padding: `0 ${theme.spacing.md}px`
             }}>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: theme.spacing.xl, justifyContent: 'flex-start' }}>
+                <div style={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    gap: theme.spacing.xl,
+                    justifyContent: 'flex-start',
+                    alignItems: 'stretch'
+                }}>
                     {dogs.map((dog) => (
                         <div 
                             key={dog.id}
                             style={{ 
                                 width: '300px',
                                 flexShrink: 0,
-                                height: '100%'
+                                display: 'flex',
+                                flexDirection: 'column'
                             }}
                         >
-                            <div style={{ height: '100%' }}>
-                                <DogCard dog={dog} />
-                            </div>
+                            <DogCard dog={dog} />
                         </div>
                     ))}
                 </div>

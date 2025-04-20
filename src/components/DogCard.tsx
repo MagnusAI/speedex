@@ -37,8 +37,18 @@ const DogCard: React.FC<DogCardProps> = ({ dog, onClick }) => {
             }
             style={{
                 width: '100%',
+                height: '100%',
                 borderRadius: theme.borderRadius.md,
-                overflow: 'hidden'
+                overflow: 'hidden',
+                display: 'flex',
+                flexDirection: 'column'
+            }}
+            bodyStyle={{
+                flex: 1,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: theme.spacing.md
             }}
         >
             <Title level={4} style={{ margin: 0, textAlign: 'center' }}>
