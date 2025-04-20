@@ -1,15 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { Spin, message } from 'antd';
+import { Spin, message, Layout, Typography, Card, Row, Col, Button, Image } from 'antd';
+import { useNavigate } from 'react-router-dom';
+import { PlusOutlined } from '@ant-design/icons';
 import { supabase } from '../utils/supabase';
 import PageLayout from '../components/page-layout';
 import DogCard from '../components/DogCard';
 import { Dog } from '../types/dog';
 import { theme } from '../styles/theme';
 
+const { Content } = Layout;
+const { Title } = Typography;
+
 const Dogs: React.FC = () => {
     const [dogs, setDogs] = useState<Dog[]>([]);
     const [loading, setLoading] = useState(true);
     const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 768);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const handleResize = () => {
@@ -18,6 +25,15 @@ const Dogs: React.FC = () => {
 
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    useEffect(() => {
+        const checkAuth = async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            setIsAuthenticated(!!session);
+        };
+
+        checkAuth();
     }, []);
 
     useEffect(() => {
@@ -57,34 +73,41 @@ const Dogs: React.FC = () => {
     }
 
     return (
-        <PageLayout>
-            <div style={{ 
-                maxWidth: '1600px', 
-                padding: `0 ${theme.spacing.md}px`
-            }}>
-                <div style={{
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    gap: theme.spacing.xl,
-                    justifyContent: isSmallScreen ? 'center' : 'flex-start',
-                    alignItems: 'stretch'
-                }}>
-                    {dogs.map((dog) => (
-                        <div 
-                            key={dog.id}
-                            style={{ 
-                                width: '300px',
-                                flexShrink: 0,
-                                display: 'flex',
-                                flexDirection: 'column'
-                            }}
-                        >
-                            <DogCard dog={dog} />
-                        </div>
-                    ))}
-                </div>
-            </div>
-        </PageLayout>
+        <Layout>
+            <PageLayout>
+                <Content style={{ padding: '24px', maxWidth: '1600px', margin: '0 auto' }}>
+                    <Row gutter={[24, 24]} justify="center">
+                        {dogs.map((dog) => (
+                            <Col key={dog.id} xs={24} sm={12} md={8} lg={6}>
+                                <DogCard dog={dog} />
+                            </Col>
+                        ))}
+                        {isAuthenticated && (
+                            <Col xs={24} sm={12} md={8} lg={6}>
+                                <Card
+                                    hoverable
+                                    style={{
+                                        height: '100%',
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        cursor: 'pointer',
+                                        textAlign: 'center'
+                                    }}
+                                    onClick={() => navigate('/dogs/add')}
+                                >
+                                    <div style={{ marginBottom: '16px' }}>
+                                        <PlusOutlined style={{ fontSize: '48px' }} />
+                                    </div>
+                                    <Title level={4} style={{ margin: 0 }}>New Dog</Title>
+                                </Card>
+                            </Col>
+                        )}
+                    </Row>
+                </Content>
+            </PageLayout>
+        </Layout>
     );
 };
 
