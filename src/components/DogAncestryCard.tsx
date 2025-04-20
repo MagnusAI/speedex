@@ -7,9 +7,13 @@ const { Text, Title } = Typography;
 
 interface DogAncestryCardProps {
   ancestor: Ancestor;
+  layout?: 'vertical' | 'horizontal';
 }
 
-const DogAncestryCard: React.FC<DogAncestryCardProps> = ({ ancestor }) => {
+const DogAncestryCard: React.FC<DogAncestryCardProps> = ({ 
+  ancestor,
+  layout = 'horizontal'
+}) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const handleImageClick = () => {
@@ -21,70 +25,90 @@ const DogAncestryCard: React.FC<DogAncestryCardProps> = ({ ancestor }) => {
       <Card
         style={{
           width: '100%',
+          height: '100%',
           borderRadius: theme.borderRadius.lg,
           boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
         }}
         bodyStyle={{
-          padding: theme.spacing.md,
-          display: 'flex',
-          flexDirection: 'column',
-          gap: theme.spacing.sm,
+          padding: theme.spacing.sm,
+          height: '100%',
         }}
       >
-        <div 
-          style={{
-            width: '100%',
-            aspectRatio: '1',
-            borderRadius: theme.borderRadius.md,
-            overflow: 'hidden',
-            cursor: 'pointer',
-          }}
-          onClick={handleImageClick}
-        >
-          <img
-            alt={ancestor.name}
-            src={ancestor.profile_image_url}
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-            }}
-          />
-        </div>
-
         <div style={{
           display: 'flex',
-          flexDirection: 'column',
-          gap: theme.spacing.xs,
+          flexDirection: layout === 'vertical' ? 'column' : 'row',
+          height: '100%',
+          width: '100%',
+          gap: theme.spacing.sm,
         }}>
-          {ancestor.relation && (
-            <Text type="secondary" style={{ fontSize: '12px' }}>
-              {ancestor.relation}
+          {/* Image container */}
+          <div 
+            style={{
+              width: layout === 'vertical' ? '100%' : '50%',
+              height: layout === 'vertical' ? '60%' : '100%',
+              flexShrink: 0,
+              borderRadius: theme.borderRadius.md,
+              overflow: 'hidden',
+              cursor: 'pointer',
+              position: 'relative',
+            }}
+            onClick={handleImageClick}
+          >
+            <img
+              alt={ancestor.name}
+              src={ancestor.profile_image_url}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+              }}
+            />
+          </div>
+
+          {/* Content container */}
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: theme.spacing.xs,
+            flex: 1,
+            minWidth: 0,
+            justifyContent: 'center',
+            paddingTop: layout === 'vertical' ? theme.spacing.sm : 0,
+            paddingLeft: layout === 'vertical' ? 0 : theme.spacing.sm,
+          }}>
+            {ancestor.relation && (
+              <Text type="secondary" style={{ fontSize: '10px' }}>
+                {ancestor.relation}
+              </Text>
+            )}
+            <Title level={5} style={{ margin: 0, fontSize: '14px' }}>
+              {ancestor.name}
+            </Title>
+            <Text style={{ fontSize: '10px' }}>
+              {ancestor.registration_id}
             </Text>
-          )}
-          <Title level={5} style={{ margin: 0 }}>
-            {ancestor.name}
-          </Title>
-          <Text style={{ fontSize: '12px' }}>
-            {ancestor.registration_id}
-          </Text>
-          {ancestor.champion_titles && ancestor.champion_titles.length > 0 && (
-            <Space wrap>
-              {ancestor.champion_titles.map((title, index) => (
-                <Tag 
-                  key={index}
-                  color="gold"
-                  style={{ 
-                    margin: 0,
-                    fontSize: '10px',
-                    padding: '0 4px'
-                  }}
-                >
-                  {title}
-                </Tag>
-              ))}
-            </Space>
-          )}
+            {ancestor.champion_titles && ancestor.champion_titles.length > 0 && (
+              <Space wrap>
+                {ancestor.champion_titles.map((title, index) => (
+                  <Tag 
+                    key={index}
+                    color="gold"
+                    style={{ 
+                      margin: 0,
+                      fontSize: '8px',
+                      padding: '0 4px',
+                      lineHeight: '14px',
+                    }}
+                  >
+                    {title}
+                  </Tag>
+                ))}
+              </Space>
+            )}
+          </div>
         </div>
       </Card>
 
