@@ -6,6 +6,8 @@ import { supabase } from '../utils/supabase';
 import PageLayout from '../components/page-layout';
 import { Dog } from '../types/dog';
 import { theme } from '../styles/theme';
+import { mockAncestryTree } from '../mocks/ancestry';
+import DogAncestryTree from '../components/DogAncestryTree';
 
 const { Title, Text } = Typography;
 
@@ -158,6 +160,7 @@ const DogDetails: React.FC = () => {
                     </Col>
                 </Row>
             </div>
+            <DogAncestryTree tree={mockAncestryTree}  />
         </PageLayout>
     );
 };
