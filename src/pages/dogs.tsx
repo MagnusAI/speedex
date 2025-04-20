@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Spin, message, Layout, Typography, Card, Row, Col, Button, Image } from 'antd';
+import { Spin, message, Layout, Typography, Card } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { PlusOutlined } from '@ant-design/icons';
 import { supabase } from '../utils/supabase';
 import PageLayout from '../components/page-layout';
 import DogCard from '../components/DogCard';
 import { Dog } from '../types/dog';
-import { theme } from '../styles/theme';
 
 const { Content } = Layout;
 const { Title } = Typography;
@@ -14,18 +13,8 @@ const { Title } = Typography;
 const Dogs: React.FC = () => {
     const [dogs, setDogs] = useState<Dog[]>([]);
     const [loading, setLoading] = useState(true);
-    const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 768);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const navigate = useNavigate();
-
-    useEffect(() => {
-        const handleResize = () => {
-            setIsSmallScreen(window.innerWidth < 768);
-        };
-
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
 
     useEffect(() => {
         const checkAuth = async () => {
@@ -76,14 +65,19 @@ const Dogs: React.FC = () => {
         <Layout>
             <PageLayout>
                 <Content style={{ padding: '24px', maxWidth: '1600px', margin: '0 auto' }}>
-                    <Row gutter={[24, 24]} justify="center">
+                    <div style={{ 
+                        display: 'flex', 
+                        flexWrap: 'wrap', 
+                        gap: '24px', 
+                        justifyContent: window.innerWidth < 768 ? 'center' : 'flex-start'
+                    }}>
                         {dogs.map((dog) => (
-                            <Col key={dog.id} xs={24} sm={12} md={8} lg={6}>
+                            <div key={dog.id} style={{ width: '300px' }}>
                                 <DogCard dog={dog} />
-                            </Col>
+                            </div>
                         ))}
                         {isAuthenticated && (
-                            <Col xs={24} sm={12} md={8} lg={6}>
+                            <div style={{ width: '300px' }}>
                                 <Card
                                     hoverable
                                     style={{
@@ -93,18 +87,26 @@ const Dogs: React.FC = () => {
                                         justifyContent: 'center',
                                         alignItems: 'center',
                                         cursor: 'pointer',
-                                        textAlign: 'center'
+                                        textAlign: 'center',
+                                        minHeight: '260px'
                                     }}
                                     onClick={() => navigate('/dogs/add')}
                                 >
-                                    <div style={{ marginBottom: '16px' }}>
+                                    <div style={{ 
+                                        marginBottom: '16px',
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        flex: 1
+                                    }}>
                                         <PlusOutlined style={{ fontSize: '48px' }} />
+                                        <Title level={4} style={{ margin: '16px 0 0 0' }}>New Dog</Title>
                                     </div>
-                                    <Title level={4} style={{ margin: 0 }}>New Dog</Title>
                                 </Card>
-                            </Col>
+                            </div>
                         )}
-                    </Row>
+                    </div>
                 </Content>
             </PageLayout>
         </Layout>
