@@ -19,15 +19,16 @@ const DogAncestryTree: React.FC<DogAncestryTreeProps> = ({ tree }) => {
             <Title level={3} style={{ marginBottom: theme.spacing.lg }}>Ancestry</Title>
 
             <div style={{
-                aspectRatio: '1/1',
-                margin: '0 auto',
                 overflow: 'auto',
                 width: '100%',
+                maxWidth: '1100px',
+                minHeight: '680px',
             }}>
-                <Row style={{ width: '1100px' }}>
+                <Row style={{ minWidth: '600px' }}>
                     {/* Parents Column - 2 cards */}
                     <Col style={{
-                        width: '40%',
+                        width: '100%',
+                        maxWidth: '244px',
                         padding: `0 ${theme.spacing.xs}px`,
                     }}>
                         <div style={{
@@ -55,7 +56,8 @@ const DogAncestryTree: React.FC<DogAncestryTreeProps> = ({ tree }) => {
 
                     {/* Grandparents Column - 4 cards */}
                     <Col style={{
-                        width: '40%',
+                        width: '100%',
+                        maxWidth: '37%',
                         padding: `0 ${theme.spacing.xs}px`,
                     }}>
                         {tree.grandparents && (
@@ -99,7 +101,8 @@ const DogAncestryTree: React.FC<DogAncestryTreeProps> = ({ tree }) => {
 
                     {/* Great Grandparents Column - 8 cards */}
                     <Col style={{
-                        width: '20%',
+                        width: '100%',
+                        maxWidth: '20%',
                         padding: `0 ${theme.spacing.xs}px`,
                     }}>
                         {tree.greatGrandparents && (

@@ -9,7 +9,7 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
     return <Layout style={{ minHeight: '100vh', background: theme.colors.background }}>
         <PageHeader />
         <Content style={{
-            padding: `${theme.spacing.xxl}px ${theme.spacing.xl}px`,
+            padding: `${theme.spacing.xxl}px ${theme.spacing.md}px`,
             marginTop: 64,
         }}>
             {children}

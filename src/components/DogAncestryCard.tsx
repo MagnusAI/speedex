@@ -30,7 +30,6 @@ const DogAncestryCard: React.FC<DogAncestryCardProps> = ({
       flex: 1,
       minWidth: 0,
       justifyContent: 'center',
-      paddingTop: layout === 'vertical' ? theme.spacing.sm : 0,
       paddingLeft: layout === 'vertical' ? theme.spacing.sm : theme.spacing.sm,
     }}>
       {ancestor.relation && (
@@ -76,6 +75,7 @@ const DogAncestryCard: React.FC<DogAncestryCardProps> = ({
         style={{
           width: '100%',
           height: '100%',
+          maxWidth: layout === 'vertical' ? '244px' : '100%',
           borderRadius: theme.borderRadius.lg,
           boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
           cursor: 'pointer',

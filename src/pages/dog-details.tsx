@@ -110,6 +110,8 @@ const DogDetails: React.FC = () => {
                     borderRadius: theme.borderRadius.md,
                     overflow: 'hidden',
                     boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
+                    flex: 1,
+                    minWidth: '300px',
                     maxWidth: '480px',
                     maxHeight: '360px'
                 }}>
@@ -122,7 +124,9 @@ const DogDetails: React.FC = () => {
                 <div style={{
                     display: 'flex',
                     flexDirection: 'column',
-                    gap: theme.spacing.md
+                    gap: theme.spacing.md,
+                    minWidth: '200px',
+                    flex: 1
                 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <Title level={2}>{dog.name}</Title>
@@ -135,8 +139,8 @@ const DogDetails: React.FC = () => {
                         </div>
                     )}
                     <div>
-                        <Text strong>Registration ID:</Text>
-                        <Text style={{ marginLeft: theme.spacing.sm }}>{dog.id}</Text>
+                        <Text strong style={{ whiteSpace: 'nowrap' }}>Registration ID:</Text>
+                        <Text style={{ marginLeft: theme.spacing.sm, whiteSpace: 'nowrap' }}>{dog.id}</Text>
                     </div>
                     <div>
                         <Text strong>Breed:</Text>
