@@ -100,7 +100,7 @@ const DogDetails: React.FC = () => {
                     type="primary"
                     icon={<EditOutlined />}
                     style={{ position: 'absolute', top: 80, right: 40 }}
-                    onClick={() => navigate(`/dogs/${dog.id}/edit`)}
+                    onClick={() => navigate(`/dogs/${encodeURIComponent(dog.id)}/edit`)}
                 >
                     Edit
                 </Button>
@@ -130,7 +130,6 @@ const DogDetails: React.FC = () => {
                 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <Title level={2}>{dog.name}</Title>
-
                     </div>
                     {dog.nickname && (
                         <div>
