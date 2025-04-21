@@ -3,7 +3,7 @@ import { Spin, message, Layout, Typography, Card } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { PlusOutlined } from '@ant-design/icons';
 import { supabase } from '../utils/supabase';
-import PageLayout from '../components/page-layout';
+import PageLayout from '../components/PageLayout';
 import DogCard from '../components/DogCard';
 import { Dog } from '../types/dog';
 

@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Spin, message, Typography, Button, Image } from 'antd';
 import { ArrowLeftOutlined, EditOutlined } from '@ant-design/icons';
 import { supabase } from '../utils/supabase';
-import PageLayout from '../components/page-layout';
+import PageLayout from '../components/PageLayout';
 import { Dog } from '../types/dog';
 import { theme } from '../styles/theme';
 import { mockAncestryTree } from '../mocks/ancestry';

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Typography, Row, Col, Card, Button } from 'antd';
 import { theme } from '../styles/theme';
-import PageLayout from '../components/page-layout';
+import PageLayout from '../components/PageLayout';
 
 
 const { Title, Paragraph } = Typography;
