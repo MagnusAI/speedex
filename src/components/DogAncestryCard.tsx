@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Card, Typography, Tag, Space, Modal } from 'antd';
+import { EyeOutlined } from '@ant-design/icons';
 import { Ancestor } from '../types/ancestry';
 import { theme } from '../styles/theme';
 
@@ -17,6 +18,7 @@ const DogAncestryCard: React.FC<DogAncestryCardProps> = ({
   simple = false
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   const handleCardClick = () => {
     setIsModalVisible(true);
@@ -68,17 +70,46 @@ const DogAncestryCard: React.FC<DogAncestryCardProps> = ({
     </div>
   );
 
+  const renderPreviewOverlay = () => (
+    <div
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: 'white',
+        transition: 'opacity 0.3s ease',
+        opacity: isHovered ? 1 : 0,
+        borderRadius: theme.borderRadius.md,
+      }}
+    >
+      <Space size={4} style={{ color: 'white' }}>
+        <EyeOutlined style={{ fontSize: '16px' }} />
+        <Text style={{ color: 'white', fontSize: '12px' }}>View Details</Text>
+      </Space>
+    </div>
+  );
+
   return (
     <>
       <Card
         onClick={handleCardClick}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
         style={{
           width: '100%',
           height: '100%',
           maxWidth: layout === 'vertical' ? '244px' : '100%',
           borderRadius: theme.borderRadius.lg,
-          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
+          boxShadow: isHovered ? '0 4px 12px rgba(0, 0, 0, 0.2)' : '0 2px 8px rgba(0, 0, 0, 0.15)',
           cursor: 'pointer',
+          transition: 'all 0.3s ease',
+          transform: isHovered ? 'translateY(-2px)' : 'translateY(0)',
         }}
         bodyStyle={{
           padding: theme.spacing.sm,
@@ -113,13 +144,19 @@ const DogAncestryCard: React.FC<DogAncestryCardProps> = ({
                   width: '100%',
                   height: '100%',
                   objectFit: 'cover',
+                  transition: 'transform 0.3s ease',
+                  transform: isHovered ? 'scale(1.05)' : 'scale(1)',
                 }}
               />
+              {renderPreviewOverlay()}
             </div>
           )}
 
           {/* Content container */}
-          {renderContent()}
+          <div style={{ position: 'relative', flex: 1 }}>
+            {renderContent()}
+            {simple && renderPreviewOverlay()}
+          </div>
         </div>
       </Card>
 
