@@ -8,6 +8,8 @@ import { Dog } from '../types/dog';
 import { theme } from '../styles/theme';
 import { mockAncestryTree } from '../mocks/ancestry';
 import DogAncestryTree from '../components/DogAncestryTree';
+import { buildAncestryTree } from '@/services/ancestry';
+import { AncestryTree } from '@/types/ancestry';
 
 const { Title, Text } = Typography;
 
@@ -17,6 +19,23 @@ const DogDetails: React.FC = () => {
     const [dog, setDog] = useState<Dog | null>(null);
     const [loading, setLoading] = useState(true);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+    const [ancestryTree, setAncestryTree] = useState<AncestryTree | null>(null);
+
+    useEffect(() => {
+        const fetchAncestryTree = async () => {
+            const registrationId = decodeURIComponent(id || '');
+
+            if (registrationId) {
+                const tree = await buildAncestryTree(registrationId);
+                setAncestryTree(tree);
+            }
+        };
+
+        if (id) {
+            fetchAncestryTree();
+        }
+    }, [id]);
 
     useEffect(() => {
         const checkAuth = async () => {
@@ -154,6 +173,7 @@ const DogDetails: React.FC = () => {
                 </div>
             </div>
             <DogAncestryTree tree={mockAncestryTree} />
+            {ancestryTree && <DogAncestryTree tree={ancestryTree} />}
         </PageLayout>
     );
 };
