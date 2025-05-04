@@ -180,7 +180,7 @@ const DogDetails: React.FC = () => {
                     )}
                 </div>
             </div>
-            {ancestryTree && <DogAncestryTree tree={ancestryTree} />}
+            {<DogAncestryTree tree={ancestryTree} />}
         </PageLayout>
     );
 };
