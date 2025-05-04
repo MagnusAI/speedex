@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Spin, message, Typography, Button, Image } from 'antd';
-import { ArrowLeftOutlined, EditOutlined } from '@ant-design/icons';
+import { ArrowLeftOutlined, EditOutlined, BranchesOutlined } from '@ant-design/icons';
 import { supabase } from '../utils/supabase';
 import PageLayout from '../components/PageLayout';
 import { Dog } from '../types/dog';
@@ -115,14 +115,22 @@ const DogDetails: React.FC = () => {
     return (
         <PageLayout>
             {isAuthenticated && (
-                <Button
-                    type="primary"
-                    icon={<EditOutlined />}
-                    style={{ position: 'absolute', top: 80, right: 40 }}
-                    onClick={() => navigate(`/dogs/${encodeURIComponent(dog.id)}/edit`)}
-                >
-                    Edit
-                </Button>
+                <div style={{ position: 'absolute', top: 80, right: 40, display: 'flex', gap: theme.spacing.md }}>
+                    <Button
+                        type="primary"
+                        icon={<EditOutlined />}
+                        onClick={() => navigate(`/dogs/${encodeURIComponent(dog.id)}/edit`)}
+                    >
+                        Edit
+                    </Button>
+                    <Button
+                        type="primary"
+                        icon={<BranchesOutlined />}
+                        onClick={() => navigate(`/dogs/${encodeURIComponent(dog.id)}/edit-ancestry`)}
+                    >
+                        Edit Ancestry
+                    </Button>
+                </div>
             )}
             <div style={{ padding: theme.spacing.xl, display: 'flex', flexWrap: 'wrap', gap: theme.spacing.xl }}>
                 <div style={{
@@ -172,7 +180,6 @@ const DogDetails: React.FC = () => {
                     )}
                 </div>
             </div>
-            <DogAncestryTree tree={mockAncestryTree} />
             {ancestryTree && <DogAncestryTree tree={ancestryTree} />}
         </PageLayout>
     );

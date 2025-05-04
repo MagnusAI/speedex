@@ -27,12 +27,12 @@ const buildAncestorNode = async (dogId: string, relation: string): Promise<Ances
     }
 
     // Type the database result as Ancestor
-    const dbAncestor = ancestor as unknown as Ancestor;
+    const dbAncestor = ancestor;
 
     return {
         id: dbAncestor.id,
         name: dbAncestor.name,
-        registration_id: dbAncestor.registration_id,
+        registration_id: dbAncestor.ancestor_id,
         profile_image_url: dbAncestor.profile_image_url || PLACEHOLDER_IMAGE,
         champion_titles: dbAncestor.champion_titles || [],
         relation,
@@ -51,6 +51,18 @@ export const buildAncestryTree = async (dogId: string): Promise<AncestryTree> =>
         const fathersMother = await buildAncestorNode(father.registration_id, 'mother');
         const fathersFather = await buildAncestorNode(father.registration_id, 'father');
 
+        // Fetch great grandparents
+        const mothersMothersMother = await buildAncestorNode(mothersMother.registration_id, 'mother');
+        const mothersMothersFather = await buildAncestorNode(mothersMother.registration_id, 'father');
+        const motherFathhersMother = await buildAncestorNode(mothersFather.registration_id, 'mother');
+        const mothersFathersFather = await buildAncestorNode(mothersFather.registration_id, 'father');
+
+        const fathersMothersMother = await buildAncestorNode(fathersMother.registration_id, 'mother');
+        const fathersMothersFather = await buildAncestorNode(fathersMother.registration_id, 'father');
+        const fatherFathhersMother = await buildAncestorNode(fathersFather.registration_id, 'mother');
+        const fathersFathersFather = await buildAncestorNode(fathersFather.registration_id, 'father');
+
+
         return {
             mother,
             father,
@@ -59,6 +71,24 @@ export const buildAncestryTree = async (dogId: string): Promise<AncestryTree> =>
                 mothersFather,
                 fathersMother,
                 fathersFather,
+            },
+            greatGrandparents: {
+                mothersMothersParents: {
+                    mother: mothersMothersMother,
+                    father: mothersMothersFather,
+                },
+                mothersFathersParents: {
+                    mother: motherFathhersMother,
+                    father: mothersFathersFather,
+                },
+                fathersMothersParents: {
+                    mother: fathersMothersMother,
+                    father: fathersMothersFather,
+                },
+                fathersFathersParents: {
+                    mother: fatherFathhersMother,
+                    father: fathersFathersFather,
+                },
             },
         };
     } catch (error) {
