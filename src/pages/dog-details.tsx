@@ -115,7 +115,7 @@ const DogDetails: React.FC = () => {
     return (
         <PageLayout>
             {isAuthenticated && (
-                <div style={{ position: 'absolute', top: 80, right: 40, display: 'flex', gap: theme.spacing.md }}>
+                <div style={{ position: 'absolute', top: 120, right: 40, display: 'flex', gap: theme.spacing.md }}>
                     <Button
                         type="primary"
                         icon={<EditOutlined />}
