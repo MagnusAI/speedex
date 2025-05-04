@@ -1,3 +1,6 @@
+/* Import fonts */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&family=Quicksand:wght@500;600;700&display=swap');
+
 /* Reset default styles */
 * {
   margin: 0;
@@ -5,10 +8,53 @@
   box-sizing: border-box;
 }
 
+html {
+  font-size: 18px;
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  font-family: 'Nunito', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #FFFFFF;
+  color: #252A32;
+  line-height: 1.6;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Quicksand', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 600;
+  margin-bottom: 0.7em;
+  line-height: 1.3;
+  color: #252A32;
+}
+
+h1 { font-size: 2.5rem; }
+h2 { font-size: 2rem; }
+h3 { font-size: 1.75rem; }
+h4 { font-size: 1.5rem; }
+h5 { font-size: 1.25rem; }
+h6 { font-size: 1.1rem; }
+
+p, ul, ol {
+  margin-bottom: 1.2em;
+}
+
+/* Stronger links for better visibility */
+a {
+  color: #3A5A70;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+a:hover, a:focus {
+  color: #506C7F;
+  text-decoration: underline;
 }
 
 /* Logo animations */
@@ -20,7 +66,7 @@ body {
 }
 
 .logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+  filter: drop-shadow(0 0 2em rgba(80, 108, 127, 0.6));
 }
 
 .logo.react:hover {
@@ -30,7 +76,96 @@ body {
 /* Code styling */
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(0, 0, 0, 0.05);
   padding: 0.2em 0.4em;
-  border-radius: 3px;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+/* Basic layout styling */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* Add transitions for interactive elements */
+a, button, input, textarea, select {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Improved focus styles for accessibility */
+:focus {
+  outline: 3px solid rgba(80, 108, 127, 0.7);
+  outline-offset: 3px;
+}
+
+/* High contrast mode support */
+@media (forced-colors: active) {
+  :focus {
+    outline: 3px solid CanvasText;
+  }
+  
+  a {
+    text-decoration: underline;
+  }
+}
+
+/* Form elements with improved contrast */
+input, select, textarea, button {
+  font-family: 'Nunito', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 1rem;
+  border: 1px solid #BBC4CC;
+  border-radius: 8px;
+  padding: 0.8rem 1rem;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: #506C7F;
+  box-shadow: 0 0 0 2px rgba(80, 108, 127, 0.3);
+}
+
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #252A32;
+}
+
+/* Improve table readability */
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+  border: 1px solid #BBC4CC;
+}
+
+th, td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #BBC4CC;
+  text-align: left;
+}
+
+th {
+  background-color: #F5F7F9;
+  font-weight: 600;
+}
+
+/* Helper classes for accessibility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.high-contrast {
+  color: #000000 !important;
+  background-color: #FFFFFF !important;
+  border-color: #506C7F !important;
 }
