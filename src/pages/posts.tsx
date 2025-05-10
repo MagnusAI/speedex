@@ -88,7 +88,7 @@ const PostsPage: React.FC = () => {
 
           {/* Loading state */}
           {loading ? (
-            <div style={{ textAlign: 'center', padding: theme.spacing.xl }}>
+            <div style={{ textAlign: 'center', padding: theme.spacing.xl }} role="status" aria-label="Loading posts">
               <Spin size="large" />
             </div>
           ) : (

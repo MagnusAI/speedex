@@ -32,6 +32,7 @@ const PostCard: React.FC<PostCardProps> = ({
 
     return (
         <Card
+            data-testid="post-card"
             style={{
                 marginBottom: theme.spacing.lg,
                 borderRadius: theme.borderRadius.lg,
@@ -42,11 +43,11 @@ const PostCard: React.FC<PostCardProps> = ({
             <Space direction="vertical" size="middle" style={{ width: '100%' }}>
                 {/* Header with date */}
                 <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
-                    <Text type="secondary">{formattedDate}</Text>
+                    <Text type="secondary" data-testid="post-date">{formattedDate}</Text>
                 </div>
 
                 {/* Title */}
-                <Title level={4} style={{ margin: 0 }}>
+                <Title level={4} style={{ margin: 0 }} data-testid="post-title">
                     {title}
                 </Title>
 
@@ -101,7 +102,9 @@ const PostCard: React.FC<PostCardProps> = ({
                 )}
 
                 {/* Description */}
-                <Text style={{ fontSize: 16, lineHeight: 1.6 }}>{description}</Text>
+                <Text style={{ fontSize: 16, lineHeight: 1.6 }} data-testid="post-description">
+                    {description}
+                </Text>
 
                 {/* Tags */}
                 <Space wrap>
