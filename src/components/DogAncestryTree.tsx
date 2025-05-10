@@ -180,7 +180,7 @@ const DogAncestryTree: React.FC<DogAncestryTreeProps> = ({ tree }) => {
                 overflow: 'auto',
                 width: '100%',
                 maxWidth: '1100px',
-                minHeight: '680px',
+                minHeight: '800px',
             }}>
                 <Row style={{ minWidth: '600px' }}>
                     {/* Parents Column - 2 cards */}
@@ -189,6 +189,7 @@ const DogAncestryTree: React.FC<DogAncestryTreeProps> = ({ tree }) => {
                         maxWidth: '244px',
                         padding: `0 ${theme.spacing.xs}px`,
                     }}>
+                        <p style={{ fontSize: '12px', color: theme.colors.text, textAlign: 'center' }}>Parents</p>
                         <div style={{
                             display: 'flex',
                             flexDirection: 'column',
@@ -218,6 +219,7 @@ const DogAncestryTree: React.FC<DogAncestryTreeProps> = ({ tree }) => {
                         maxWidth: '37%',
                         padding: `0 ${theme.spacing.xs}px`,
                     }}>
+                        <p style={{ fontSize: '12px', color: theme.colors.text, textAlign: 'center' }}>Grandparents</p>
                         {tree.grandparents && (
                             <div style={{
                                 display: 'flex',
@@ -263,6 +265,7 @@ const DogAncestryTree: React.FC<DogAncestryTreeProps> = ({ tree }) => {
                         maxWidth: '20%',
                         padding: `0 ${theme.spacing.xs}px`,
                     }}>
+                        <p style={{ fontSize: '12px', color: theme.colors.text, textAlign: 'center' }}>Great Grandparents</p>
                         {tree.greatGrandparents && (
                             <div style={{
                                 display: 'flex',
