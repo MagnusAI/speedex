@@ -9,6 +9,7 @@ import Dogs from '@/pages/dogs'
 import DogDetails from '@/pages/dog-details'
 import DogsEdit from '@/pages/dogs-edit'
 import DogsEditAncestry from '@/pages/dogs-edit-ancestry'
+import Posts from './pages/posts'
 
 function App() {
   return (
@@ -119,6 +120,7 @@ function App() {
           <Route path="/dogs/add" element={<ProtectedRoute><DogsAdd /></ProtectedRoute>} />
           <Route path="/dogs/:id/edit" element={<ProtectedRoute><DogsEdit /></ProtectedRoute>} />
           <Route path="/dogs/:id/edit-ancestry" element={<ProtectedRoute><DogsEditAncestry /></ProtectedRoute>} />
+          <Route path="/posts" element={<Posts />} />
           <Route path="/login" element={<Login />} />
         </Routes>
       </Router>

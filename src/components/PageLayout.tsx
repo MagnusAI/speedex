@@ -57,6 +57,14 @@ export function PageHeader() {
 
     const menuItems = [
         {
+            key: 'posts',
+            label: 'Posts',
+            onClick: () => {
+                navigate('/posts');
+                setMobileMenuVisible(false);
+            },
+        },
+        {
             key: 'dogs',
             label: 'Our Dogs',
             onClick: () => {
