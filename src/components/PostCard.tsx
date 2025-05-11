@@ -15,6 +15,7 @@ interface PostCardProps {
     tags: string[];
     createdAt: string;
     onDelete?: () => void;
+    isAuthenticated?: boolean;
 }
 
 const PostCard: React.FC<PostCardProps> = ({
@@ -24,7 +25,8 @@ const PostCard: React.FC<PostCardProps> = ({
     image,
     tags,
     createdAt,
-    onDelete
+    onDelete,
+    isAuthenticated = false
 }) => {
     const [isImagePreviewVisible, setIsImagePreviewVisible] = useState(false);
     const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
@@ -88,13 +90,15 @@ const PostCard: React.FC<PostCardProps> = ({
                     {/* Header with date and delete button */}
                     <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
                         <Text type="secondary" data-testid="post-date">{formattedDate}</Text>
-                        <Button
-                            type="text"
-                            danger
-                            icon={<DeleteOutlined />}
-                            onClick={() => setIsDeleteModalVisible(true)}
-                            data-testid="delete-post-button"
-                        />
+                        {isAuthenticated && (
+                            <Button
+                                type="text"
+                                danger
+                                icon={<DeleteOutlined />}
+                                onClick={() => setIsDeleteModalVisible(true)}
+                                data-testid="delete-post-button"
+                            />
+                        )}
                     </div>
 
                     {/* Title */}
@@ -177,18 +181,20 @@ const PostCard: React.FC<PostCardProps> = ({
             </Card>
 
             {/* Delete Confirmation Modal */}
-            <Modal
-                title="Delete Post"
-                open={isDeleteModalVisible}
-                onOk={handleDelete}
-                onCancel={() => setIsDeleteModalVisible(false)}
-                confirmLoading={isDeleting}
-                okText="Delete"
-                okButtonProps={{ danger: true }}
-                data-testid="delete-confirmation-modal"
-            >
-                <p>Are you sure you want to delete this post? This action cannot be undone.</p>
-            </Modal>
+            {isAuthenticated && (
+                <Modal
+                    title="Delete Post"
+                    open={isDeleteModalVisible}
+                    onOk={handleDelete}
+                    onCancel={() => setIsDeleteModalVisible(false)}
+                    confirmLoading={isDeleting}
+                    okText="Delete"
+                    okButtonProps={{ danger: true }}
+                    data-testid="delete-confirmation-modal"
+                >
+                    <p>Are you sure you want to delete this post? This action cannot be undone.</p>
+                </Modal>
+            )}
         </>
     );
 };

@@ -146,6 +146,7 @@ const PostsPage: React.FC = () => {
                     tags={post.tags}
                     createdAt={post.created_at}
                     onDelete={handleDeleteSuccess}
+                    isAuthenticated={isAuthenticated}
                   />
                 ))
               ) : (
