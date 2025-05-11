@@ -26,40 +26,43 @@ const PostsPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTag, setSearchTag] = useState<string>('');
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setIsAuthenticated(!!session);
-    };
-
     checkAuth();
+    fetchPosts();
   }, []);
 
-  const fetchPosts = async (tag?: string) => {
-    try {
-      setLoading(true);
-      setError(null);
+  const checkAuth = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    setIsAuthenticated(!!session);
+  };
 
-      let { data, error } = tag
-        ? await supabase.rpc('get_posts_by_tag', { p_tag: tag, p_limit: 10, p_offset: 0 })
-        : await supabase.rpc('get_latest_posts', { p_limit: 10, p_offset: 0 });
+  const fetchPosts = async (tag?: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      let query = supabase
+        .from('posts')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (tag) {
+        query = query.contains('tags', [tag]);
+      }
+
+      const { data, error } = await query;
 
       if (error) throw error;
       setPosts(data || []);
-    } catch (err) {
-      console.error('Error fetching posts:', err);
+    } catch (error: any) {
+      console.error('Error fetching posts:', error);
       setError('Failed to load posts. Please try again later.');
     } finally {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    fetchPosts();
-  }, []);
 
   const handleSearch = (value: string) => {
     setSearchTag(value.trim());
@@ -72,7 +75,11 @@ const PostsPage: React.FC = () => {
 
   const handleCreateSuccess = () => {
     setShowCreateForm(false);
-    fetchPosts();
+    fetchPosts(searchTag);
+  };
+
+  const handleDeleteSuccess = () => {
+    fetchPosts(searchTag);
   };
 
   return (
@@ -138,6 +145,7 @@ const PostsPage: React.FC = () => {
                     image={post.image}
                     tags={post.tags}
                     createdAt={post.created_at}
+                    onDelete={handleDeleteSuccess}
                   />
                 ))
               ) : (
