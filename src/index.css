@@ -1,5 +1,20 @@
 /* Import fonts */
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&family=Quicksand:wght@500;600;700&display=swap');
+@font-face {
+  font-family: 'Sacramento';
+  src: url('/src/assets/fonts/Sacramento/Sacramento-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Alice';
+  src: url('/src/assets/fonts/Alice/Alice-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 
 /* Reset default styles */
 * {
@@ -17,7 +32,7 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  font-family: 'Nunito', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Alice', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -26,8 +41,33 @@ body {
   line-height: 1.6;
 }
 
+/* Override Ant Design Typography styles */
+.ant-typography {
+  font-family: 'Alice', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif !important;
+}
+
+h1.ant-typography,
+h2.ant-typography,
+h3.ant-typography,
+h4.ant-typography,
+h5.ant-typography,
+h6.ant-typography,
+.ant-typography h1,
+.ant-typography h2,
+.ant-typography h3,
+.ant-typography h4,
+.ant-typography h5,
+.ant-typography h6 {
+  font-family: 'Sacramento', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-weight: 600;
+  margin-bottom: 0.7em;
+  line-height: 1.3;
+  color: #252A32;
+}
+
+/* Regular heading styles */
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Quicksand', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Sacramento', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 600;
   margin-bottom: 0.7em;
   line-height: 1.3;
@@ -113,7 +153,7 @@ a, button, input, textarea, select {
 
 /* Form elements with improved contrast */
 input, select, textarea, button {
-  font-family: 'Nunito', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Alice', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: 1rem;
   border: 1px solid #BBC4CC;
   border-radius: 8px;

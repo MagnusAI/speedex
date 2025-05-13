@@ -21,7 +21,7 @@ const Login: React.FC = () => {
             }
 
             message.success('Successfully logged in!');
-            navigate('/dogs/add');
+            navigate('/');
         } catch (error: any) {
             message.error(`Login failed: ${error.message}`);
         } finally {

@@ -35,7 +35,7 @@ function App() {
           borderRadius: 10,
           colorBorder: theme.colors.border,
           colorBorderSecondary: theme.colors.borderHover,
-          lineWidth: 1, // Using lineWidth instead of borderWidth
+          lineWidth: 1,
           
           // Backgrounds
           colorBgContainer: theme.colors.background,
@@ -51,32 +51,28 @@ function App() {
           controlOutlineWidth: 2,
           
           // Spacing
-          controlHeightLG: 48, // Increased for better touch targets
-          controlHeight: 44, // Matches accessibility minimum touch target size
-          controlHeightSM: 36, // Increased from default
+          controlHeightLG: 48,
+          controlHeight: 44,
+          controlHeightSM: 36,
           paddingXS: 8,
-          paddingContentHorizontalLG: 20, // Increased horizontal padding
+          paddingContentHorizontalLG: 20,
         },
         components: {
           Typography: {
             fontWeightStrong: theme.fonts.weights.semibold,
-            fontFamily: theme.fonts.heading,
-            marginXS: 8,
-            marginSM: 16, 
-            marginMD: 24,
-            titleMarginBottom: 16, // Increased space after titles
+            titleMarginBottom: 16,
           },
           Card: {
             boxShadow: theme.shadows.sm,
-            colorBorder: theme.colors.border, // Using colorBorder instead of borderColor
+            colorBorder: theme.colors.border,
             colorBorderSecondary: theme.colors.borderHover,
             borderRadiusLG: parseInt(theme.borderRadius.md),
-            paddingLG: 20, // Increased padding for better spacing
+            paddingLG: 20,
           },
           Button: {
             borderRadius: 8,
-            controlHeight: 44, // Accessible touch target size
-            controlHeightLG: 52, // Larger buttons for important actions
+            controlHeight: 44,
+            controlHeightLG: 52,
             controlOutline: theme.colors.borderFocus,
             defaultBorderColor: theme.colors.border,
             defaultColor: theme.colors.text,
@@ -85,16 +81,16 @@ function App() {
           Input: {
             activeBorderColor: theme.colors.borderFocus,
             hoverBorderColor: theme.colors.borderHover,
-            colorBorder: theme.colors.border, // Using colorBorder instead of borderColor or borderWidth
-            controlHeight: 44, // Accessible height
+            colorBorder: theme.colors.border,
+            controlHeight: 44,
             borderRadius: 8,
-            paddingInline: 12, // Increased horizontal padding
+            paddingInline: 12,
           },
           Form: {
-            labelHeight: 28, // Larger label height
+            labelHeight: 28,
             labelColor: theme.colors.text,
             labelFontSize: parseInt(theme.fonts.sizes.base),
-            itemMarginBottom: 24, // More space between form items
+            itemMarginBottom: 24,
           },
           Table: {
             borderColor: theme.colors.border,

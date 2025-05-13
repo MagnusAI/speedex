@@ -1,5 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import './assets/fonts/Alice/Alice-Regular.ttf'
+import './assets/fonts/Sacramento/Sacramento-Regular.ttf'
 import './index.css'
 import App from './App.tsx'
 

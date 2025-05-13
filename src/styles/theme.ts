@@ -23,8 +23,8 @@ export const theme = {
     }
   },
   fonts: {
-    primary: "'Nunito', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif",
-    heading: "'Quicksand', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif",
+    primary: "'Alice', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif",
+    heading: "'Sacramento', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif",
     mono: "source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace",
     // Font sizes
     sizes: {
