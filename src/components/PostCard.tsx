@@ -110,10 +110,11 @@ const PostCard: React.FC<PostCardProps> = ({
                             alignItems: 'center',
                             justifyContent: 'center',
                             backgroundColor: theme.colors.backgroundAlt,
-                            borderRadius: 0
+                            borderRadius: 0,
+                            position: 'relative'
                         }}>
                             <Image 
-                                src={image} 
+                                src={image}
                                 alt={title}
                                 style={{
                                     width: '100%',
@@ -123,6 +124,15 @@ const PostCard: React.FC<PostCardProps> = ({
                                     transition: 'transform 0.2s ease-in-out'
                                 }}
                             />
+                            <div style={{
+                                position: 'absolute',
+                                bottom: 0,
+                                left: 0,
+                                right: 0,
+                                height: '4px',
+                                background: 'linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0))',
+                                pointerEvents: 'none'
+                            }} />
                         </div>
                     ) : undefined
                 }

@@ -63,23 +63,32 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({ imageUrl, onPositionChange 
         <Space direction="vertical" size="middle" style={{ width: '100%' }}>
             <div style={{ 
                 height: '300px',
+                width: '460px',
                 overflow: 'hidden',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: theme.colors.backgroundAlt,
-                borderRadius: 0,
-                position: 'relative',
-                width: '460px', // Match PostCard width
                 border: `1px solid ${theme.colors.border}`,
-                boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)'
+                boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
+                position: 'relative'
             }}>
                 <img 
                     ref={imageRef}
                     src={imageUrl}
-                    alt="Preview"
-                    style={getImageStyle()}
+                    style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        transform: getTransformValue(),
+                        transition: 'transform 0.2s ease-in-out'
+                    }}
                 />
+                <div style={{
+                    position: 'absolute',
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    height: '4px',
+                    background: 'linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0))',
+                    pointerEvents: 'none'
+                }} />
             </div>
             <Space direction="vertical" size="small" style={{ width: '100%' }}>
                 <Text type="secondary">Adjust Image Position</Text>
