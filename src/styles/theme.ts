@@ -7,7 +7,7 @@ export const theme = {
     backgroundAlt: '#F5F7F9', // Subtle off-white
     text: '#252A32', // Darker charcoal for better contrast (was #333741)
     lightText: '#FFFFFF', // White
-    border: '#BBC4CC', // Medium grey border with better contrast (was #D9E0E6)
+    border: '#D9E0E6', // Medium grey border with better contrast (was #D9E0E6)
     borderFocus: '#506C7F', // Primary color for focus borders
     borderHover: '#8096A7', // Lighter variant for hover states
     borderHigh: '#506C7F', // High contrast border option
@@ -65,6 +65,7 @@ export const theme = {
     xxl: '1600px',
   },
   borderRadius: {
+    xs: '2px',
     sm: '6px',
     md: '10px',
     lg: '16px',
@@ -75,8 +76,8 @@ export const theme = {
     lg: '0 8px 16px rgba(0, 0, 0, 0.16)',
   },
   borders: {
-    thin: '1px solid',
-    medium: '2px solid',
+    thin: '0.5px solid',
+    medium: '1px solid',
     thick: '3px solid',
   },
   accessibility: {
