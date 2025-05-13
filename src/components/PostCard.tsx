@@ -1,12 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Card, Typography, Tag, Image, Space, Button, Modal } from 'antd';
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, CloseOutlined } from '@ant-design/icons';
 import { theme } from '../styles/theme';
 import { supabase } from '../utils/supabase';
 import { message } from 'antd';
 import EditPostForm from './EditPostForm';
 
-const { Text, Paragraph } = Typography;
+const { Text, Paragraph, Title } = Typography;
 
 interface PostCardProps {
     id: string;
@@ -105,8 +105,8 @@ const PostCard: React.FC<PostCardProps> = ({
                 hoverable
                 cover={
                     image ? (
-                        <div style={{ 
-                            height: '300px',
+                        <div style={{
+                            height: '250px',
                             overflow: 'hidden',
                             display: 'flex',
                             alignItems: 'center',
@@ -115,7 +115,7 @@ const PostCard: React.FC<PostCardProps> = ({
                             borderRadius: 0,
                             position: 'relative'
                         }}>
-                            <Image 
+                            <Image
                                 src={image}
                                 alt={title}
                                 style={{
@@ -142,9 +142,9 @@ const PostCard: React.FC<PostCardProps> = ({
                 style={{
                     borderRadius: theme.borderRadius.sm,
                     overflow: 'hidden',
-                    maxWidth: '460px',
+                    maxWidth: '295px',
                     border: `1px solid ${theme.colors.border}`,
-                    height: '575px',
+                    height: '500px',
                     display: 'flex',
                     flexDirection: 'column',
                 }}
@@ -155,8 +155,8 @@ const PostCard: React.FC<PostCardProps> = ({
                     padding: theme.spacing.md,
                 }}
             >
-                <Meta 
-                    title={title} 
+                <Meta
+                    title={title}
                     description={
                         <div>
                             <Paragraph
@@ -165,7 +165,7 @@ const PostCard: React.FC<PostCardProps> = ({
                                     rows: 2,
                                     tooltip: false,
                                 }}
-                                style={{ 
+                                style={{
                                     marginBottom: 0,
                                     cursor: isTruncated ? 'pointer' : 'default',
                                 }}
@@ -174,9 +174,9 @@ const PostCard: React.FC<PostCardProps> = ({
                                 {description}
                             </Paragraph>
                             {isTruncated && (
-                                <Text 
-                                    type="secondary" 
-                                    style={{ 
+                                <Text
+                                    type="secondary"
+                                    style={{
                                         cursor: 'pointer',
                                         fontSize: theme.fonts.sizes.small,
                                     }}
@@ -258,15 +258,64 @@ const PostCard: React.FC<PostCardProps> = ({
 
             {/* Description Modal */}
             <Modal
-                title={title}
                 open={isDescriptionExpanded}
                 onCancel={() => setIsDescriptionExpanded(false)}
                 footer={null}
-                width={600}
+                style={{
+                    padding: 0,
+                    margin: 0
+                }}
+                width={800}
+                centered
+                closable
             >
-                <Paragraph style={{ fontSize: theme.fonts.sizes.base }}>
-                    {description}
-                </Paragraph>
+                {/* Image section */}
+                {image && (
+                    <img
+                        src={image}
+                        alt={title}
+                        style={{
+                            width: '100%',
+                            height: '70%',
+                            objectFit: 'scale-down',
+                            marginTop: '32px'
+                        }}
+                    />
+                )}
+
+                {/* Content section */}
+                <div style={{
+                    padding: theme.spacing.xl,
+                    backgroundColor: theme.colors.background
+                }}>
+                    <Space direction="vertical" size="large" style={{ width: '100%', maxWidth: '800px', margin: '0 auto' }}>
+                        <Title level={2} style={{ marginBottom: theme.spacing.sm }}>{title}</Title>
+                        <Paragraph style={{
+                            fontSize: theme.fonts.sizes.base,
+                            lineHeight: 1.6,
+                            marginBottom: theme.spacing.md
+                        }}>
+                            {description}
+                        </Paragraph>
+
+                        <Space wrap>
+                            {tags.map((tag) => (
+                                <Tag
+                                    key={tag}
+                                    color="default"
+                                    style={{ fontSize: theme.fonts.sizes.base }}
+                                >
+                                    {tag}
+                                </Tag>
+                            ))}
+                        </Space>
+                        <Space direction="horizontal" style={{ width: '100%', justifyContent: 'flex-end' }}>
+                        <Text type="secondary" style={{ fontSize: theme.fonts.sizes.base }}>
+                            {formattedDate}
+                        </Text>
+                        </Space>
+                    </Space>
+                </div>
             </Modal>
         </>
     );
