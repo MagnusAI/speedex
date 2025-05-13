@@ -84,7 +84,7 @@ const PostsPage: React.FC = () => {
 
   return (
     <PageLayout>
-      <div style={{ maxWidth: '800px', margin: '0 auto', padding: theme.spacing.lg }}>
+      <div style={{ margin: '0 auto', padding: theme.spacing.lg }}>
         <Space direction="vertical" size="large" style={{ width: '100%' }}>
           {/* Header */}
           <div style={{ 
@@ -133,7 +133,7 @@ const PostsPage: React.FC = () => {
               <Spin size="large" />
             </div>
           ) : (
-            <>
+            <Space wrap align="start" size="large" style={{ width: '100%' }}>
               {/* Posts list */}
               {posts.length > 0 ? (
                 posts.map((post) => (
@@ -161,7 +161,7 @@ const PostsPage: React.FC = () => {
                   showIcon
                 />
               )}
-            </>
+            </Space>
           )}
         </Space>
 

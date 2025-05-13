@@ -5,7 +5,7 @@ import { theme } from '../styles/theme';
 import { supabase } from '../utils/supabase';
 import { message } from 'antd';
 
-const { Text } = Typography;
+const { Text, Paragraph } = Typography;
 
 interface PostCardProps {
     id: string;
@@ -30,6 +30,7 @@ const PostCard: React.FC<PostCardProps> = ({
 }) => {
     const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
 
     // Format the date to a more readable format
     const formattedDate = new Date(createdAt).toLocaleDateString('en-US', {
@@ -85,12 +86,50 @@ const PostCard: React.FC<PostCardProps> = ({
                 style={{
                     borderRadius: theme.borderRadius.sm,
                     overflow: 'hidden',
-                    maxWidth: '380px',
+                    maxWidth: '460px',
                     border: `1px solid ${theme.colors.border}`,
+                    height: '620px', // Fixed height for the card
+                    display: 'flex',
+                    flexDirection: 'column',
+                }}
+                bodyStyle={{
+                    flex: 1,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    padding: theme.spacing.md,
                 }}
             >
-                <Meta title={title} description={description} />
-                <Space direction="vertical" size="small" style={{ width: '100%', marginTop: theme.spacing.md }}>
+                <Meta 
+                    title={title} 
+                    description={
+                        <div>
+                            <Paragraph
+                                ellipsis={{
+                                    rows: 3,
+                                    tooltip: false,
+                                }}
+                                style={{ 
+                                    marginBottom: 0,
+                                    cursor: 'pointer',
+                                }}
+                                onClick={() => setIsDescriptionExpanded(true)}
+                            >
+                                {description}
+                            </Paragraph>
+                            <Text 
+                                type="secondary" 
+                                style={{ 
+                                    cursor: 'pointer',
+                                    fontSize: theme.fonts.sizes.small,
+                                }}
+                                onClick={() => setIsDescriptionExpanded(true)}
+                            >
+                                Read more
+                            </Text>
+                        </div>
+                    }
+                />
+                <Space direction="vertical" size="small" style={{ width: '100%', marginTop: 'auto' }}>
                     {/* Tags */}
                     <Space wrap>
                         {tags.map((tag) => (
@@ -119,20 +158,31 @@ const PostCard: React.FC<PostCardProps> = ({
             </Card>
 
             {/* Delete Confirmation Modal */}
-            {isAuthenticated && (
-                <Modal
-                    title="Delete Post"
-                    open={isDeleteModalVisible}
-                    onOk={handleDelete}
-                    onCancel={() => setIsDeleteModalVisible(false)}
-                    confirmLoading={isDeleting}
-                    okText="Delete"
-                    okButtonProps={{ danger: true }}
-                    data-testid="delete-confirmation-modal"
-                >
-                    <p>Are you sure you want to delete this post? This action cannot be undone.</p>
-                </Modal>
-            )}
+            <Modal
+                title="Delete Post"
+                open={isDeleteModalVisible}
+                onOk={handleDelete}
+                onCancel={() => setIsDeleteModalVisible(false)}
+                confirmLoading={isDeleting}
+                okText="Delete"
+                okButtonProps={{ danger: true }}
+                data-testid="delete-confirmation-modal"
+            >
+                <p>Are you sure you want to delete this post? This action cannot be undone.</p>
+            </Modal>
+
+            {/* Description Modal */}
+            <Modal
+                title={title}
+                open={isDescriptionExpanded}
+                onCancel={() => setIsDescriptionExpanded(false)}
+                footer={null}
+                width={600}
+            >
+                <Paragraph style={{ fontSize: theme.fonts.sizes.base }}>
+                    {description}
+                </Paragraph>
+            </Modal>
         </>
     );
 };
