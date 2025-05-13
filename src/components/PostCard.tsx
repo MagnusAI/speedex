@@ -113,7 +113,7 @@ const PostCard: React.FC<PostCardProps> = ({
                                 data-testid="delete-post-button"
                             />
                         )}
-                        <Text type="secondary" data-testid="post-date">{formattedDate}</Text>
+                        <Text style={{ display: 'flex', width: '100%', justifyContent: 'flex-end' }} type="secondary" data-testid="post-date">{formattedDate}</Text>
                     </div>
                 </Space>
             </Card>
