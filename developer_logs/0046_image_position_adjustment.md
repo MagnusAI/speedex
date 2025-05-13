@@ -5,7 +5,7 @@ This document logs the implementation of the image position adjustment feature, 
 
 ## Implementation Details
 
-### New Components
+### Components
 1. **ImagePreview Component**
    - Shows how the image will look in the PostCard
    - Fixed height of 300px to match PostCard
@@ -14,39 +14,48 @@ This document logs the implementation of the image position adjustment feature, 
    - Real-time preview of adjustments
    - Smooth transitions for position changes
    - Border and shadow for better visibility
-   - Matches PostCard's image container exactly
+   - Maintains aspect ratio while allowing translation
+   - Shows full image in preview area
+   - Supports initial position value for editing
 
-2. **Database Changes**
-   - Added `image_position` column to posts table
-   - Default value of 50 (centered)
-   - Range of 0-100 for position control
-   - Added descriptive comment for documentation
-
-### Integration Points
-1. **PostCreationForm**
-   - Added image preview below upload
-   - Position adjustment slider
-   - Position value stored with post
-   - Preview URL management
-   - Clean state reset after submission
-   - Matches PostCard dimensions exactly
-
-2. **PostCard**
-   - Updated to use image position
+2. **PostCard Component**
+   - Uses image position for display
+   - Fixed maxOffset of 200px for consistent range
    - Smooth transitions for position changes
    - Maintains aspect ratio and cover fit
    - Fallback to center position if not set
-   - Fixed maxOffset of 200px for consistent range
+
+3. **EditPostForm Component**
+   - Reuses ImagePreview component
+   - Loads and displays existing image position
+   - Allows adjusting position of existing images
+   - Maintains position when updating post
+   - Proper image upload and replacement handling
+
+### Database Changes
+- Added `image_position` column to posts table
+- Default value of 50 (centered)
+- Range of 0-100 for position control
+- Added descriptive comment for documentation
 
 ## Technical Implementation
 
 ### ImagePreview Component
 ```typescript
-const ImagePreview: React.FC<ImagePreviewProps> = ({ imageUrl, onPositionChange }) => {
-    const [position, setPosition] = useState(50);
+interface ImagePreviewProps {
+    imageUrl: string;
+    onPositionChange?: (position: number) => void;
+    initialPosition?: number;
+}
+
+const ImagePreview: React.FC<ImagePreviewProps> = ({ 
+    imageUrl, 
+    onPositionChange,
+    initialPosition = 50 
+}) => {
+    const [position, setPosition] = useState(initialPosition);
     const [imageHeight, setImageHeight] = useState(0);
     const [imageWidth, setImageWidth] = useState(0);
-    const imageRef = useRef<HTMLImageElement>(null);
 
     // Calculate transform value based on position
     const getTransformValue = () => {
@@ -56,44 +65,31 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({ imageUrl, onPositionChange 
         return `translateY(${offset}px)`;
     };
 
-    return (
-        <Space direction="vertical" size="middle">
-            <div style={{ 
-                height: '300px',
-                width: '460px',
-                overflow: 'hidden',
-                border: `1px solid ${theme.colors.border}`,
-                boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)'
-            }}>
-                <img 
-                    ref={imageRef}
-                    src={imageUrl}
-                    style={{
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                        transform: getTransformValue(),
-                        transition: 'transform 0.2s ease-in-out'
-                    }}
-                />
-            </div>
-            <Slider
-                min={0}
-                max={100}
-                value={position}
-                onChange={handlePositionChange}
-            />
-        </Space>
-    );
+    // Calculate image style based on dimensions
+    const getImageStyle = (): CSSProperties => {
+        if (!imageHeight || !imageWidth) return {};
+
+        const aspectRatio = imageWidth / imageHeight;
+        const containerWidth = 460;
+        const width = containerWidth;
+        const height = width / aspectRatio;
+
+        return {
+            width: `${width}px`,
+            height: `${height}px`,
+            objectFit: 'cover',
+            transform: getTransformValue(),
+            transition: 'transform 0.2s ease-in-out'
+        };
+    };
 };
 ```
 
 ### PostCard Implementation
 ```typescript
-// Calculate the transform value based on position
 const getTransformValue = () => {
     if (!image) return 'translateY(0)';
-    const maxOffset = 200; // Fixed offset for consistent range
+    const maxOffset = 200;
     const offset = (maxOffset * (image_position - 50)) / 50;
     return `translateY(${offset}px)`;
 };
@@ -123,11 +119,19 @@ const getTransformValue = () => {
    - Helps users make better decisions
    - Border and shadow for better visibility
 
-2. **State Management**
+2. **Aspect Ratio Handling**
+   - Maintains image proportions
+   - Shows full image in preview
+   - Prevents distortion
+   - Allows proper translation
+   - Matches PostCard display
+
+3. **State Management**
    - Position stored with post
    - Preview URL management
    - Clean state reset
    - Proper cleanup on unmount
+   - Initial position support for editing
 
 ## User Experience
 1. **Intuitive Controls**
@@ -144,6 +148,13 @@ const getTransformValue = () => {
    - Better post quality
    - Exact match with PostCard display
 
+3. **Edit Form Integration**
+   - Loads existing position
+   - Maintains position during edit
+   - Smooth position adjustments
+   - Consistent preview behavior
+   - Proper image replacement
+
 ## Notes
 - Implementation maintains existing card design
 - Smooth transitions for better UX
@@ -156,6 +167,9 @@ const getTransformValue = () => {
 - Fixed offset range prevents excessive movement
 - Preview matches PostCard exactly
 - Border and shadow improve preview visibility
+- Full image visible during position adjustment
+- Proper aspect ratio maintenance
+- Seamless edit form integration
 
 ### Database Migration
 ```sql

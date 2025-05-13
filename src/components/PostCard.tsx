@@ -1,9 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Card, Typography, Tag, Image, Space, Button, Modal } from 'antd';
-import { DeleteOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { theme } from '../styles/theme';
 import { supabase } from '../utils/supabase';
 import { message } from 'antd';
+import EditPostForm from './EditPostForm';
 
 const { Text, Paragraph } = Typography;
 
@@ -31,6 +32,7 @@ const PostCard: React.FC<PostCardProps> = ({
     isAuthenticated = false
 }) => {
     const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+    const [isEditModalVisible, setIsEditModalVisible] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
     const [isTruncated, setIsTruncated] = useState(false);
@@ -201,13 +203,21 @@ const PostCard: React.FC<PostCardProps> = ({
 
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
                         {isAuthenticated && (
-                            <Button
-                                type="text"
-                                danger
-                                icon={<DeleteOutlined />}
-                                onClick={() => setIsDeleteModalVisible(true)}
-                                data-testid="delete-post-button"
-                            />
+                            <Space>
+                                <Button
+                                    type="text"
+                                    icon={<EditOutlined />}
+                                    onClick={() => setIsEditModalVisible(true)}
+                                    data-testid="edit-post-button"
+                                />
+                                <Button
+                                    type="text"
+                                    danger
+                                    icon={<DeleteOutlined />}
+                                    onClick={() => setIsDeleteModalVisible(true)}
+                                    data-testid="delete-post-button"
+                                />
+                            </Space>
                         )}
                         <Text style={{ display: 'flex', width: '100%', justifyContent: 'flex-end' }} type="secondary" data-testid="post-date">{formattedDate}</Text>
                     </div>
@@ -226,6 +236,24 @@ const PostCard: React.FC<PostCardProps> = ({
                 data-testid="delete-confirmation-modal"
             >
                 <p>Are you sure you want to delete this post? This action cannot be undone.</p>
+            </Modal>
+
+            {/* Edit Post Modal */}
+            <Modal
+                title="Edit Post"
+                open={isEditModalVisible}
+                onCancel={() => setIsEditModalVisible(false)}
+                footer={null}
+                width={800}
+            >
+                <EditPostForm
+                    postId={id}
+                    onSuccess={() => {
+                        setIsEditModalVisible(false);
+                        onDelete?.(); // Refresh the posts list
+                    }}
+                    onCancel={() => setIsEditModalVisible(false)}
+                />
             </Modal>
 
             {/* Description Modal */}

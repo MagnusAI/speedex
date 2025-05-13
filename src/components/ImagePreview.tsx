@@ -7,13 +7,23 @@ const { Text } = Typography;
 interface ImagePreviewProps {
     imageUrl: string;
     onPositionChange?: (position: number) => void;
+    initialPosition?: number;
 }
 
-const ImagePreview: React.FC<ImagePreviewProps> = ({ imageUrl, onPositionChange }) => {
-    const [position, setPosition] = useState(50); // 0-100 range
+const ImagePreview: React.FC<ImagePreviewProps> = ({ 
+    imageUrl, 
+    onPositionChange,
+    initialPosition = 50 // Default to center if not provided
+}) => {
+    const [position, setPosition] = useState(initialPosition);
     const [imageHeight, setImageHeight] = useState(0);
     const [imageWidth, setImageWidth] = useState(0);
     const imageRef = useRef<HTMLImageElement>(null);
+
+    // Update position when initialPosition changes
+    useEffect(() => {
+        setPosition(initialPosition);
+    }, [initialPosition]);
 
     // Calculate the actual image dimensions when it loads
     useEffect(() => {
@@ -45,6 +55,7 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({ imageUrl, onPositionChange 
 
         const aspectRatio = imageWidth / imageHeight;
         const containerWidth = 460; // Match PostCard width
+        const containerHeight = 300; // Match PostCard height
 
         // Calculate dimensions to maintain aspect ratio while filling width
         const width = containerWidth;
@@ -67,18 +78,16 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({ imageUrl, onPositionChange 
                 overflow: 'hidden',
                 border: `1px solid ${theme.colors.border}`,
                 boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
-                position: 'relative'
+                position: 'relative',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: theme.colors.backgroundAlt
             }}>
                 <img 
                     ref={imageRef}
                     src={imageUrl}
-                    style={{
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                        transform: getTransformValue(),
-                        transition: 'transform 0.2s ease-in-out'
-                    }}
+                    style={getImageStyle()}
                 />
                 <div style={{
                     position: 'absolute',
