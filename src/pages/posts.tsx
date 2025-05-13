@@ -16,6 +16,7 @@ interface Post {
   title: string;
   description: string;
   image: string;
+  image_position?: number;
   tags: string[];
   created_at: string;
   updated_at: string;
@@ -143,6 +144,7 @@ const PostsPage: React.FC = () => {
                     title={post.title}
                     description={post.description}
                     image={post.image}
+                    image_position={post.image_position}
                     tags={post.tags}
                     createdAt={post.created_at}
                     onDelete={handleDeleteSuccess}

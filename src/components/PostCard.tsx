@@ -12,6 +12,7 @@ interface PostCardProps {
     title: string;
     description: string;
     image: string | null;
+    image_position?: number;
     tags: string[];
     createdAt: string;
     onDelete?: () => void;
@@ -23,6 +24,7 @@ const PostCard: React.FC<PostCardProps> = ({
     title,
     description,
     image,
+    image_position = 50,
     tags,
     createdAt,
     onDelete,
@@ -87,6 +89,14 @@ const PostCard: React.FC<PostCardProps> = ({
 
     const { Meta } = Card;
 
+    // Calculate the transform value based on position
+    const getTransformValue = () => {
+        if (!image) return 'translateY(0)';
+        const maxOffset = 200; // Increased offset for better range
+        const offset = (maxOffset * (image_position - 50)) / 50; // Center at 50
+        return `translateY(${offset}px)`;
+    };
+
     return (
         <>
             <Card
@@ -108,7 +118,9 @@ const PostCard: React.FC<PostCardProps> = ({
                                 style={{
                                     width: '100%',
                                     height: '100%',
-                                    objectFit: 'cover'
+                                    objectFit: 'cover',
+                                    transform: getTransformValue(),
+                                    transition: 'transform 0.2s ease-in-out'
                                 }}
                             />
                         </div>

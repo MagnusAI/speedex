@@ -4,6 +4,7 @@ import { PlusOutlined, LoadingOutlined } from '@ant-design/icons';
 import { supabase } from '../utils/supabase';
 import { theme } from '../styles/theme';
 import type { UploadFile } from 'antd/es/upload/interface';
+import ImagePreview from './ImagePreview';
 
 const { TextArea } = Input;
 
@@ -16,6 +17,8 @@ const PostCreationForm: React.FC<PostCreationFormProps> = ({ onSuccess, onCancel
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
     const [fileList, setFileList] = useState<any[]>([]);
+    const [imagePosition, setImagePosition] = useState(50);
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
     const handleSubmit = async (values: any) => {
         setLoading(true);
@@ -48,13 +51,14 @@ const PostCreationForm: React.FC<PostCreationFormProps> = ({ onSuccess, onCancel
                 .from('post_images')
                 .getPublicUrl(filePath);
 
-            // Create post record
+            // Create post record with image position
             const { error: insertError } = await supabase
                 .from('posts')
                 .insert([{
                     title: values.title,
                     description: values.description,
                     image: publicUrl,
+                    image_position: imagePosition,
                     tags: values.tags ? values.tags.split(',').map((tag: string) => tag.trim()) : []
                 }]);
 
@@ -65,6 +69,7 @@ const PostCreationForm: React.FC<PostCreationFormProps> = ({ onSuccess, onCancel
             message.success('Post created successfully!');
             form.resetFields();
             setFileList([]);
+            setPreviewUrl(null);
             onSuccess();
         } catch (error: any) {
             console.error('Error details:', error);
@@ -90,6 +95,15 @@ const PostCreationForm: React.FC<PostCreationFormProps> = ({ onSuccess, onCancel
 
     const handleChange = ({ fileList }: { fileList: any[] }) => {
         setFileList(fileList);
+        if (fileList.length > 0) {
+            const file = fileList[0];
+            if (file.originFileObj) {
+                const url = URL.createObjectURL(file.originFileObj);
+                setPreviewUrl(url);
+            }
+        } else {
+            setPreviewUrl(null);
+        }
     };
 
     return (
@@ -131,25 +145,33 @@ const PostCreationForm: React.FC<PostCreationFormProps> = ({ onSuccess, onCancel
                 label="Image"
                 rules={[{ required: true, message: 'Please upload an image!' }]}
             >
-                <Upload
-                    listType="picture-card"
-                    maxCount={1}
-                    fileList={fileList}
-                    beforeUpload={beforeUpload}
-                    onChange={handleChange}
-                    customRequest={({ onSuccess }) => {
-                        setTimeout(() => {
-                            onSuccess?.("ok");
-                        }, 0);
-                    }}
-                >
-                    {fileList.length >= 1 ? null : (
-                        <div>
-                            <PlusOutlined />
-                            <div style={{ marginTop: 8 }}>Upload</div>
-                        </div>
+                <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+                    <Upload
+                        listType="picture-card"
+                        maxCount={1}
+                        fileList={fileList}
+                        beforeUpload={beforeUpload}
+                        onChange={handleChange}
+                        customRequest={({ onSuccess }) => {
+                            setTimeout(() => {
+                                onSuccess?.("ok");
+                            }, 0);
+                        }}
+                    >
+                        {fileList.length >= 1 ? null : (
+                            <div>
+                                <PlusOutlined />
+                                <div style={{ marginTop: 8 }}>Upload</div>
+                            </div>
+                        )}
+                    </Upload>
+                    {previewUrl && (
+                        <ImagePreview
+                            imageUrl={previewUrl}
+                            onPositionChange={setImagePosition}
+                        />
                     )}
-                </Upload>
+                </Space>
             </Form.Item>
 
             <Form.Item>

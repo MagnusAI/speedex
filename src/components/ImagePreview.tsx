@@ -1,0 +1,98 @@
+import React, { useState, useRef, useEffect, CSSProperties } from 'react';
+import { Slider, Space, Typography } from 'antd';
+import { theme } from '../styles/theme';
+
+const { Text } = Typography;
+
+interface ImagePreviewProps {
+    imageUrl: string;
+    onPositionChange?: (position: number) => void;
+}
+
+const ImagePreview: React.FC<ImagePreviewProps> = ({ imageUrl, onPositionChange }) => {
+    const [position, setPosition] = useState(50); // 0-100 range
+    const [imageHeight, setImageHeight] = useState(0);
+    const [imageWidth, setImageWidth] = useState(0);
+    const imageRef = useRef<HTMLImageElement>(null);
+
+    // Calculate the actual image dimensions when it loads
+    useEffect(() => {
+        if (imageRef.current) {
+            const img = imageRef.current;
+            img.onload = () => {
+                setImageHeight(img.naturalHeight);
+                setImageWidth(img.naturalWidth);
+            };
+        }
+    }, [imageUrl]);
+
+    const handlePositionChange = (value: number) => {
+        setPosition(value);
+        onPositionChange?.(value);
+    };
+
+    // Calculate the transform value based on position
+    const getTransformValue = () => {
+        if (!imageHeight) return 'translateY(0)';
+        const maxOffset = 200; // Match PostCard's maxOffset
+        const offset = (maxOffset * (position - 50)) / 50; // Center at 50
+        return `translateY(${offset}px)`;
+    };
+
+    // Calculate the image style based on dimensions
+    const getImageStyle = (): CSSProperties => {
+        if (!imageHeight || !imageWidth) return {};
+
+        const aspectRatio = imageWidth / imageHeight;
+        const containerWidth = 460; // Match PostCard width
+
+        // Calculate dimensions to maintain aspect ratio while filling width
+        const width = containerWidth;
+        const height = width / aspectRatio;
+
+        return {
+            width: `${width}px`,
+            height: `${height}px`,
+            objectFit: 'cover' as const,
+            transform: getTransformValue(),
+            transition: 'transform 0.2s ease-in-out'
+        };
+    };
+
+    return (
+        <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+            <div style={{ 
+                height: '300px',
+                overflow: 'hidden',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: theme.colors.backgroundAlt,
+                borderRadius: 0,
+                position: 'relative',
+                width: '460px', // Match PostCard width
+                border: `1px solid ${theme.colors.border}`,
+                boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)'
+            }}>
+                <img 
+                    ref={imageRef}
+                    src={imageUrl}
+                    alt="Preview"
+                    style={getImageStyle()}
+                />
+            </div>
+            <Space direction="vertical" size="small" style={{ width: '100%' }}>
+                <Text type="secondary">Adjust Image Position</Text>
+                <Slider
+                    min={0}
+                    max={100}
+                    value={position}
+                    onChange={handlePositionChange}
+                    tooltip={{ formatter: (value) => `${value}%` }}
+                />
+            </Space>
+        </Space>
+    );
+};
+
+export default ImagePreview; 
