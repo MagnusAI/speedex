@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Card, Typography, Tag, Image, Space, Button, Modal } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
 import { theme } from '../styles/theme';
@@ -31,6 +31,16 @@ const PostCard: React.FC<PostCardProps> = ({
     const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+    const [isTruncated, setIsTruncated] = useState(false);
+    const descriptionRef = useRef<HTMLDivElement>(null);
+
+    // Check if text is truncated
+    useEffect(() => {
+        if (descriptionRef.current) {
+            const element = descriptionRef.current;
+            setIsTruncated(element.scrollHeight > element.clientHeight);
+        }
+    }, [description]);
 
     // Format the date to a more readable format
     const formattedDate = new Date(createdAt).toLocaleDateString('en-US', {
@@ -81,14 +91,36 @@ const PostCard: React.FC<PostCardProps> = ({
         <>
             <Card
                 hoverable
-                cover={image ? <Image src={image} alt={title} /> : undefined}
+                cover={
+                    image ? (
+                        <div style={{ 
+                            height: '300px',
+                            overflow: 'hidden',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: theme.colors.backgroundAlt,
+                            borderRadius: 0
+                        }}>
+                            <Image 
+                                src={image} 
+                                alt={title}
+                                style={{
+                                    width: '100%',
+                                    height: '100%',
+                                    objectFit: 'cover'
+                                }}
+                            />
+                        </div>
+                    ) : undefined
+                }
                 data-testid="post-card"
                 style={{
                     borderRadius: theme.borderRadius.sm,
                     overflow: 'hidden',
                     maxWidth: '460px',
                     border: `1px solid ${theme.colors.border}`,
-                    height: '620px', // Fixed height for the card
+                    height: '575px',
                     display: 'flex',
                     flexDirection: 'column',
                 }}
@@ -104,32 +136,35 @@ const PostCard: React.FC<PostCardProps> = ({
                     description={
                         <div>
                             <Paragraph
+                                ref={descriptionRef}
                                 ellipsis={{
-                                    rows: 3,
+                                    rows: 2,
                                     tooltip: false,
                                 }}
                                 style={{ 
                                     marginBottom: 0,
-                                    cursor: 'pointer',
+                                    cursor: isTruncated ? 'pointer' : 'default',
                                 }}
-                                onClick={() => setIsDescriptionExpanded(true)}
+                                onClick={() => isTruncated && setIsDescriptionExpanded(true)}
                             >
                                 {description}
                             </Paragraph>
-                            <Text 
-                                type="secondary" 
-                                style={{ 
-                                    cursor: 'pointer',
-                                    fontSize: theme.fonts.sizes.small,
-                                }}
-                                onClick={() => setIsDescriptionExpanded(true)}
-                            >
-                                Read more
-                            </Text>
+                            {isTruncated && (
+                                <Text 
+                                    type="secondary" 
+                                    style={{ 
+                                        cursor: 'pointer',
+                                        fontSize: theme.fonts.sizes.small,
+                                    }}
+                                    onClick={() => setIsDescriptionExpanded(true)}
+                                >
+                                    Read more
+                                </Text>
+                            )}
                         </div>
                     }
                 />
-                <Space direction="vertical" size="small" style={{ width: '100%', marginTop: 'auto' }}>
+                <Space direction="vertical" size="small" style={{ width: '100%', marginTop: '32px', height: '100%', justifyContent: 'space-between' }}>
                     {/* Tags */}
                     <Space wrap>
                         {tags.map((tag) => (
