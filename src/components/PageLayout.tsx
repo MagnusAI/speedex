@@ -9,11 +9,12 @@ const { Content, Header, Footer } = Layout;
 const { Title, Text } = Typography;
 
 export default function PageLayout({ children }: { children: React.ReactNode }) {
-    return <Layout style={{ minHeight: '100vh', background: theme.colors.background }}>
-        <PageHeader />
+    return <Layout style={{ minHeight: '100vh', background: theme.colors.primary }}>
+        <PageHeader style={{ marginTop: `${theme.spacing.sm}px`, borderRadius: `16px 16px 0 0` }} />
         <Content style={{
-            padding: `${theme.spacing.xxl}px ${theme.spacing.md}px`,
-            marginTop: 64,
+            padding: `${theme.spacing.xxl}px ${theme.spacing.xl}px`,
+            backgroundColor: theme.colors.background,
+            borderRadius: `0 0 16px 16px`,
         }}>
             {children}
         </Content>
@@ -30,7 +31,7 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
     </Layout>
 }
 
-export function PageHeader() {
+export function PageHeader({ style }: { style?: React.CSSProperties }) {
     const navigate = useNavigate();
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [mobileMenuVisible, setMobileMenuVisible] = useState(false);
@@ -85,14 +86,16 @@ export function PageHeader() {
 
     return (
         <Header style={{
-            background: theme.colors.primary,
+            background: theme.colors.background,
             padding: `0 ${theme.spacing.xl}px`,
-            position: 'fixed',
+            borderBottom: `1px solid ${theme.colors.border}`,
             width: '100%',
             zIndex: 1,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
+            borderRadius: `${theme.borderRadius.md}px ${theme.borderRadius.md}px 0 0`,
+            ...style
         }}>
             <Space>
                 <Button
@@ -100,7 +103,7 @@ export function PageHeader() {
                     onClick={() => navigate('/')}
                     style={{ padding: 0 }}
                 >
-                    <Title level={3} style={{ color: theme.colors.lightText, margin: 0 }}>
+                    <Title level={4} style={{ color: theme.colors.text, margin: 0 }}>
                         Kennel Speedex
                     </Title>
                 </Button>
@@ -108,13 +111,11 @@ export function PageHeader() {
 
             {/* Desktop Menu */}
             <Menu
-                mode="horizontal"
+                mode="inline"
                 items={menuItems}
-                style={{
-                    background: 'transparent',
-                    border: 'none',
-                    flex: 1,
-                    justifyContent: 'flex-end',
+                style={{ 
+                    borderInlineEnd: `0px solid ${theme.colors.border}`,
+                    maxWidth: '50%',
                 }}
                 className="desktop-menu"
             />
@@ -123,8 +124,8 @@ export function PageHeader() {
             <Button
                 type="text"
                 icon={mobileMenuVisible ? 
-                    <CloseOutlined style={{ color: theme.colors.lightText, fontSize: '24px' }} /> : 
-                    <MenuOutlined style={{ color: theme.colors.lightText, fontSize: '24px' }} />
+                    <CloseOutlined style={{ color: theme.colors.text, fontSize: '24px' }} /> : 
+                    <MenuOutlined style={{ color: theme.colors.text, fontSize: '24px' }} />
                 }
                 onClick={() => setMobileMenuVisible(!mobileMenuVisible)}
                 style={{
@@ -138,19 +139,38 @@ export function PageHeader() {
                 mode="vertical"
                 items={menuItems}
                 style={{
-                    background: theme.colors.primary,
-                    border: 'none',
-                    display: 'none',
-                    position: 'fixed',
-                    top: 64,
+                    borderInlineEnd: `0px solid ${theme.colors.border}`,
+                    backgroundColor: theme.colors.primary,
+                    position: 'absolute',
+                    top: 88,
                     left: 0,
-                    right: 0,
+                    width: '100%',
+                    height: 'auto',
+                    zIndex: 1000,
+                    boxShadow: theme.shadows.md,
+                    border: `1px solid ${theme.colors.border}`,
                 }}
                 className="mobile-menu"
             />
 
             <style>
                 {`
+                    .mobile-menu {
+                        background-color: ${theme.colors.primary} !important;
+                        font-weight: bold;
+                    }
+
+                    .desktop-menu {
+                        & li {
+                            width: 148px !important;
+                            text-align: center;
+                            font-weight: bold;
+                        }
+                        
+                        & li:hover {
+                            background-color: ${theme.colors.primary} !important;
+                        }
+                    }
                     @media (min-width: 768px) {
                         .desktop-menu {
                             display: flex !important;
@@ -170,16 +190,6 @@ export function PageHeader() {
                         .mobile-menu {
                             display: ${mobileMenuVisible ? 'block' : 'none'} !important;
                         }
-                    }
-                    .ant-menu-item {
-                        color: ${theme.colors.lightText} !important;
-                    }
-                    .ant-menu-item:hover {
-                        color: ${theme.colors.lightText} !important;
-                        background: rgba(255, 255, 255, 0.1) !important;
-                    }
-                    .ant-menu-item-selected {
-                        background: rgba(255, 255, 255, 0.1) !important;
                     }
                 `}
             </style>

@@ -94,7 +94,7 @@ const PostCard: React.FC<PostCardProps> = ({
     // Calculate the transform value based on position
     const getTransformValue = () => {
         if (!image) return 'translateY(0)';
-        const maxOffset = 200; // Increased offset for better range
+        const maxOffset = 160; // Increased offset for better range
         const offset = (maxOffset * (image_position - 50)) / 50; // Center at 50
         return `translateY(${offset}px)`;
     };
@@ -106,7 +106,7 @@ const PostCard: React.FC<PostCardProps> = ({
                 cover={
                     image ? (
                         <div style={{
-                            height: '250px',
+                            height: '200px',
                             overflow: 'hidden',
                             display: 'flex',
                             alignItems: 'center',
@@ -144,7 +144,7 @@ const PostCard: React.FC<PostCardProps> = ({
                     overflow: 'hidden',
                     maxWidth: '295px',
                     border: `1px solid ${theme.colors.border}`,
-                    height: '500px',
+                    height: '480px',
                     display: 'flex',
                     flexDirection: 'column',
                 }}
@@ -158,25 +158,25 @@ const PostCard: React.FC<PostCardProps> = ({
                 <Meta
                     title={title}
                     description={
-                        <div>
+                        <div style={{ height: '88px', overflow: 'hidden' }}>
                             <Paragraph
                                 ref={descriptionRef}
                                 ellipsis={{
                                     rows: 2,
                                     tooltip: false,
                                 }}
-                                style={{
+                                style={{ 
                                     marginBottom: 0,
-                                    cursor: isTruncated ? 'pointer' : 'default',
+                                    cursor: isTruncated ? 'pointer' : 'pointer',
                                 }}
-                                onClick={() => isTruncated && setIsDescriptionExpanded(true)}
+                                onClick={() => setIsDescriptionExpanded(true)}
                             >
                                 {description}
                             </Paragraph>
                             {isTruncated && (
-                                <Text
-                                    type="secondary"
-                                    style={{
+                                <Text 
+                                    type="secondary" 
+                                    style={{ 
                                         cursor: 'pointer',
                                         fontSize: theme.fonts.sizes.small,
                                     }}
@@ -188,10 +188,10 @@ const PostCard: React.FC<PostCardProps> = ({
                         </div>
                     }
                 />
-                <Space direction="vertical" size="small" style={{ width: '100%', marginTop: '32px', height: '100%', justifyContent: 'space-between' }}>
+                <Space direction="vertical" size="small" style={{ width: '100%', marginTop: '8px', height: '100%', justifyContent: 'space-between', alignContent: 'flex-start' }}>
                     {/* Tags */}
-                    <Space wrap>
-                        {tags.map((tag) => (
+                    <Space wrap style={{ height: '64px', overflow: 'hidden', alignContent: 'flex-start' }}>
+                        {tags.slice(0, 4).map((tag) => (
                             <Tag
                                 key={tag}
                                 color="default"
@@ -199,6 +199,9 @@ const PostCard: React.FC<PostCardProps> = ({
                                 {tag}
                             </Tag>
                         ))}
+                        {tags.length > 4 && (
+                            <Tag color="default">. . .</Tag>
+                        )}
                     </Space>
 
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>

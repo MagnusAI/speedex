@@ -44,7 +44,7 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({
     // Calculate the transform value based on position
     const getTransformValue = () => {
         if (!imageHeight) return 'translateY(0)';
-        const maxOffset = 200; // Match PostCard's maxOffset
+        const maxOffset = 160; // Match PostCard's maxOffset
         const offset = (maxOffset * (position - 50)) / 50; // Center at 50
         return `translateY(${offset}px)`;
     };

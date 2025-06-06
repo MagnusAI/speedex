@@ -15,6 +15,21 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'PlusJakartaSans';
+  src: url('/src/assets/fonts/PlusJakartaSans-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'PlusJakartaSans';
+  src: url('/src/assets/fonts/PlusJakartaSans-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
 
 /* Reset default styles */
 * {
@@ -32,18 +47,21 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  font-family: 'Alice', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-weight: 400;
+  max-width: 1052px;
+  margin: 0 auto;
+  border-radius: 14px;
+  font-family: 'PlusJakartaSans', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #FFFFFF;
+  background-color: #F5EDE8;
   color: #252A32;
   line-height: 1.6;
 }
 
 /* Override Ant Design Typography styles */
 .ant-typography {
-  font-family: 'Alice', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-family: 'PlusJakartaSans', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif !important;
 }
 
 h1.ant-typography,
@@ -58,8 +76,8 @@ h6.ant-typography,
 .ant-typography h4,
 .ant-typography h5,
 .ant-typography h6 {
-  font-family: 'Sacramento', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif !important;
-  font-weight: 600;
+  font-family: 'PlusJakartaSans', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-weight: bold;
   margin-bottom: 0.7em;
   line-height: 1.3;
   color: #252A32;
@@ -67,8 +85,8 @@ h6.ant-typography,
 
 /* Regular heading styles */
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Sacramento', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-weight: 600;
+  font-family: 'PlusJakartaSans', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: bold;
   margin-bottom: 0.7em;
   line-height: 1.3;
   color: #252A32;
@@ -87,30 +105,13 @@ p, ul, ol {
 
 /* Stronger links for better visibility */
 a {
-  color: #3A5A70;
   text-decoration: underline;
   text-underline-offset: 2px;
 }
 
 a:hover, a:focus {
-  color: #506C7F;
+  background-color: #F5EDE8;
   text-decoration: underline;
-}
-
-/* Logo animations */
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-
-.logo:hover {
-  filter: drop-shadow(0 0 2em rgba(80, 108, 127, 0.6));
-}
-
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
 /* Code styling */
@@ -122,13 +123,6 @@ code {
   font-size: 0.9em;
 }
 
-/* Basic layout styling */
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1.5rem;
-}
-
 /* Add transitions for interactive elements */
 a, button, input, textarea, select {
   transition: all 0.2s ease-in-out;
@@ -136,7 +130,7 @@ a, button, input, textarea, select {
 
 /* Improved focus styles for accessibility */
 :focus {
-  outline: 3px solid rgba(80, 108, 127, 0.7);
+  outline: 3px solid rgba(250, 212, 212, 0.932);
   outline-offset: 3px;
 }
 
@@ -153,7 +147,7 @@ a, button, input, textarea, select {
 
 /* Form elements with improved contrast */
 input, select, textarea, button {
-  font-family: 'Alice', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'PlusJakartaSans', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: 1rem;
   border: 1px solid #BBC4CC;
   border-radius: 8px;
