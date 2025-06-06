@@ -16,94 +16,14 @@ function App() {
     <ConfigProvider
       theme={{
         token: {
-          // Colors
-          colorPrimary: theme.colors.primary,
-          colorSuccess: theme.colors.success,
-          colorWarning: theme.colors.warning,
-          colorError: theme.colors.error,
-          colorInfo: theme.colors.info,
-          colorBgBase: theme.colors.background,
-          colorTextBase: theme.colors.text,
-          
-          // Fonts and typography
-          fontFamily: theme.fonts.primary,
-          fontSize: parseInt(theme.fonts.sizes.base),
-          lineHeight: theme.fonts.lineHeights.body,
-          fontWeightStrong: theme.fonts.weights.semibold,
-          
-          // Borders and shapes
-          borderRadius: 10,
-          colorBorder: theme.colors.border,
-          colorBorderSecondary: theme.colors.borderHover,
-          lineWidth: 1,
-          
-          // Backgrounds
+          colorPrimary: theme.colors.primary, 
           colorBgContainer: theme.colors.background,
-          colorBgElevated: theme.colors.background,
-          colorBgLayout: theme.colors.backgroundAlt,
-          
-          // Shadows
-          boxShadow: theme.shadows.sm,
-          boxShadowSecondary: theme.shadows.md,
-          
-          // Focus states
-          controlOutline: theme.colors.borderFocus,
-          controlOutlineWidth: 2,
-          
-          // Spacing
-          controlHeightLG: 48,
-          controlHeight: 44,
-          controlHeightSM: 36,
-          paddingXS: 8,
-          paddingContentHorizontalLG: 20,
+          colorPrimaryHover: theme.colors.primaryHover,
         },
         components: {
-          Typography: {
-            fontWeightStrong: theme.fonts.weights.semibold,
-            titleMarginBottom: 16,
-          },
-          Card: {
-            boxShadow: theme.shadows.sm,
-            colorBorder: theme.colors.border,
-            colorBorderSecondary: theme.colors.borderHover,
-            borderRadiusLG: parseInt(theme.borderRadius.md),
-            paddingLG: 20,
-          },
           Button: {
-            borderRadius: 8,
-            controlHeight: 44,
-            controlHeightLG: 52,
-            controlOutline: theme.colors.borderFocus,
-            defaultBorderColor: theme.colors.border,
-            defaultColor: theme.colors.text,
-            fontWeight: theme.fonts.weights.medium,
-          },
-          Input: {
-            activeBorderColor: theme.colors.borderFocus,
-            hoverBorderColor: theme.colors.borderHover,
-            colorBorder: theme.colors.border,
-            controlHeight: 44,
-            borderRadius: 8,
-            paddingInline: 12,
-          },
-          Form: {
-            labelHeight: 28,
-            labelColor: theme.colors.text,
-            labelFontSize: parseInt(theme.fonts.sizes.base),
-            itemMarginBottom: 24,
-          },
-          Table: {
-            borderColor: theme.colors.border,
-            headerBg: theme.colors.backgroundAlt,
-            headerColor: theme.colors.text,
-            headerSplitColor: theme.colors.border,
-            rowHoverBg: theme.colors.secondary,
-            lineWidth: 1,
-          },
-          Divider: {
-            colorSplit: theme.colors.border,
-            lineWidth: 1,
-            marginLG: 32,
+            primaryColor: theme.colors.text,
+            fontWeight: theme.fonts.weights.bold,
           }
         }
       }}

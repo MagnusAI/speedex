@@ -85,7 +85,7 @@ const PostsPage: React.FC = () => {
 
   return (
     <PageLayout>
-      <div style={{ margin: '0 auto', padding: theme.spacing.lg }}>
+      <div style={{ margin: '0 auto' }}>
         <Space direction="vertical" size="large" style={{ width: '100%' }}>
           {/* Header */}
           <div style={{ 
@@ -110,7 +110,7 @@ const PostsPage: React.FC = () => {
                 type="primary"
                 icon={<PlusOutlined />}
                 onClick={() => setShowCreateForm(true)}
-                size="large"
+                size="middle"
               >
                 Create Post
               </Button>

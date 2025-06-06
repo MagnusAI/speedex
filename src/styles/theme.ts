@@ -1,10 +1,13 @@
 export const theme = {
   colors: {
-    primary: '#F5EDE8', // color #F5EDE8
-    secondary: '#FCFAF7', // color #FCFAF7
-    accent: '#F5EDE8', // color #F5EDE8
+    primary: '#F5EDE8', // Soft beige
+    secondary: '#9c6b4a', // Warm brown
+    accent: '#9c6b4a', // Warm brown accent
+    primaryHover: '#E8DCD3', // Slightly darker beige for hover
+    secondaryHover: '#875C40', // Darker warm brown for hover
+    accentHover: '#B37B56', // Lighter warm brown for hover
     background: '#FFFFFF', // Clean white
-    backgroundAlt: '#FCFAF7', // color #FCFAF7
+    backgroundAlt: '#1C120D', // color #1C120D
     text: '#1C120D',  // color #1C120D
     lightText: '#9c6b4a', // color #9c6b4a
     border: '#E5E8EB', // color #E5E8EB
@@ -81,7 +84,7 @@ export const theme = {
     thick: '3px solid',
   },
   accessibility: {
-    focusRing: '3px solid #506C7F',
+    focusRing: '3px solid #1C120D',
     focusRingOffset: '2px',
     touchTarget: '44px', // Minimum touch target size
     textContrast: {
