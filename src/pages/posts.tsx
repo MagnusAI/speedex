@@ -83,16 +83,30 @@ const PostsPage: React.FC = () => {
     fetchPosts(searchTag);
   };
 
+  const predefinedTags = ['2025', '2018', 'hvalpe'];
+
   return (
     <PageLayout>
+      {isAuthenticated && (
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => setShowCreateForm(true)}
+            size="middle"
+          >
+            Create Post
+          </Button>
+        </div>
+      )}
       <div style={{ margin: '0 auto' }}>
         <Space direction="vertical" size="large" style={{ width: '100%' }}>
           {/* Header */}
-          <div style={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
             alignItems: 'center',
-            marginBottom: theme.spacing.xl 
+            marginBottom: theme.spacing.xl
           }}>
             <div>
               <Title level={2}>Posts</Title>
@@ -101,20 +115,24 @@ const PostsPage: React.FC = () => {
                 allowClear
                 enterButton={<SearchOutlined />}
                 size="large"
+                value={searchTag}
                 onSearch={handleSearch}
                 style={{ maxWidth: '400px' }}
               />
+              <Space wrap style={{ marginTop: theme.spacing.md }}>
+                {predefinedTags.map(tag => (
+                  <Button
+                    key={tag}
+                    onClick={() => handleSearch(searchTag ? `${searchTag},${tag}` : tag)}
+                    style={{ backgroundColor: theme.colors.primary, border: `1px solid ${theme.colors.border}`, fontSize: theme.fonts.sizes.xs, fontWeight: theme.fonts.weights.bold, padding: '0 12px' }}
+                    size="small"
+                  >
+                    {tag}
+                  </Button>
+                ))}
+              </Space>
             </div>
-            {isAuthenticated && (
-              <Button
-                type="primary"
-                icon={<PlusOutlined />}
-                onClick={() => setShowCreateForm(true)}
-                size="middle"
-              >
-                Create Post
-              </Button>
-            )}
+
           </div>
 
           {/* Error message */}

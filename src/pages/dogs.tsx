@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Spin, message, Layout, Typography, Card } from 'antd';
+import { Spin, message, Layout, Typography, Card, Button } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { PlusOutlined } from '@ant-design/icons';
 import { supabase } from '../utils/supabase';
@@ -49,11 +49,11 @@ const Dogs: React.FC = () => {
     if (loading) {
         return (
             <PageLayout>
-                <div style={{ 
-                    display: 'flex', 
-                    justifyContent: 'center', 
-                    alignItems: 'center', 
-                    minHeight: '50vh' 
+                <div style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    minHeight: '50vh'
                 }}>
                     <Spin size="large" />
                 </div>
@@ -62,54 +62,36 @@ const Dogs: React.FC = () => {
     }
 
     return (
-        <Layout>
-            <PageLayout>
-                <Content style={{ padding: '24px', maxWidth: '1600px', margin: '0 auto' }}>
-                    <div style={{ 
-                        display: 'flex', 
-                        flexWrap: 'wrap', 
-                        gap: '24px', 
-                        justifyContent: window.innerWidth < 768 ? 'center' : 'flex-start'
-                    }}>
-                        {dogs.map((dog) => (
-                            <div key={dog.id} style={{ width: '300px' }}>
-                                <DogCard dog={dog} />
-                            </div>
-                        ))}
-                        {isAuthenticated && (
-                            <div style={{ width: '300px' }}>
-                                <Card
-                                    hoverable
-                                    style={{
-                                        height: '100%',
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        cursor: 'pointer',
-                                        textAlign: 'center',
-                                        minHeight: '260px'
-                                    }}
-                                    onClick={() => navigate('/dogs/add')}
-                                >
-                                    <div style={{ 
-                                        marginBottom: '16px',
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        flex: 1
-                                    }}>
-                                        <PlusOutlined style={{ fontSize: '48px' }} />
-                                        <Title level={4} style={{ margin: '16px 0 0 0' }}>New Dog</Title>
-                                    </div>
-                                </Card>
-                            </div>
-                        )}
-                    </div>
-                </Content>
-            </PageLayout>
-        </Layout>
+
+        <PageLayout>
+            {isAuthenticated && (
+                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    <Button
+                        type="primary"
+                        icon={<PlusOutlined />}
+                        onClick={() => navigate('/dogs/add')}
+                        size="middle"
+                    >
+                        New Dog
+                    </Button>
+                </div>
+            )}
+            <Content style={{ padding: '24px', maxWidth: '1600px', margin: '0 auto' }}>
+                <div style={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    gap: '24px',
+                    justifyContent: window.innerWidth < 768 ? 'center' : 'flex-start'
+                }}>
+                    {dogs.map((dog) => (
+                        <div key={dog.id} style={{ width: '300px' }}>
+                            <DogCard dog={dog} />
+                        </div>
+                    ))}
+                </div>
+            </Content>
+        </PageLayout>
+
     );
 };
 

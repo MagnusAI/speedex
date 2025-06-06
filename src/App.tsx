@@ -24,7 +24,7 @@ function App() {
           Button: {
             primaryColor: theme.colors.text,
             fontWeight: theme.fonts.weights.bold,
-          }
+          },
         }
       }}
     >

@@ -31,6 +31,8 @@ export const theme = {
     mono: "source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace",
     // Font sizes
     sizes: {
+      xxs: '10px',
+      xs: '12px',
       base: '18px', // Increased from 16px for better readability
       small: '16px',
       large: '20px',

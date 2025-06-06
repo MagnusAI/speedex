@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Card, Typography, Tag, Image, Space, Button, Modal } from 'antd';
-import { DeleteOutlined, EditOutlined, CloseOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { theme } from '../styles/theme';
 import { supabase } from '../utils/supabase';
 import { message } from 'antd';
@@ -103,6 +103,7 @@ const PostCard: React.FC<PostCardProps> = ({
         <>
             <Card
                 hoverable
+                onClick={() => setIsDescriptionExpanded(true)}
                 cover={
                     image ? (
                         <div style={{
@@ -144,7 +145,7 @@ const PostCard: React.FC<PostCardProps> = ({
                     overflow: 'hidden',
                     maxWidth: '295px',
                     border: `1px solid ${theme.colors.border}`,
-                    height: '480px',
+                    height: '384px',
                     display: 'flex',
                     flexDirection: 'column',
                 }}
@@ -168,8 +169,8 @@ const PostCard: React.FC<PostCardProps> = ({
                                 style={{ 
                                     marginBottom: 0,
                                     cursor: isTruncated ? 'pointer' : 'pointer',
+                                    color: theme.colors.lightText,
                                 }}
-                                onClick={() => setIsDescriptionExpanded(true)}
                             >
                                 {description}
                             </Paragraph>
@@ -178,7 +179,8 @@ const PostCard: React.FC<PostCardProps> = ({
                                     type="secondary" 
                                     style={{ 
                                         cursor: 'pointer',
-                                        fontSize: theme.fonts.sizes.small,
+                                        fontSize: theme.fonts.sizes.xs,
+                                        color: theme.colors.borderFocus,
                                     }}
                                     onClick={() => setIsDescriptionExpanded(true)}
                                 >
@@ -189,21 +191,6 @@ const PostCard: React.FC<PostCardProps> = ({
                     }
                 />
                 <Space direction="vertical" size="small" style={{ width: '100%', marginTop: '8px', height: '100%', justifyContent: 'space-between', alignContent: 'flex-start' }}>
-                    {/* Tags */}
-                    <Space wrap style={{ height: '64px', overflow: 'hidden', alignContent: 'flex-start' }}>
-                        {tags.slice(0, 4).map((tag) => (
-                            <Tag
-                                key={tag}
-                                color="default"
-                            >
-                                {tag}
-                            </Tag>
-                        ))}
-                        {tags.length > 4 && (
-                            <Tag color="default">. . .</Tag>
-                        )}
-                    </Space>
-
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
                         {isAuthenticated && (
                             <Space>
@@ -266,7 +253,8 @@ const PostCard: React.FC<PostCardProps> = ({
                 footer={null}
                 style={{
                     padding: 0,
-                    margin: 0
+                    margin: 0,
+
                 }}
                 width={800}
                 centered
@@ -274,7 +262,7 @@ const PostCard: React.FC<PostCardProps> = ({
             >
                 {/* Image section */}
                 {image && (
-                    <img
+                    <Image
                         src={image}
                         alt={title}
                         style={{
@@ -306,7 +294,7 @@ const PostCard: React.FC<PostCardProps> = ({
                                 <Tag
                                     key={tag}
                                     color="default"
-                                    style={{ fontSize: theme.fonts.sizes.base }}
+                                    style={{ backgroundColor: theme.colors.primary, border: `1px solid ${theme.colors.border}`, fontSize: theme.fonts.sizes.xs, fontWeight: theme.fonts.weights.bold, padding: '0 12px' }}
                                 >
                                     {tag}
                                 </Tag>

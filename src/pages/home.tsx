@@ -1,87 +1,55 @@
 import React from 'react';
-import { Typography, Row, Col, Card, Button } from 'antd';
-import { theme } from '../styles/theme';
 import PageLayout from '../components/PageLayout';
-
-
-const { Title, Paragraph } = Typography;
+import { Typography } from 'antd';
 
 const Home: React.FC = () => {
     return (
         <PageLayout>
-            {/* Hero Section */}
-            <Row gutter={[theme.spacing.xl, theme.spacing.xl]} style={{ marginBottom: theme.spacing.xxl }}>
-                <Col xs={24} lg={12}>
-                    <Title level={1} style={{ color: theme.colors.text }}>
-                        Welcome to Our Terrier Family
-                    </Title>
-                    <Paragraph style={{ fontSize: '1.2rem', color: theme.colors.text }}>
-                        Specializing in Jack Russell and Norfolk Terriers, we breed healthy,
-                        friendly family dogs in a loving home environment while maintaining
-                        excellence in competition standards.
-                    </Paragraph>
-                    <Button type="primary" size="large">
-                        Learn More About Our Dogs
-                    </Button>
-                </Col>
-                <Col xs={24} lg={12}>
-                    {/* Hero image will go here */}
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <div style={{
+                    backgroundImage: 'url(./dogs/images/dogs_bubbles_169.png)',
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    height: '360px',
+                    width: '100%',
+                    maxWidth: '720px',
+                    position: 'relative',
+                    borderRadius: '16px',
+                    overflow: 'hidden'
+                }}>
                     <div style={{
-                        height: '400px',
-                        background: theme.colors.secondary,
-                        borderRadius: '8px',
-                    }} />
-                </Col>
-            </Row>
-
-            {/* Breeds Section */}
-            <Row gutter={[theme.spacing.xl, theme.spacing.xl]}>
-                <Col xs={24} md={12}>
-                    <Card
-                        hoverable
-                        cover={
-                            <div style={{
-                                height: '200px',
-                                background: theme.colors.secondary,
-                            }} />
-                        }
-                    >
-                        <Card.Meta
-                            title="Jack Russell Terriers"
-                            description="Energetic, intelligent, and full of character, our Jack Russells are perfect family companions."
-                        />
-                    </Card>
-                </Col>
-                <Col xs={24} md={12}>
-                    <Card
-                        hoverable
-                        cover={
-                            <div style={{
-                                height: '200px',
-                                background: theme.colors.secondary,
-                            }} />
-                        }
-                    >
-                        <Card.Meta
-                            title="Norfolk Terriers"
-                            description="Loyal, affectionate, and adaptable, our Norfolk Terriers bring joy to every home."
-                        />
-                    </Card>
-                </Col>
-            </Row>
-
-            {/* Achievements Section */}
-            <Row style={{ marginTop: theme.spacing.xxl }}>
-                <Col span={24}>
-                    <Title level={2} style={{ textAlign: 'center', color: theme.colors.text }}>
-                        Our Achievements
-                    </Title>
-                    <Paragraph style={{ textAlign: 'center', fontSize: '1.1rem' }}>
-                        Proud participants in national and international terrier competitions
-                    </Paragraph>
-                    {/* Achievement cards will go here */}
-                </Col>
-            </Row>
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        padding: '24px'
+                    }}>
+                        <Typography.Title style={{
+                            color: '#ffffff',
+                            textAlign: 'center',
+                            marginBottom: '16px'
+                        }}>
+                            Welcome to Our Terrier Family
+                        </Typography.Title>
+                        <Typography.Text style={{
+                            color: '#ffffff',
+                            fontSize: '1rem',
+                            textAlign: 'center',
+                            maxWidth: '800px'
+                        }}>
+                            Specializing in Jack Russell and Norfolk Terriers, we breed healthy,
+                            friendly family dogs in a loving home environment while maintaining
+                            excellence in competition standards.
+                        </Typography.Text>
+                    </div>
+                </div>
+            </div>
         </PageLayout>
     );
 };
