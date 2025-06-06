@@ -6,7 +6,6 @@ import { supabase } from '../utils/supabase';
 import PageLayout from '../components/PageLayout';
 import { Dog } from '../types/dog';
 import { theme } from '../styles/theme';
-import { mockAncestryTree } from '../mocks/ancestry';
 import DogAncestryTree from '../components/DogAncestryTree';
 import { buildAncestryTree } from '@/services/ancestry';
 import { AncestryTree } from '@/types/ancestry';
@@ -115,7 +114,7 @@ const DogDetails: React.FC = () => {
     return (
         <PageLayout>
             {isAuthenticated && (
-                <div style={{ position: 'absolute', top: 120, right: 40, display: 'flex', gap: theme.spacing.md }}>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: theme.spacing.md }}>
                     <Button
                         type="primary"
                         icon={<EditOutlined />}

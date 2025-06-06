@@ -115,7 +115,7 @@ export function PageHeader({ style }: { style?: React.CSSProperties }) {
                 items={menuItems}
                 style={{ 
                     borderInlineEnd: `0px solid ${theme.colors.border}`,
-                    maxWidth: '50%',
+                    justifyContent: 'flex-end',
                 }}
                 className="desktop-menu"
             />
@@ -162,7 +162,7 @@ export function PageHeader({ style }: { style?: React.CSSProperties }) {
 
                     .desktop-menu {
                         & li {
-                            width: 148px !important;
+                            width: 124px !important;
                             text-align: center;
                             font-weight: bold;
                         }
