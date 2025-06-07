@@ -1,6 +1,7 @@
 import React from 'react';
 import PageLayout from '../components/PageLayout';
 import { Typography } from 'antd';
+import RecentPosts from '../components/RecentPosts';
 
 const Home: React.FC = () => {
     return (
@@ -50,6 +51,7 @@ const Home: React.FC = () => {
                     </div>
                 </div>
             </div>
+            <RecentPosts title="Latest News" />
         </PageLayout>
     );
 };

@@ -1,0 +1,102 @@
+import React, { useEffect, useState } from 'react';
+import { Typography, Space, Button, Spin } from 'antd';
+import { RightOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
+import { supabase } from '../utils/supabase';
+import PostCard from './PostCard';
+import { theme } from '../styles/theme';
+
+const { Title } = Typography;
+
+interface Post {
+    id: string;
+    title: string;
+    description: string;
+    image: string;
+    image_position?: number;
+    tags: string[];
+    created_at: string;
+}
+
+interface RecentPostsProps {
+    title?: string;
+    limit?: number;
+}
+
+const RecentPosts: React.FC<RecentPostsProps> = ({ 
+    title = "Latest News", 
+    limit = 3 
+}) => {
+    const [posts, setPosts] = useState<Post[]>([]);
+    const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        fetchRecentPosts();
+    }, []);
+
+    const fetchRecentPosts = async () => {
+        try {
+            const { data, error } = await supabase
+                .from('posts')
+                .select('*')
+                .order('created_at', { ascending: false })
+                .limit(limit);
+
+            if (error) throw error;
+            setPosts(data || []);
+        } catch (error) {
+            console.error('Error fetching recent posts:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <div style={{ marginTop: theme.spacing.xxl }}>
+            <div style={{ 
+                display: 'flex', 
+                justifyContent: 'space-between', 
+                alignItems: 'center',
+                marginBottom: theme.spacing.lg 
+            }}>
+                <Title level={3}>{title}</Title>
+                <Button 
+                    type="link" 
+                    onClick={() => navigate('/posts')}
+                    style={{ 
+                        display: 'flex', 
+                        alignItems: 'center',
+                        gap: theme.spacing.xs,
+                        padding: 0
+                    }}
+                >
+                    View all posts <RightOutlined />
+                </Button>
+            </div>
+
+            {loading ? (
+                <div style={{ textAlign: 'center', padding: theme.spacing.xl }}>
+                    <Spin size="large" />
+                </div>
+            ) : (
+                <Space wrap align="start" size="large" style={{ width: '100%' }}>
+                    {posts.map((post) => (
+                        <PostCard
+                            key={post.id}
+                            id={post.id}
+                            title={post.title}
+                            description={post.description}
+                            image={post.image}
+                            image_position={post.image_position}
+                            tags={post.tags}
+                            createdAt={post.created_at}
+                        />
+                    ))}
+                </Space>
+            )}
+        </div>
+    );
+};
+
+export default RecentPosts; 
