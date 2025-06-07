@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Spin, message, Layout, Typography, Card, Button } from 'antd';
+import { Spin, message, Layout, Button } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { PlusOutlined } from '@ant-design/icons';
 import { supabase } from '../utils/supabase';
@@ -8,7 +8,6 @@ import DogCard from '../components/DogCard';
 import { Dog } from '../types/dog';
 
 const { Content } = Layout;
-const { Title } = Typography;
 
 const Dogs: React.FC = () => {
     const [dogs, setDogs] = useState<Dog[]>([]);

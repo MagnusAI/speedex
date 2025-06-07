@@ -50,7 +50,10 @@ const PostsPage: React.FC = () => {
         .order('created_at', { ascending: false });
 
       if (tag) {
-        query = query.contains('tags', [tag]);
+        // Split the search string by commas and trim whitespace
+        const tags = tag.split(',').map(t => t.trim()).filter(t => t);
+        // Use or() to match any of the tags
+        query = query.or(tags.map(t => `tags.cs.{${t}}`).join(','));
       }
 
       const { data, error } = await query;
@@ -116,6 +119,7 @@ const PostsPage: React.FC = () => {
                 enterButton={<SearchOutlined />}
                 size="large"
                 value={searchTag}
+                onChange={(e) => setSearchTag(e.target.value)}
                 onSearch={handleSearch}
                 style={{ maxWidth: '400px' }}
               />
@@ -123,7 +127,12 @@ const PostsPage: React.FC = () => {
                 {predefinedTags.map(tag => (
                   <Button
                     key={tag}
-                    onClick={() => handleSearch(searchTag ? `${searchTag},${tag}` : tag)}
+                    onClick={() => {
+                      const currentTags = searchTag.split(',').map(t => t.trim());
+                      if (!currentTags.includes(tag)) {
+                        handleSearch(searchTag ? `${searchTag},${tag}` : tag);
+                      }
+                    }}
                     style={{ backgroundColor: theme.colors.primary, border: `1px solid ${theme.colors.border}`, fontSize: theme.fonts.sizes.xs, fontWeight: theme.fonts.weights.bold, padding: '0 12px' }}
                     size="small"
                   >
