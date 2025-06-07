@@ -161,7 +161,7 @@ const PostsPage: React.FC = () => {
               <Spin size="large" />
             </div>
           ) : (
-            <Space wrap align="start" size="large" style={{ width: '100%' }}>
+            <>
               {/* Posts list */}
               {posts.length > 0 ? (
                 posts.map((post) => (
@@ -190,7 +190,7 @@ const PostsPage: React.FC = () => {
                   showIcon
                 />
               )}
-            </Space>
+            </>
           )}
         </Space>
 

@@ -89,8 +89,6 @@ const PostCard: React.FC<PostCardProps> = ({
         }
     };
 
-    const { Meta } = Card;
-
     // Calculate the transform value based on position
     const getTransformValue = () => {
         if (!image) return 'translateY(0)';
@@ -103,115 +101,119 @@ const PostCard: React.FC<PostCardProps> = ({
         <>
             <Card
                 hoverable
-                onClick={() => setIsDescriptionExpanded(true)}
-                cover={
-                    image ? (
-                        <div style={{
-                            height: '200px',
-                            overflow: 'hidden',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            backgroundColor: theme.colors.backgroundAlt,
-                            borderRadius: 0,
-                            position: 'relative'
-                        }}>
-                            <Image
-                                src={image}
-                                alt={title}
-                                style={{
-                                    width: '100%',
-                                    height: '100%',
-                                    objectFit: 'cover',
-                                    transform: getTransformValue(),
-                                    transition: 'transform 0.2s ease-in-out'
-                                }}
-                            />
-                            <div style={{
-                                position: 'absolute',
-                                bottom: 0,
-                                left: 0,
-                                right: 0,
-                                height: '4px',
-                                background: 'linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0))',
-                                pointerEvents: 'none'
-                            }} />
-                        </div>
-                    ) : undefined
-                }
-                data-testid="post-card"
+                className="post-card-horizontal"
                 style={{
-                    borderRadius: theme.borderRadius.sm,
+                    border: 'none',
+                    borderRadius: 12,
+                    width: '100%',
                     overflow: 'hidden',
-                    maxWidth: '295px',
-                    border: `1px solid ${theme.colors.border}`,
-                    height: '384px',
-                    display: 'flex',
-                    flexDirection: 'column',
+                    margin: '0 auto',
+                    padding: 0,
                 }}
                 bodyStyle={{
-                    flex: 1,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    padding: theme.spacing.md,
+                    padding: 0,
                 }}
+                onClick={() => setIsDescriptionExpanded(true)}
             >
-                <Meta
-                    title={title}
-                    description={
-                        <div style={{ height: '88px', overflow: 'hidden' }}>
-                            <Paragraph
-                                ref={descriptionRef}
-                                ellipsis={{
-                                    rows: 2,
-                                    tooltip: false,
-                                }}
-                                style={{ 
-                                    marginBottom: 0,
-                                    cursor: isTruncated ? 'pointer' : 'pointer',
-                                    color: theme.colors.lightText,
-                                }}
+                <div className="post-card-flex">
+                    {/* Left: Text */}
+                    <div className="post-card-content">
+                        <Title level={5} style={{ marginBottom: 0 }}>{title}</Title>
+                        <Paragraph
+                            ref={descriptionRef}
+                            ellipsis={{ rows: 2, tooltip: false }}
+                            style={{
+                                marginBottom: 4,
+                                color: theme.colors.lightText,
+                                fontSize: theme.fonts.sizes.base,
+                                cursor: 'pointer',
+                            }}
+                            onClick={e => { e.stopPropagation(); setIsDescriptionExpanded(true); }}
+                        >
+                            {description}
+                        </Paragraph>
+                        {isTruncated && (
+                            <Text 
+                                type="secondary" 
+                                style={{ cursor: 'pointer', fontSize: theme.fonts.sizes.xs, color: theme.colors.borderFocus }}
+                                onClick={e => { e.stopPropagation(); setIsDescriptionExpanded(true); }}
                             >
-                                {description}
-                            </Paragraph>
-                            {isTruncated && (
-                                <Text 
-                                    type="secondary" 
-                                    style={{ 
-                                        cursor: 'pointer',
-                                        fontSize: theme.fonts.sizes.xs,
-                                        color: theme.colors.borderFocus,
-                                    }}
-                                    onClick={() => setIsDescriptionExpanded(true)}
-                                >
-                                    Read more
-                                </Text>
+                                Read more
+                            </Text>
+                        )}
+                        <div style={{ display: 'flex', alignItems: 'center', marginTop: 8 }}>
+                            <Text type="secondary" style={{ fontSize: theme.fonts.sizes.base }}>
+                                {formattedDate}
+                            </Text>
+                            {isAuthenticated && (
+                                <Space style={{ marginLeft: 'auto' }}>
+                                    <Button
+                                        type="text"
+                                        icon={<EditOutlined />}
+                                        onClick={e => { e.stopPropagation(); setIsEditModalVisible(true); }}
+                                        data-testid="edit-post-button"
+                                    />
+                                    <Button
+                                        type="text"
+                                        danger
+                                        icon={<DeleteOutlined />}
+                                        onClick={e => { e.stopPropagation(); setIsDeleteModalVisible(true); }}
+                                        data-testid="delete-post-button"
+                                    />
+                                </Space>
                             )}
                         </div>
-                    }
-                />
-                <Space direction="vertical" size="small" style={{ width: '100%', marginTop: '8px', height: '100%', justifyContent: 'space-between', alignContent: 'flex-start' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-                        {isAuthenticated && (
-                            <Space>
-                                <Button
-                                    type="text"
-                                    icon={<EditOutlined />}
-                                    onClick={() => setIsEditModalVisible(true)}
-                                    data-testid="edit-post-button"
-                                />
-                                <Button
-                                    type="text"
-                                    danger
-                                    icon={<DeleteOutlined />}
-                                    onClick={() => setIsDeleteModalVisible(true)}
-                                    data-testid="delete-post-button"
-                                />
-                            </Space>
-                        )}
-                        <Text style={{ display: 'flex', width: '100%', justifyContent: 'flex-end' }} type="secondary" data-testid="post-date">{formattedDate}</Text>
                     </div>
-                </Space>
+                    {/* Right: Image */}
+                    {image && (
+                        <img
+                            src={image}
+                            alt={title}
+                            className="post-card-image"
+                            style={{
+                                objectFit: 'cover',
+                                transform: getTransformValue(),
+                                boxShadow: theme.shadows.sm,
+                            }}
+                        />
+                    )}
+                </div>
+                <style>{`
+                    .post-card-flex {
+                        display: flex;
+                        flex-direction: row;
+                        width: 100%;
+                        height: 180px;
+                    }
+                    .post-card-content {
+                        flex: 1;
+                        padding: 12px;
+                        min-width: 0;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                    }
+                    .post-card-image {
+                        width: 100%;
+                        min-width: 220px;
+                        max-width: 360px;
+                        height: 100%;
+                        border-radius: 16px 16px 16px 16px;
+                    }
+                    @media (max-width: 600px) {
+                        .post-card-flex {
+                            flex-direction: column;
+                            height: auto;
+                        }
+                        .post-card-image {
+                            width: 100%;
+                            min-width: 0;
+                            max-width: 100%;
+                            height: 180px;
+                            border-radius: 12px 12px 0 0;
+                        }
+                    }
+                `}</style>
             </Card>
 
             {/* Delete Confirmation Modal */}
@@ -240,7 +242,7 @@ const PostCard: React.FC<PostCardProps> = ({
                     postId={id}
                     onSuccess={() => {
                         setIsEditModalVisible(false);
-                        onDelete?.(); // Refresh the posts list
+                        onDelete?.();
                     }}
                     onCancel={() => setIsEditModalVisible(false)}
                 />
@@ -254,7 +256,6 @@ const PostCard: React.FC<PostCardProps> = ({
                 style={{
                     padding: 0,
                     margin: 0,
-
                 }}
                 width={800}
                 centered

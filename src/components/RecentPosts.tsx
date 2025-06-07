@@ -80,7 +80,7 @@ const RecentPosts: React.FC<RecentPostsProps> = ({
                     <Spin size="large" />
                 </div>
             ) : (
-                <Space wrap align="start" size="large" style={{ width: '100%' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: theme.spacing.lg }}>
                     {posts.map((post) => (
                         <PostCard
                             key={post.id}
@@ -93,7 +93,7 @@ const RecentPosts: React.FC<RecentPostsProps> = ({
                             createdAt={post.created_at}
                         />
                     ))}
-                </Space>
+                </div>
             )}
         </div>
     );
