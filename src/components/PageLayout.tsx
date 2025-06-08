@@ -1,4 +1,4 @@
-import { Layout, Typography, Menu, Button, Space } from 'antd';
+import { Layout, Typography, Menu, Button, Space, LayoutProps } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { theme } from '../styles/theme';
 import { LockOutlined, UnlockOutlined, MenuOutlined, CloseOutlined } from '@ant-design/icons';
@@ -8,8 +8,9 @@ import { supabase } from '../utils/supabase';
 const { Content, Header, Footer } = Layout;
 const { Title, Text } = Typography;
 
-export default function PageLayout({ children }: { children: React.ReactNode }) {
-    return <Layout style={{ minHeight: '100vh', background: theme.colors.primary }}>
+export default function PageLayout({ children, ...rest }: { children: React.ReactNode } & LayoutProps): JSX.Element {
+    const { style, ...props } = rest;
+    return <Layout style={{ minHeight: '100vh', background: theme.colors.primary, ...style }} {...props}>
         <PageHeader style={{ marginTop: `${theme.spacing.sm}px`, borderRadius: `16px 16px 0 0` }} />
         <Content style={{
             padding: `${theme.spacing.xl}px ${theme.spacing.xxl}px`,

@@ -52,6 +52,7 @@ const Home: React.FC = () => {
                 </div>
             </div>
             <RecentPosts title="Latest News" />
+            
         </PageLayout>
     );
 };

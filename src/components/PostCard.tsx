@@ -104,7 +104,7 @@ const PostCard: React.FC<PostCardProps> = ({
                 className="post-card-horizontal"
                 style={{
                     border: 'none',
-                    borderRadius: 12,
+                    borderRadius: 0,
                     width: '100%',
                     overflow: 'hidden',
                     margin: '0 auto',
@@ -118,43 +118,45 @@ const PostCard: React.FC<PostCardProps> = ({
                 <div className="post-card-flex">
                     {/* Left: Text */}
                     <div className="post-card-content">
-                        <Title level={5} style={{ marginBottom: 0 }}>{title}</Title>
-                        <Paragraph
-                            ref={descriptionRef}
-                            ellipsis={{ rows: 2, tooltip: false }}
-                            style={{
-                                marginBottom: 4,
-                                color: theme.colors.lightText,
-                                fontSize: theme.fonts.sizes.base,
-                                cursor: 'pointer',
-                            }}
-                            onClick={e => { e.stopPropagation(); setIsDescriptionExpanded(true); }}
-                        >
-                            {description}
-                        </Paragraph>
+                        <div style={{ maxWidth: '540px' }}>
+                            <Title level={4} style={{ marginBottom: 0, fontSize: '1.05rem' }}>{title}</Title>
+                            <Paragraph
+                                ref={descriptionRef}
+                                ellipsis={{ rows: 2, tooltip: false }}
+                                style={{
+                                    marginBottom: 4,
+                                    color: theme.colors.lightText,
+                                    fontSize: theme.fonts.sizes.base,
+                                    cursor: 'pointer',
+                                }}
+                                onClick={e => { e.stopPropagation(); setIsDescriptionExpanded(true); }}
+                            >
+                                {description}
+                            </Paragraph>
+                        </div>
                         {isTruncated && (
-                            <Text 
-                                type="secondary" 
+                            <Text
+                                type="secondary"
                                 style={{ cursor: 'pointer', fontSize: theme.fonts.sizes.xs, color: theme.colors.borderFocus }}
                                 onClick={e => { e.stopPropagation(); setIsDescriptionExpanded(true); }}
                             >
                                 Read more
                             </Text>
                         )}
-                        <div style={{ display: 'flex', alignItems: 'center', marginTop: 8 }}>
-                            <Text type="secondary" style={{ fontSize: theme.fonts.sizes.base }}>
-                                {formattedDate}
-                            </Text>
+                        <div style={{ display: 'flex', alignItems: 'center', marginTop: 8, maxWidth: '540px' }}>
+
                             {isAuthenticated && (
-                                <Space style={{ marginLeft: 'auto' }}>
+                                <Space style={{ marginRight: 'auto' }}>
                                     <Button
                                         type="text"
+                                        size="large"
                                         icon={<EditOutlined />}
                                         onClick={e => { e.stopPropagation(); setIsEditModalVisible(true); }}
                                         data-testid="edit-post-button"
                                     />
                                     <Button
                                         type="text"
+                                        size="large"
                                         danger
                                         icon={<DeleteOutlined />}
                                         onClick={e => { e.stopPropagation(); setIsDeleteModalVisible(true); }}
@@ -162,20 +164,48 @@ const PostCard: React.FC<PostCardProps> = ({
                                     />
                                 </Space>
                             )}
+                            <Text type="secondary" style={{ fontSize: theme.fonts.sizes.base, marginLeft: 'auto' }}>
+                                {formattedDate}
+                            </Text>
                         </div>
                     </div>
                     {/* Right: Image */}
                     {image && (
-                        <img
-                            src={image}
-                            alt={title}
-                            className="post-card-image"
-                            style={{
-                                objectFit: 'cover',
-                                transform: getTransformValue(),
-                                boxShadow: theme.shadows.sm,
-                            }}
-                        />
+                        <div className='post-card-image' style={{
+                            width: '100%',
+                            height: '100%',
+                            maxWidth: '340px',
+                            maxHeight: '180px',
+                            overflow: 'hidden',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: theme.colors.backgroundAlt,
+                            position: 'relative',
+                        }}
+                        >
+                            <Image
+                                preview={false}
+                                src={image}
+                                alt={title}
+                                style={{
+                                    width: '100%',
+                                    height: '100%',
+                                    objectFit: 'cover',
+                                    transform: getTransformValue(),
+                                    transition: 'transform 0.2s ease-in-out'
+                                }}
+                            />
+                            <div style={{
+                                position: 'absolute',
+                                bottom: 0,
+                                left: 0,
+                                right: 0,
+                                height: '4px',
+                                background: 'linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0))',
+                                pointerEvents: 'none'
+                            }} />
+                        </div>
                     )}
                 </div>
                 <style>{`
@@ -191,26 +221,23 @@ const PostCard: React.FC<PostCardProps> = ({
                         min-width: 0;
                         display: flex;
                         flex-direction: column;
-                        justify-content: center;
+                        justify-content: space-between;
                     }
                     .post-card-image {
-                        width: 100%;
-                        min-width: 220px;
-                        max-width: 360px;
-                        height: 100%;
-                        border-radius: 16px 16px 16px 16px;
+                        border-radius: 12px 12px 12px 12px;
                     }
                     @media (max-width: 600px) {
                         .post-card-flex {
-                            flex-direction: column;
+                            flex-direction: column-reverse;
                             height: auto;
+                            border: 1px solid ${theme.colors.border};
+                            border-radius: 12px;
                         }
                         .post-card-image {
-                            width: 100%;
-                            min-width: 0;
-                            max-width: 100%;
-                            height: 180px;
                             border-radius: 12px 12px 0 0;
+                        }
+                        .post-card-horizontal {
+                            max-width: 300px;
                         }
                     }
                 `}</style>
@@ -262,18 +289,27 @@ const PostCard: React.FC<PostCardProps> = ({
                 closable
             >
                 {/* Image section */}
-                {image && (
-                    <Image
-                        src={image}
-                        alt={title}
-                        style={{
-                            width: '100%',
-                            height: '70%',
-                            objectFit: 'scale-down',
-                            marginTop: '32px'
-                        }}
-                    />
-                )}
+                <div style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: '100%',
+                    maxHeight: '902px',
+                    overflow: 'hidden',
+                }}>
+                    {image && (
+                        <Image
+                            src={image}
+                            alt={title}
+                            style={{
+                                width: '100%',
+                                height: '100%',
+                                objectFit: 'scale-down',
+                                marginTop: '32px'
+                            }}
+                        />
+                    )}
+                </div>
 
                 {/* Content section */}
                 <div style={{
@@ -302,9 +338,9 @@ const PostCard: React.FC<PostCardProps> = ({
                             ))}
                         </Space>
                         <Space direction="horizontal" style={{ width: '100%', justifyContent: 'flex-end' }}>
-                        <Text type="secondary" style={{ fontSize: theme.fonts.sizes.base }}>
-                            {formattedDate}
-                        </Text>
+                            <Text type="secondary" style={{ fontSize: theme.fonts.sizes.base }}>
+                                {formattedDate}
+                            </Text>
                         </Space>
                     </Space>
                 </div>

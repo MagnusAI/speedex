@@ -23,9 +23,9 @@ interface RecentPostsProps {
     limit?: number;
 }
 
-const RecentPosts: React.FC<RecentPostsProps> = ({ 
-    title = "Latest News", 
-    limit = 3 
+const RecentPosts: React.FC<RecentPostsProps> = ({
+    title = "Latest News",
+    limit = 3
 }) => {
     const [posts, setPosts] = useState<Post[]>([]);
     const [loading, setLoading] = useState(true);
@@ -53,48 +53,50 @@ const RecentPosts: React.FC<RecentPostsProps> = ({
     };
 
     return (
-        <div style={{ marginTop: theme.spacing.xxl }}>
-            <div style={{ 
-                display: 'flex', 
-                justifyContent: 'space-between', 
-                alignItems: 'center',
-                marginBottom: theme.spacing.lg 
-            }}>
-                <Title level={3}>{title}</Title>
-                <Button 
-                    type="link" 
-                    onClick={() => navigate('/posts')}
-                    style={{ 
-                        display: 'flex', 
-                        alignItems: 'center',
-                        gap: theme.spacing.xs,
-                        padding: 0
-                    }}
-                >
-                    View all posts <RightOutlined />
-                </Button>
-            </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: theme.spacing.lg, alignItems: 'center', width: '100%' }}>
+            <div style={{ marginTop: theme.spacing.xxl, width: '100%' }}>
+                <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginBottom: theme.spacing.lg
+                }}>
+                    <Title level={3}>{title}</Title>
+                </div>
 
-            {loading ? (
-                <div style={{ textAlign: 'center', padding: theme.spacing.xl }}>
-                    <Spin size="large" />
-                </div>
-            ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: theme.spacing.lg }}>
-                    {posts.map((post) => (
-                        <PostCard
-                            key={post.id}
-                            id={post.id}
-                            title={post.title}
-                            description={post.description}
-                            image={post.image}
-                            image_position={post.image_position}
-                            tags={post.tags}
-                            createdAt={post.created_at}
-                        />
-                    ))}
-                </div>
-            )}
+                {loading ? (
+                    <div style={{ textAlign: 'center', padding: theme.spacing.xl }}>
+                        <Spin size="large" />
+                    </div>
+                ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: theme.spacing.lg }}>
+                        {posts.map((post) => (
+                            <PostCard
+                                key={post.id}
+                                id={post.id}
+                                title={post.title}
+                                description={post.description}
+                                image={post.image}
+                                image_position={post.image_position}
+                                tags={post.tags}
+                                createdAt={post.created_at}
+                            />
+                        ))}
+                    </div>
+                )}
+            </div>
+            <Button
+                onClick={() => navigate('/posts')}
+                style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    width: 'fit-content',
+                    gap: theme.spacing.xs,
+                    padding: '14px'
+                }}
+            >
+                View all posts
+            </Button>
         </div>
     );
 };

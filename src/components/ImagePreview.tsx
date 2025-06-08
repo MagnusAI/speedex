@@ -20,6 +20,9 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({
     const [imageWidth, setImageWidth] = useState(0);
     const imageRef = useRef<HTMLImageElement>(null);
 
+    const containerWidth = 360; // Match PostCard width
+    const containerHeight = 180; // Match PostCard height
+
     // Update position when initialPosition changes
     useEffect(() => {
         setPosition(initialPosition);
@@ -54,8 +57,6 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({
         if (!imageHeight || !imageWidth) return {};
 
         const aspectRatio = imageWidth / imageHeight;
-        const containerWidth = 460; // Match PostCard width
-        const containerHeight = 300; // Match PostCard height
 
         // Calculate dimensions to maintain aspect ratio while filling width
         const width = containerWidth;
@@ -73,10 +74,11 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({
     return (
         <Space direction="vertical" size="middle" style={{ width: '100%' }}>
             <div style={{ 
-                height: '300px',
-                width: '460px',
+                height: `${containerHeight}px`,
+                width: `${containerWidth}px`,
                 overflow: 'hidden',
                 border: `1px solid ${theme.colors.border}`,
+                borderRadius: '12px',
                 boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
                 position: 'relative',
                 display: 'flex',
@@ -105,8 +107,17 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({
                     min={0}
                     max={100}
                     value={position}
+                    marks={{
+                        0: 'Bottom',
+                        25: ' ',
+                        50: 'Center',
+                        75: ' ',
+                        100: 'Top'
+                    }}
+                    
                     onChange={handlePositionChange}
                     tooltip={{ formatter: (value) => `${value}%` }}
+                    style={{ backgroundColor: theme.colors.backgroundAlt }}
                 />
             </Space>
         </Space>

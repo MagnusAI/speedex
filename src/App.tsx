@@ -19,11 +19,15 @@ function App() {
           colorPrimary: theme.colors.primary, 
           colorBgContainer: theme.colors.background,
           colorPrimaryHover: theme.colors.primaryHover,
+          colorFillContent: theme.colors.backgroundAlt,
         },
         components: {
           Button: {
             primaryColor: theme.colors.text,
             fontWeight: theme.fonts.weights.bold,
+            colorBgContainer: theme.colors.primary,
+            defaultHoverBg: theme.colors.primaryHover,
+            colorPrimaryHover: theme.colors.text,
           },
         }
       }}
