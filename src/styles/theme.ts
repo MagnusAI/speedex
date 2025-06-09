@@ -2,10 +2,10 @@ export const theme = {
   colors: {
     primary: '#F5EDE8', // Soft beige
     secondary: '#9c6b4a', // Warm brown
-    accent: '#9c6b4a', // Warm brown accent
+    accent: '#F27A24', // color #F27A24
     primaryHover: '#E8DCD3', // Slightly darker beige for hover
     secondaryHover: '#875C40', // Darker warm brown for hover
-    accentHover: '#B37B56', // Lighter warm brown for hover
+    accentHover: '#D66111', // color #D66111
     background: '#FFFFFF', // Clean white
     backgroundAlt: '#1C120D', // color #1C120D
     text: '#1C120D',  // color #1C120D

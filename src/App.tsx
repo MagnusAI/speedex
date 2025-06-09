@@ -16,7 +16,7 @@ function App() {
     <ConfigProvider
       theme={{
         token: {
-          colorPrimary: theme.colors.primary, 
+          colorPrimary: theme.colors.primary,
           colorBgContainer: theme.colors.background,
           colorPrimaryHover: theme.colors.primaryHover,
           colorFillContent: theme.colors.backgroundAlt,
@@ -28,6 +28,7 @@ function App() {
             colorBgContainer: theme.colors.primary,
             defaultHoverBg: theme.colors.primaryHover,
             colorPrimaryHover: theme.colors.text,
+            fontFamily: theme.fonts.primary,
           },
         }
       }}

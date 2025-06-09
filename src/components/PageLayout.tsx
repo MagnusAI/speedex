@@ -10,13 +10,14 @@ const { Title, Text } = Typography;
 
 export default function PageLayout({ children, ...rest }: { children: React.ReactNode } & LayoutProps): JSX.Element {
     const { style, ...props } = rest;
-    return <Layout style={{ minHeight: '100vh', background: theme.colors.primary, ...style }} {...props}>
+    return <Layout style={{ minHeight: '100vh', background: theme.colors.primary }}>
         <PageHeader style={{ marginTop: `${theme.spacing.sm}px`, borderRadius: `16px 16px 0 0` }} />
         <Content style={{
             padding: `${theme.spacing.xl}px ${theme.spacing.xxl}px`,
             backgroundColor: theme.colors.background,
             borderRadius: `0 0 16px 16px`,
-        }}>
+            ...style
+        }} {...props}>
             {children}
         </Content>
         <Footer style={{
@@ -58,6 +59,14 @@ export function PageHeader({ style }: { style?: React.CSSProperties }) {
     };
 
     const menuItems = [
+        {
+            key: 'home',
+            label: 'Home',
+            onClick: () => {
+                navigate('/');
+                setMobileMenuVisible(false);
+            },
+        },
         {
             key: 'posts',
             label: 'Posts',
@@ -114,7 +123,7 @@ export function PageHeader({ style }: { style?: React.CSSProperties }) {
             <Menu
                 mode="inline"
                 items={menuItems}
-                style={{ 
+                style={{
                     borderInlineEnd: `0px solid ${theme.colors.border}`,
                     justifyContent: 'flex-end',
                 }}
@@ -124,8 +133,8 @@ export function PageHeader({ style }: { style?: React.CSSProperties }) {
             {/* Mobile Menu Button */}
             <Button
                 type="text"
-                icon={mobileMenuVisible ? 
-                    <CloseOutlined style={{ color: theme.colors.text, fontSize: '24px' }} /> : 
+                icon={mobileMenuVisible ?
+                    <CloseOutlined style={{ color: theme.colors.text, fontSize: '24px' }} /> :
                     <MenuOutlined style={{ color: theme.colors.text, fontSize: '24px' }} />
                 }
                 onClick={() => setMobileMenuVisible(!mobileMenuVisible)}

@@ -54,7 +54,7 @@ const RecentPosts: React.FC<RecentPostsProps> = ({
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: theme.spacing.lg, alignItems: 'center', width: '100%' }}>
-            <div style={{ marginTop: theme.spacing.xxl, width: '100%' }}>
+            <div style={{ width: '100%' }}>
                 <div style={{
                     display: 'flex',
                     justifyContent: 'space-between',
