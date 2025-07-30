@@ -84,6 +84,14 @@ export function PageHeader({ style }: { style?: React.CSSProperties }) {
             },
         },
         {
+            key: 'puppies',
+            label: 'Puppies',
+            onClick: () => {
+                navigate('/puppies');
+                setMobileMenuVisible(false);
+            },
+        },
+        {
             key: 'auth',
             label: isAuthenticated ? 'Logout' : 'Login',
             icon: isAuthenticated ? <UnlockOutlined /> : <LockOutlined />,

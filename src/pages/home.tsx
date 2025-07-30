@@ -185,6 +185,20 @@ const Home: React.FC = () => {
                     >
                         Our Dogs
                     </Button>
+                    <Button
+                        type="link"
+                        onMouseEnter={(e) => e.currentTarget.style.color = theme.colors.accentHover}
+                        onMouseLeave={(e) => e.currentTarget.style.color = theme.colors.secondary}
+                        onClick={() => navigate('/puppies')}
+                        style={{
+                            fontSize: 'clamp(0.875rem, 2vw, 1rem)',
+                            fontWeight: '500',
+                            transition: 'transform 0.2s ease',
+                            color: theme.colors.secondary,
+                        }}
+                    >
+                        Puppies
+                    </Button>
                 </div>
 
                 <div style={{
