@@ -1,23 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { Typography, Spin, Alert, Image, Card, Button } from 'antd';
+import { Typography, Spin, Alert, Card, Button } from 'antd';
 import { CalendarOutlined, EditOutlined, LinkOutlined, HeartOutlined } from '@ant-design/icons';
 import PageLayout from '../components/PageLayout';
 import { theme } from '../styles/theme';
-import { getPuppiesStatus, getPuppyPosts, formatDate, PuppyPost, PuppiesStatus } from '../services/puppies';
+import { getPuppiesStatus, formatDate, PuppiesStatus } from '../services/puppies';
 import { supabase } from '../utils/supabase';
 import ExpectedDateEditor from '@/components/ExpectedDateEditor';
+import PostGallery from '../components/PostGallery';
 
 const { Title, Paragraph, Text } = Typography;
 
 const Puppies: React.FC = () => {
-    const [posts, setPosts] = useState<PuppyPost[]>([]);
     const [puppiesStatus, setPuppiesStatus] = useState<PuppiesStatus>({
         expectedDate: null,
         listingUrl: null,
         displayStatus: 'hidden'
     });
     const [loading, setLoading] = useState(true);
-    const [postsLoading, setPostsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [showSettingsEditor, setShowSettingsEditor] = useState(false);
@@ -25,7 +24,6 @@ const Puppies: React.FC = () => {
     useEffect(() => {
         checkAuth();
         fetchPuppiesStatus();
-        fetchPuppyPosts();
     }, []);
 
     const checkAuth = async () => {
@@ -46,17 +44,7 @@ const Puppies: React.FC = () => {
         }
     };
 
-    const fetchPuppyPosts = async () => {
-        setPostsLoading(true);
-        try {
-            const puppyPosts = await getPuppyPosts();
-            setPosts(puppyPosts);
-        } catch (error) {
-            console.error('Error fetching puppy posts:', error);
-        } finally {
-            setPostsLoading(false);
-        }
-    };
+
 
     const handleSettingsUpdated = () => {
         setShowSettingsEditor(false);
@@ -443,91 +431,11 @@ const Puppies: React.FC = () => {
                 </div>
 
                 {/* Gallery Section - Always visible */}
-                <div style={{ marginBottom: '48px' }}>
-                    <Title level={2} style={{
-                        marginBottom: '32px',
-                        color: theme.colors.text,
-                        fontSize: 'clamp(1.5rem, 3vw, 2rem)'
-                    }}>
-                        Billeder af vores hvalpe
-                    </Title>
-
-                    {postsLoading ? (
-                        <div style={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            padding: '40px'
-                        }}>
-                            <Spin size="large" />
-                        </div>
-                    ) : posts.length === 0 ? (
-                        <div style={{
-                            textAlign: 'center',
-                            padding: '40px',
-                            color: theme.colors.secondary
-                        }}>
-                            <Text>Ingen billeder tilgængelige endnu</Text>
-                        </div>
-                    ) : (
-                        <div style={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 340px))',
-                            gap: '20px',
-                            justifyContent: 'flex-start',
-                            maxWidth: '1200px',
-                            margin: '0 auto'
-                        }}>
-                            {posts.map((post) => (
-                                <div
-                                    key={post.id}
-                                    style={{
-                                        width: '100%',
-                                        height: '160px',
-                                        borderRadius: '8px',
-                                        overflow: 'hidden',
-                                        boxShadow: theme.shadows.sm,
-                                        transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-                                        cursor: 'pointer',
-                                        backgroundColor: theme.colors.backgroundAlt,
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center'
-                                    }}
-                                    onMouseEnter={(e) => {
-                                        e.currentTarget.style.transform = 'scale(1.02)';
-                                        e.currentTarget.style.boxShadow = theme.shadows.md;
-                                    }}
-                                    onMouseLeave={(e) => {
-                                        e.currentTarget.style.transform = 'scale(1)';
-                                        e.currentTarget.style.boxShadow = theme.shadows.sm;
-                                    }}
-                                >
-                                    <Image
-                                        src={post.image}
-                                        alt={post.title}
-                                        style={{
-                                            width: '100%',
-                                            height: '100%',
-                                            objectFit: 'cover'
-                                        }}
-                                        preview={{
-                                            mask: <div style={{
-                                                background: 'rgba(0, 0, 0, 0.6)',
-                                                color: 'white',
-                                                padding: '8px 12px',
-                                                fontSize: '14px',
-                                                textAlign: 'center',
-                                                fontWeight: '500'
-                                            }}>
-                                                {post.title}
-                                            </div>
-                                        }}
-                                    />
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </div>
+                <PostGallery 
+                    title="Billeder af vores hvalpe"
+                    tags="hvalpe"
+                    emptyMessage="Ingen billeder tilgængelige endnu"
+                />
 
                 {/* Settings Editor Modal */}
                 {showSettingsEditor && (

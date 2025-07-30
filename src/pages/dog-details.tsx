@@ -9,6 +9,7 @@ import { theme } from '../styles/theme';
 import DogAncestryTree from '../components/DogAncestryTree';
 import { buildAncestryTree } from '@/services/ancestry';
 import { AncestryTree } from '@/types/ancestry';
+import PostGallery from '../components/PostGallery';
 
 const { Title, Text } = Typography;
 
@@ -179,7 +180,19 @@ const DogDetails: React.FC = () => {
                     )}
                 </div>
             </div>
+            
             {<DogAncestryTree tree={ancestryTree} />}
+            
+            {/* Photo Gallery */}
+            <div style={{ padding: theme.spacing.lg }}>
+                <PostGallery 
+                    title={`Billeder af ${dog.name}`}
+                    tags={dog.nickname ? [dog.name.toLowerCase(), dog.nickname.toLowerCase()] : [dog.name.toLowerCase()]}
+                    emptyMessage={`Ingen billeder af ${dog.name} endnu`}
+                    titleLevel={3}
+                    titleAlign="left"
+                />
+            </div>
         </PageLayout>
     );
 };
