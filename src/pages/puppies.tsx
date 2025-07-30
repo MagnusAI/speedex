@@ -357,7 +357,7 @@ const Puppies: React.FC = () => {
                         lineHeight: '1.7'
                     }}>
                         <Paragraph style={{
-                            fontSize: 'clamp(0.75, 2.5vw, 1rem)',
+                            fontSize: 'clamp(0.75rem, 2.5vw, 1rem)',
                             textAlign: 'justify',
                             color: theme.colors.text
                         }}>
@@ -471,23 +471,30 @@ const Puppies: React.FC = () => {
                     ) : (
                         <div style={{
                             display: 'grid',
-                            gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))',
-                            gap: '16px',
-                            justifyContent: 'center'
+                            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 340px))',
+                            gap: '20px',
+                            justifyContent: 'flex-start',
+                            maxWidth: '1200px',
+                            margin: '0 auto'
                         }}>
                             {posts.map((post) => (
                                 <div
                                     key={post.id}
                                     style={{
-                                        aspectRatio: '1',
+                                        width: '100%',
+                                        height: '160px',
                                         borderRadius: '8px',
                                         overflow: 'hidden',
                                         boxShadow: theme.shadows.sm,
                                         transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-                                        cursor: 'pointer'
+                                        cursor: 'pointer',
+                                        backgroundColor: theme.colors.backgroundAlt,
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center'
                                     }}
                                     onMouseEnter={(e) => {
-                                        e.currentTarget.style.transform = 'scale(1.05)';
+                                        e.currentTarget.style.transform = 'scale(1.02)';
                                         e.currentTarget.style.boxShadow = theme.shadows.md;
                                     }}
                                     onMouseLeave={(e) => {
@@ -507,9 +514,10 @@ const Puppies: React.FC = () => {
                                             mask: <div style={{
                                                 background: 'rgba(0, 0, 0, 0.6)',
                                                 color: 'white',
-                                                padding: '4px 8px',
-                                                fontSize: '12px',
-                                                textAlign: 'center'
+                                                padding: '8px 12px',
+                                                fontSize: '14px',
+                                                textAlign: 'center',
+                                                fontWeight: '500'
                                             }}>
                                                 {post.title}
                                             </div>
