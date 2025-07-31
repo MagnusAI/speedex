@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { supabase } from '../utils/supabase';
+import { supabase } from '@/utils/supabase';
 import { Spin } from 'antd';
 
 interface ProtectedRouteProps {

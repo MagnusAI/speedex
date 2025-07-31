@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Form, Input, Button, Upload, message, Space } from 'antd';
 import { PlusOutlined, LoadingOutlined } from '@ant-design/icons';
-import { supabase } from '../utils/supabase';
-import { theme } from '../styles/theme';
+import { supabase } from '@/utils/supabase';
+import { theme } from '@/styles/theme';
 import type { UploadFile } from 'antd/es/upload/interface';
 import ImagePreview from './ImagePreview';
 

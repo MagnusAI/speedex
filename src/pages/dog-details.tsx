@@ -3,13 +3,13 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Spin, message, Typography, Button, Image } from 'antd';
 import { ArrowLeftOutlined, EditOutlined, BranchesOutlined } from '@ant-design/icons';
 import { supabase } from '../utils/supabase';
-import PageLayout from '../components/PageLayout';
+import { PageLayout } from '@/components/layout';
 import { Dog } from '../types/dog';
 import { theme } from '../styles/theme';
-import DogAncestryTree from '../components/DogAncestryTree';
+import { DogAncestryTree } from '@/components/features';
 import { buildAncestryTree } from '@/services/ancestry';
 import { AncestryTree } from '@/types/ancestry';
-import PostGallery from '../components/PostGallery';
+import { PostGallery } from '@/components/features';
 
 const { Title, Text } = Typography;
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Typography, Spin, Image } from 'antd';
-import { theme } from '../styles/theme';
-import { supabase } from '../utils/supabase';
+import { theme } from '@/styles/theme';
+import { supabase } from '@/utils/supabase';
 
 const { Title, Text } = Typography;
 

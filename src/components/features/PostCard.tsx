@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Card, Typography, Tag, Image, Space, Button, Modal } from 'antd';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
-import { theme } from '../styles/theme';
-import { supabase } from '../utils/supabase';
+import { theme } from '@/styles/theme';
+import { supabase } from '@/utils/supabase';
 import { message } from 'antd';
 import EditPostForm from './EditPostForm';
 

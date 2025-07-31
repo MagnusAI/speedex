@@ -2,9 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Typography, Spin, Alert, Space, Input, Button, Modal } from 'antd';
 import { SearchOutlined, PlusOutlined } from '@ant-design/icons';
 import { supabase } from '../utils/supabase';
-import PageLayout from '../components/PageLayout';
-import PostCard from '../components/PostCard';
-import PostCreationForm from '../components/PostCreationForm';
+import { PageLayout } from '@/components/layout';
+import { PostCard, PostCreationForm } from '@/components/features';
 import { theme } from '../styles/theme';
 
 const { Title } = Typography;

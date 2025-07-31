@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Typography, Space, Button, Spin } from 'antd';
 import { RightOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '../utils/supabase';
+import { supabase } from '@/utils/supabase';
 import PostCard from './PostCard';
-import { theme } from '../styles/theme';
+import { theme } from '@/styles/theme';
 
 const { Title } = Typography;
 

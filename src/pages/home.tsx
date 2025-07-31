@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import PageLayout from '../components/PageLayout';
+import { PageLayout } from '@/components/layout';
 import { Typography, Button } from 'antd';
-import RecentPosts from '../components/RecentPosts';
+import { RecentPosts } from '@/components/features';
 import { useNavigate } from 'react-router-dom';
 import { theme } from '@/styles/theme'
 

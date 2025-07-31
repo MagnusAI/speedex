@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Form, Input, Upload, Button, message, Card, Select, Row, Col } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { supabase } from '../utils/supabase';
-import PageLayout from '../components/PageLayout';
+import { PageLayout } from '@/components/layout';
 import { Dog } from '../types/dog';
 import { useNavigate } from 'react-router-dom';
 import { theme } from '../styles/theme';

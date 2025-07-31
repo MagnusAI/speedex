@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Typography, Spin, Alert, Card, Button } from 'antd';
 import { CalendarOutlined, EditOutlined, LinkOutlined, HeartOutlined } from '@ant-design/icons';
-import PageLayout from '../components/PageLayout';
+import { PageLayout } from '@/components/layout';
 import { theme } from '../styles/theme';
 import { getPuppiesStatus, formatDate, PuppiesStatus } from '../services/puppies';
 import { supabase } from '../utils/supabase';
-import ExpectedDateEditor from '@/components/ExpectedDateEditor';
-import PostGallery from '../components/PostGallery';
+import { ExpectedDateEditor, PostGallery } from '@/components/features';
 
 const { Title, Paragraph, Text } = Typography;
 

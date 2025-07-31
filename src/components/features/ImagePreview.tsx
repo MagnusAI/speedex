@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, CSSProperties } from 'react';
 import { Slider, Space, Typography } from 'antd';
-import { theme } from '../styles/theme';
+import { theme } from '@/styles/theme';
 
 const { Text } = Typography;
 

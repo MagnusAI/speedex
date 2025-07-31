@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Card, Typography, Tag, Space, Modal } from 'antd';
 import { EyeOutlined } from '@ant-design/icons';
-import { Ancestor } from '../types/ancestry';
-import { theme } from '../styles/theme';
+import { Ancestor } from '@/types/ancestry';
+import { theme } from '@/styles/theme';
 
 const { Text, Title } = Typography;
 

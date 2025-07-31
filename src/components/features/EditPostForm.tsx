@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Input, Button, Space, message, Upload } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-import { supabase } from '../utils/supabase';
-import { theme } from '../styles/theme';
+import { supabase } from '@/utils/supabase';
+import { theme } from '@/styles/theme';
 import ImagePreview from './ImagePreview';
 
 const { TextArea } = Input;

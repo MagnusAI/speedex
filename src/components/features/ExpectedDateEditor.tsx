@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Modal, Form, DatePicker, Button, message, Input, Select, Space, Typography } from 'antd';
-import { updatePuppiesSettings, PuppiesStatus, isValidUrl } from '../services/puppies';
+import { updatePuppiesSettings, PuppiesStatus, isValidUrl } from '@/services/puppies';
 import dayjs from 'dayjs';
 
 const { Text } = Typography;

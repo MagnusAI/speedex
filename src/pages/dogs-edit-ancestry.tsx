@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Spin, message, Typography, Button, Form, Input, Upload, Card, Row, Col, Divider, Collapse, Image } from 'antd';
 import { ArrowLeftOutlined, SaveOutlined, UploadOutlined, PlusOutlined } from '@ant-design/icons';
 import { supabase } from '../utils/supabase';
-import PageLayout from '../components/PageLayout';
+import { PageLayout } from '@/components/layout';
 import { Dog } from '../types/dog';
 import { theme } from '../styles/theme';
 import { Ancestor, AncestryTree } from '@/types/ancestry';

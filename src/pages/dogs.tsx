@@ -1,97 +1,79 @@
-import React, { useEffect, useState } from 'react';
-import { Spin, message, Layout, Button } from 'antd';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PlusOutlined } from '@ant-design/icons';
-import { supabase } from '../utils/supabase';
-import PageLayout from '../components/PageLayout';
-import DogCard from '../components/DogCard';
-import { Dog } from '../types/dog';
-
-const { Content } = Layout;
+import { message } from 'antd';
+import { PageLayout } from '@/components/layout';
+import { Button } from '@/components/ui/Button';
+import { Loading } from '@/components/ui/Loading';
+import { Grid, Flex } from '@/components/ui/Grid';
+import { DogCard } from '@/components/features';
+import { useDogs } from '@/hooks/useDogs';
+import { useAuth } from '@/hooks/useAuth';
+import { ROUTES } from '@/constants';
 
 const Dogs: React.FC = () => {
-    const [dogs, setDogs] = useState<Dog[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
+  const { dogs, isLoading, error } = useDogs();
 
-    useEffect(() => {
-        const checkAuth = async () => {
-            const { data: { session } } = await supabase.auth.getSession();
-            setIsAuthenticated(!!session);
-        };
-
-        checkAuth();
-    }, []);
-
-    useEffect(() => {
-        const fetchDogs = async () => {
-            try {
-                const { data, error } = await supabase
-                    .from('dogs')
-                    .select('*')
-                    .order('created_at', { ascending: false });
-
-                if (error) throw error;
-                setDogs(data || []);
-            } catch (error) {
-                message.error('Failed to fetch dogs');
-                console.error('Error fetching dogs:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchDogs();
-    }, []);
-
-    if (loading) {
-        return (
-            <PageLayout>
-                <div style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    minHeight: '50vh'
-                }}>
-                    <Spin size="large" />
-                </div>
-            </PageLayout>
-        );
+  // Show error message if there's an error
+  React.useEffect(() => {
+    if (error) {
+      message.error(error);
     }
+  }, [error]);
 
+  if (isLoading) {
     return (
-
-        <PageLayout>
-            {isAuthenticated && (
-                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                    <Button
-                        type="primary"
-                        icon={<PlusOutlined />}
-                        onClick={() => navigate('/dogs/add')}
-                        size="middle"
-                    >
-                        New Dog
-                    </Button>
-                </div>
-            )}
-            <Content style={{ padding: '24px', maxWidth: '1600px', margin: '0 auto' }}>
-                <div style={{
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    gap: '24px',
-                    justifyContent: window.innerWidth < 768 ? 'center' : 'flex-start'
-                }}>
-                    {dogs.map((dog) => (
-                        <div key={dog.id} style={{ width: '300px' }}>
-                            <DogCard dog={dog} />
-                        </div>
-                    ))}
-                </div>
-            </Content>
-        </PageLayout>
-
+      <PageLayout>
+        <Loading text="Loading our beautiful dogs..." />
+      </PageLayout>
     );
+  }
+
+  return (
+    <PageLayout>
+      {isAuthenticated && (
+        <Flex justify="flex-end" style={{ marginBottom: '24px' }}>
+          <Button
+            variant="primary"
+            onClick={() => navigate(ROUTES.DOGS_ADD)}
+          >
+            <PlusOutlined style={{ marginRight: '8px' }} />
+            New Dog
+          </Button>
+        </Flex>
+      )}
+      
+      <div style={{ maxWidth: '1600px', margin: '0 auto' }}>
+        {dogs.length === 0 ? (
+          <Flex 
+            justify="center" 
+            align="center" 
+            direction="column" 
+            style={{ minHeight: '300px' }}
+          >
+            <p>No dogs found.</p>
+            {isAuthenticated && (
+              <Button
+                variant="accent"
+                onClick={() => navigate(ROUTES.DOGS_ADD)}
+                style={{ marginTop: '16px' }}
+              >
+                Add the first dog
+              </Button>
+            )}
+          </Flex>
+        ) : (
+          <Grid minItemWidth="300px" gap="lg">
+            {dogs.map((dog) => (
+              <DogCard key={dog.id} dog={dog} />
+            ))}
+          </Grid>
+        )}
+      </div>
+    </PageLayout>
+  );
 };
 
 export default Dogs;

@@ -1,8 +1,8 @@
 import React from 'react';
 import { Typography, Row, Col, Skeleton, Card } from 'antd';
-import { AncestryTree } from '../types/ancestry';
+import { AncestryTree } from '@/types/ancestry';
 import DogAncestryCard from './DogAncestryCard';
-import { theme } from '../styles/theme';
+import { theme } from '@/styles/theme';
 
 /**
  * Developer Log:
